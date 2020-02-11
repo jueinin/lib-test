@@ -1,8 +1,16 @@
 module.exports = {
-  important: true,
+  important: '#root',
   theme: {
-    extend: {},
+    truncate: {
+      lines: {
+        3: '3',
+        2: '2',
+        4: '4',
+      }
+    }
   },
   variants: {},
-  plugins: [],
+  plugins: [
+    require('tailwindcss-truncate-multiline')(),
+  ],
 }
