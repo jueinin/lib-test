@@ -9,15 +9,19 @@ import {BrowserRouter,Route} from 'react-router-dom'
 import MainPage from "./pages/mainPage/main";
 import CacheRoute, {CacheSwitch} from "react-router-cache-route";
 import SearchInput from "./pages/searchInput";
+import SearchResultList from "./pages/searchResultList";
 render(
     <BrowserRouter>
         <CacheSwitch>
             <CacheRoute exact path={['/','/forum','/me']}>
                 <MainPage/>
             </CacheRoute>
-            <Route exact path={'/searchInput'}>
+            <CacheRoute exact path={'/searchInput'}>
                 <SearchInput/>
-            </Route>
+            </CacheRoute>
+            <CacheRoute exact path={'/searchResultList'}> {/*params=keyword*/}
+                <SearchResultList/>
+            </CacheRoute>
         </CacheSwitch>
     </BrowserRouter>,
   document.getElementById('root')

@@ -52,7 +52,7 @@ const NavBar: React.FC<NavBarProps> = (props) => {
         </div>
         <animated.ul className="bg-gray-400 grid grid-cols-4 w-full overflow-hidden" style={animatedProps}>
             {items.current.map(value => {
-                return <li className="flex flex-col justify-center items-center ">
+                return <li key={value.path} className="flex flex-col justify-center items-center ">
                     <span className="text-gray-800">{value.icon}</span>
                     <span className="text-lg">{value.title}</span>
                 </li>

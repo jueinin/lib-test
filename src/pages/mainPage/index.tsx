@@ -9,6 +9,9 @@ import swiper3 from "../../resource/images/swiper-image3.jpg";
 import icon from "../../resource/images/icon.png";
 import {useHistory} from 'react-router-dom'
 import {ask} from "../../util";
+import {fromEvent, of} from "rxjs";
+import {filter, map, throttleTime} from "rxjs/operators";
+import {fromPromise} from "rxjs/internal-compatibility";
 export interface BookBaseProperty {
   author: string;
   bookId: number;
@@ -52,23 +55,28 @@ const IndexPage = () => {
   const close = useRef(false);
   useEffect(() => {
     setLoading(true);
-    ask({
+    fromPromise(ask({
       url: recommendUrl(page)
-    }).then(value => setData(data.concat(value.data))).finally(() =>{
-      setLoading(false);
-      close.current = false;
+    })).pipe(map(value => value.data)).subscribe({
+      next: value => setData(data.concat(value)),
+      complete: () => {
+        setLoading(false);
+        close.current = false;
+      }
     });
   }, [page]);
   useEffect(() => {
-    const listener = () => {
-      let inBottomArea = document.body.scrollTop + document.body.clientHeight + 150 > document.body.scrollHeight;
-      if (!loading && inBottomArea && !close.current) {
-        setPage(page => page + 1);
-        close.current = true;
-      }
-    };
-    window.addEventListener("scroll", listener);
-    return () => window.removeEventListener("scroll", listener);
+    const subscribe = fromEvent(window, 'scroll').pipe(
+        throttleTime(250),
+        filter(() => {
+          let inBottomArea = document.body.scrollTop + document.body.clientHeight + 150 > document.body.scrollHeight;
+          return !loading && inBottomArea && !close.current;
+        })
+    ).subscribe(() => {
+      setPage(page => page + 1);
+      close.current = true;
+    });
+    return subscribe.unsubscribe;
   }, []);
   const {push} = useHistory();
   return (
