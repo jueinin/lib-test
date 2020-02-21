@@ -9,8 +9,11 @@ import {
     PersonOutlined
 } from '@material-ui/icons';
 import {useSpring,animated} from 'react-spring'
+import {browserHistory} from "../util";
 interface NavBarProps {
     centerPart: ReactNode;
+    leftPart?: ReactNode;
+    rightPart?: ReactNode;
 }
 const NavBar: React.FC<NavBarProps> = (props) => {
     const [open, setOpen] = useState(false);
@@ -42,22 +45,23 @@ const NavBar: React.FC<NavBarProps> = (props) => {
     ]);
     return <div>
         <div className="h-12 px-2 bg-white shadow-sm border border-solid border-gray-200 flex items-center">
-            <NavigateBefore className="text-3xl"/>
+            {props.leftPart || <NavigateBefore onClick={() => browserHistory.goBack()} className="text-3xl"/>}
             <div className="text-center flex-grow">
                 {props.centerPart}
             </div>
-            <div onClick={() => setOpen(!open)}>
+            {props.rightPart || <div onClick={() => setOpen(!open)}>
                 {open ? <Close className="text-3xl "/> : <MoreHoriz className="text-3xl"/>}
-            </div>
+            </div>}
         </div>
-        <animated.ul className="bg-gray-400 grid grid-cols-4 w-full overflow-hidden" style={animatedProps}>
-            {items.current.map(value => {
-                return <li key={value.path} className="flex flex-col justify-center items-center ">
-                    <span className="text-gray-800">{value.icon}</span>
-                    <span className="text-lg">{value.title}</span>
-                </li>
-            })}
-        </animated.ul>
+        {props.rightPart ? null :
+            <animated.ul className="bg-gray-400 grid grid-cols-4 w-full overflow-hidden" style={animatedProps}>
+                {items.current.map(value => {
+                    return <li key={value.path} className="flex flex-col justify-center items-center ">
+                        <span className="text-gray-800">{value.icon}</span>
+                        <span className="text-lg">{value.title}</span>
+                    </li>
+                })}
+            </animated.ul>}
     </div>;
 };
 export default NavBar;

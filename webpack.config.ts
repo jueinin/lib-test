@@ -44,17 +44,38 @@ const config: webpack.Configuration & Configuration = {
           {
             loader: "css-loader",
             options: {
+              // importLoaders: 1,
+              sourceMap: false
+            }
+          },
+          {
+            loader: "postcss-loader",
+            options: {
+              plugins: [require("tailwindcss")],
+              sourceMap: false
+            }
+          }
+        ]
+      },
+      {
+        test: /\.scss$/,
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              hmr: currentEnv === "development"
+            }
+          },
+          {
+            loader: "css-loader",
+            options: {
               importLoaders: 1,
               sourceMap: false
             }
           },
-          // {
-          //   loader: "postcss-loader",
-          //   options: {
-          //     plugins: [require("tailwindcss")],
-          //     sourceMap: false
-          //   }
-          // }
+          {
+            loader: 'sass-loader'
+          }
         ]
       },
       {
@@ -77,6 +98,7 @@ const config: webpack.Configuration & Configuration = {
                 ["@babel/preset-typescript"]
               ],
               plugins: [
+                  ['@babel/plugin-transform-runtime'],
                 [
                   "babel-plugin-import",
                   {
