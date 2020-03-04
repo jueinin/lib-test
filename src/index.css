@@ -3,9 +3,24 @@
 .gray-input {
     @apply flex-1 flex text-gray-600 flex-row rounded-lg bg-gray-300 items-center pl-1;
 }
+.horizontal-scroll::-webkit-scrollbar {
+    display: none;
+}
+.horizontal-scroll {
+    @apply overflow-x-auto w-full whitespace-no-wrap overflow-y-hidden horizontal-scroll grid gap-1 grid-flow-col;
+}
+.justify-items-center {
+    justify-items: center;
+}
 * {
     box-sizing: border-box;
 }
 html {
     font-size: 14px;
 }
+/** {*/
+/*    background: #000 !important;*/
+/*    color: #0f0 !important;*/
+/*    outline: solid #f00 1px !important;*/
+/*}*/
+/*debug css*/

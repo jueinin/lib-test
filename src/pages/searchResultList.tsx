@@ -9,7 +9,7 @@ import { useObservable, useSubscription } from 'observable-hooks';
 import { concatAll, concatMap, concatMapTo, distinctUntilChanged, exhaustMap, filter, map, mapTo, mergeAll, mergeMapTo, switchMap, tap, throttleTime } from 'rxjs/operators';
 import { fromPromise } from 'rxjs/internal-compatibility';
 import { ask, useStateWithSameRef } from '../util';
-import { flatten } from 'ramda';
+import {flatten} from 'ramda';
 import BookItem, { BookItemProps } from '../components/bookItem';
 import { fromEvent, interval } from 'rxjs';
 import { useHistory } from 'react-router-dom';

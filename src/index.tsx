@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import { render } from 'react-dom'
 
 import "slick-carousel/slick/slick.css";
@@ -14,9 +14,18 @@ import Forum from "./pages/mainPage/forum";
 import Me from "./pages/mainPage/me";
 import BookDetail from "./pages/bookDetail";
 import {rootStore, StoreProvider} from "./model";
+import {ask} from "./util";
+const App=()=>{
 
-render(
-    <StoreProvider.Provider value={rootStore}>
+    useEffect(() => {
+        const sessionId = localStorage.getItem('sessionId');
+        if (!sessionId) {
+            ask('/api/getSessionId').then((value) => {
+                localStorage.setItem('sessionId', value.data.sessionId);
+            })
+        }
+    }, []);
+    return <StoreProvider.Provider value={rootStore}>
         <BrowserRouter>
             <CacheSwitch>
                 <CacheRoute exact path={"/"}>
@@ -39,6 +48,9 @@ render(
                 </CacheRoute>
             </CacheSwitch>
         </BrowserRouter>
-    </StoreProvider.Provider>,
+    </StoreProvider.Provider>
+}
+render(
+    <App/>,
     document.getElementById('root')
 );

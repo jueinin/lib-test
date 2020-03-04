@@ -2,33 +2,34 @@ import React, { useEffect, useRef, useState } from 'react';
 import NavBar from '../../components/navbar';
 import classNames from 'classnames';
 import Product from './product';
-import { useStore } from '../../model';
-import { parse } from 'query-string';
-import {observer} from "mobx-react";
+import {observer,useLocalStore} from "mobx-react";
+import Detail from "./detail";
+import Comment from "./comment";
+import {BookDetailLogic} from "./bookDetailLogic";
 const BookDetail: React.FC = () => {
-    const { bookDetailStore } = useStore();
+    const bookDetailLogic = useLocalStore(() => new BookDetailLogic());
     const {
-        product: { data },
+        productData,
         currentTab,
         bookId,
         navBar
-    } = bookDetailStore;
+    } = bookDetailLogic;
     useEffect(() => {
         // get bookId
-        const bookId = Number(parse(window.location.search).bookId);
-        bookDetailStore.setBookId(bookId);
-
+        return ()=>{
+            bookDetailLogic.unmount()
+        }
     }, []);
     return (
         <div>
-            {bookId}
-            <NavBar centerPart={<div></div>} />
+            <NavBar centerPart={<div></div>}/>
             <nav className="bg-gray-200 flex justify-around">
-                {navBar.map((item) => {
+                {navBar.map((item: any) => {
                     const active = item.value === currentTab;
                     return (
                         <div
                             key={item.value}
+                            onClick={() => bookDetailLogic.setCurrentTab(item.value)}
                             className={
                                 'py-2 font-bold ' +
                                 classNames({
@@ -42,7 +43,9 @@ const BookDetail: React.FC = () => {
                 })}
             </nav>
             <div>
-                <Product/>
+                <Product bookDetailLogic={bookDetailLogic} className={currentTab === 'product' ? '' : 'hidden'}/>
+                <Detail bookDetailLogic={bookDetailLogic} className={currentTab === 'detail' ? '' : 'hidden'}/>
+                <Comment bookDetailLogic={bookDetailLogic} className={currentTab === "comment" ? '' : 'hidden'}/>
             </div>
         </div>
     );

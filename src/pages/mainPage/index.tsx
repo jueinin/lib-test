@@ -9,12 +9,13 @@ import swiper3 from "../../resource/images/swiper-image3.jpg";
 import icon from "../../resource/images/icon.png";
 import {useHistory} from 'react-router-dom'
 import {ask} from "../../util";
-import {fromEvent, Observable, of} from "rxjs";
+import {BehaviorSubject, fromEvent, Observable, of} from "rxjs";
 import {delay, filter, map, throttleTime} from "rxjs/operators";
 import {fromPromise} from "rxjs/internal-compatibility";
 import {useObservable, useSubscription} from "observable-hooks";
 import BottomBar from "../../components/bottomBar";
 import BookItem from "../../components/bookItem";
+import {observable} from "mobx";
 export interface BookBaseProperty {
   author: string;
   bookId: number;
@@ -23,6 +24,16 @@ export interface BookBaseProperty {
   imgUrl: string;
   price: number;
   title: string;
+}
+class Logic {
+  constructor() {
+    const scrollSubject=new BehaviorSubject(null)
+  }
+  recommendUrl = (page: number) => '/api/recommends?page=' + page;
+  @observable page: number = 1;
+  @observable data: BookBaseProperty[] = [];
+  @observable loading: boolean = false;
+
 }
 const IndexPage = () => {
   const navItems = useRef([
@@ -95,7 +106,7 @@ const IndexPage = () => {
             <DehazeOutlined className="p-3 box-content"/>
           </header>
           <section data-name={'轮播图'} className="w-full" style={{height: 170}}>
-            <Slider lazyLoad="ondemand" autoplay>
+            <Slider lazyLoad="ondemand" autoplay arrows={false}>
               {[swiper1, swiper2, swiper3].map((value, index) => {
                 return (
                     <div key={index}>
@@ -125,7 +136,8 @@ const IndexPage = () => {
             <div className="mt-4">
               {data.map((value: BookBaseProperty) => {
                 return (
-                    <BookItem key={value.bookId} {...value} />
+                    <BookItem onClick={() => push('/bookDetail?bookId=' + value.bookId)}
+                              key={value.bookId} {...value} />
                 );
               })}
             </div>

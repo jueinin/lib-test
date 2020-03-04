@@ -1,0 +1,4 @@
+
+.product-slick :global(.slick-slide) {
+    height: inherit;
+}
