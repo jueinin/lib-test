@@ -1,4 +1,4 @@
-
+/*for cover some component inner css class*/
 .product-slick :global(.slick-slide) {
     height: inherit;
 }

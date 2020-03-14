@@ -1,14 +1,16 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {useEffect} from 'react';
 import NavBar from '../components/navbar';
-import { InputBase } from '@material-ui/core';
-import { SearchOutlined } from '@material-ui/icons';
+import {InputBase} from '@material-ui/core';
+import {SearchOutlined} from '@material-ui/icons';
 import HighlightOffOutlinedIcon from '@material-ui/icons/HighlightOffOutlined';
-import { ask } from '../util';
-import { fromPromise } from 'rxjs/internal-compatibility';
-import { debounceTime, filter, map, skipWhile, switchMap, tap } from 'rxjs/operators';
-import { useHistory } from 'react-router-dom';
-import { useObservable, useObservableCallback, useSubscription } from 'observable-hooks';
-import { Observable } from 'rxjs';
+import {ask, browserHistory} from '../util';
+import {fromPromise} from 'rxjs/internal-compatibility';
+import {debounceTime, map, switchMap} from 'rxjs/operators';
+import {of, Subject} from 'rxjs';
+import {action, observable, reaction} from 'mobx';
+import * as R from 'ramda';
+import {observer, useLocalStore} from 'mobx-react';
+import {useHistory} from 'react-router-dom';
 interface SearchTipItem {
     name: string;
     resultCount: number;
@@ -17,63 +19,79 @@ interface LocalItem {
     name: string;
     count: number;
 }
-const SearchInput: React.FC = () => {
-    const [hotSearchData, setHotSearchData] = useState<string[]>([]);
-    const [localSearchHistory, setLocalSearchHistory] = useState<LocalItem[]>([]);
-    const [searchStr, setSearchStr] = useState('');
-    const [searchTips, setSearchTips] = useState<SearchTipItem[]>([]);
-    const handleSearchChange$ = useObservable(
-        (strs) =>
-            strs.pipe(
-                map(([searchStr]) => searchStr),
-                tap((value) => {
-                    !value && setSearchTips([]);
-                }),
-                filter((value) => value !== ''),
-                debounceTime(500),
-                switchMap((value) =>
-                    fromPromise(
-                        ask({
-                            url: `/api/searchTips?title=${value}`,
-                        })
-                    ).pipe(map((value1) => value1.data))
+class SearchInputLogic {
+    @observable hotSearchData: string[] = [];
+    @observable localSearchHistory: LocalItem[] = [];
+    @observable searchStr: string = '';
+    @observable searchTips: SearchTipItem[] = [];
+    @action.bound onUseEffect() {
+        this.getHotSearch();
+        this.localSearchHistory = this.getLocalSearchHistory();
+        const search$ = new Subject();
+        const searchSubscribe = search$
+            .pipe(
+                debounceTime(300),
+                switchMap(
+                    R.ifElse(R.equals(''), R.always(of([])), (value) => {
+                        return R.pipe(fromPromise)(
+                            ask({
+                                url: `/api/searchTips?title=${value}`,
+                            }).then((value1) => value1.data)
+                        );
+                    })
                 )
-            ),
-        [searchStr] as const
-    );
-    useSubscription(handleSearchChange$, (value) => {
-        setSearchTips(value);
-    });
-    const getHotSearch = useCallback(() => {
+            )
+            .subscribe((value: SearchTipItem[]) => (this.searchTips = value));
+        const dispose = reaction(() => this.searchStr, v => search$.next(v));
+        return () => {
+            searchSubscribe.unsubscribe();
+            dispose();
+        };
+    }
+    @action.bound private getHotSearch() {
         ask({
-            url: '/api/hotSearchKeyword',
-        }).then((value) => {
-            setHotSearchData(value.data.keywords);
-        }); // get data
-    }, []);
-    useEffect(() => {
-        getHotSearch(); // hot
-        let data: LocalItem[] = JSON.parse(localStorage.getItem('localSearch') || JSON.stringify([]));
-        data.sort((a, b) => (a.count > b.count ? -1 : 1));
-        setLocalSearchHistory(data.slice(0, 10)); // local data
-    }, []);
-    const history = useHistory();
-    const navToSearchResultList = (searchStr: string) => {
-        // add to local
-        const index = localSearchHistory.findIndex((value) => value.name === searchStr);
-        let local = [...localSearchHistory];
-        if (index === -1) {
-            // add new
-            local.push({
-                count: 1,
-                name: searchStr,
-            });
-        } else {
-            local[index].count++;
-        }
-        localStorage.setItem('localSearch', JSON.stringify(local));
-        history.push(`/searchResultList?keyword=${searchStr}`);
-    };
+            url: `/api/hotSearchKeyword`,
+        }).then((value) => (this.hotSearchData = value.data.keywords));
+    }
+    @action.bound private getLocalSearchHistory() {
+        const items = localStorage.getItem('localSearch') || JSON.stringify([]);
+        return R.pipe(JSON.parse, R.sort(R.descend(R.prop('count'))), R.slice(0, 10))(items) as LocalItem[];
+    }
+    @action.bound navToSearchResultList(searchStr: string, localSearchHistory: LocalItem[],history) {
+        R.pipe(
+            R.findIndex((value: LocalItem) => value.name === searchStr),
+            R.ifElse(
+                R.equals(-1),
+                (index) => {  // add new item if not exists, or item.count+=1
+                    return R.append(
+                        {
+                            name: searchStr,
+                            count: 1,
+                        },
+                        localSearchHistory
+                    );
+                },
+                (index) => {
+                    return R.adjust(index, (value: LocalItem) => {
+                        return R.assoc('count', value.count + 1, value);
+                    }, localSearchHistory);
+                }
+            ),
+            JSON.stringify,
+            R.tap((value) => {
+                localStorage.setItem('localSearch', value);
+                this.localSearchHistory = this.getLocalSearchHistory();
+            }),
+            R.tap(() => history.push(`/searchResultList?keyword=${searchStr}`))
+        )(localSearchHistory);
+    }
+}
+const SearchInput: React.FC = () => {
+    const logic = useLocalStore(() => new SearchInputLogic());
+    let { hotSearchData, localSearchHistory, searchStr, searchTips, onUseEffect,navToSearchResultList:navTo } = logic;
+    const history  = useHistory()
+    const navToSearchResultList = R.partialRight(navTo, [history]);
+    useEffect(onUseEffect, []);
     return (
         <div>
             <NavBar centerPart={'搜索'} />
@@ -82,20 +100,30 @@ const SearchInput: React.FC = () => {
                     <section data-name={'搜索栏'} className="flex items-center mt-2 border-b border-solid border-gray-400 shadow-sm pb-2">
                         <div className="gray-input pl-0 ">
                             <SearchOutlined className="mr-auto ml-2 " />
-                            <InputBase className="flex-grow" value={searchStr} autoFocus onChange={(event) => setSearchStr(event.target.value)} onKeyPress={event => {
-                                if (event.key === 'Enter') {
-                                    navToSearchResultList(searchStr);
-                                }
-                            }} />
-                            {searchStr && <HighlightOffOutlinedIcon onClick={() => setSearchStr('')} className="ml-auto mr-2 text-2xl text-gray-500 cursor-pointer" />}
+                            <InputBase
+                                className="flex-grow"
+                                value={searchStr}
+                                autoFocus
+                                onChange={(event) => {
+                                    logic.searchStr = event.target.value
+                                }}
+                                onKeyPress={(event) => {
+                                    if (event.key === 'Enter') {
+                                        navToSearchResultList(searchStr,localSearchHistory);
+                                    }
+                                }}
+                            />
+                            {searchStr && <HighlightOffOutlinedIcon onClick={() => (searchStr = '')} className="ml-auto mr-2 text-2xl text-gray-500 cursor-pointer" />}
                         </div>
-                        <div className="px-3" onClick={()=>searchStr.length!==0 && navToSearchResultList(searchStr)}>{searchStr.length === 0 ? '取消' : '搜索'}</div>
+                        <div className="px-3" onClick={() => searchStr.length !== 0 && navToSearchResultList(searchStr,localSearchHistory)}>
+                            {searchStr.length === 0 ? '取消' : '搜索'}
+                        </div>
                     </section>
                     {searchTips.length !== 0 && (
                         <div className="absolute w-full bg-white h-screen">
                             {searchTips.map((value, index) => {
                                 return (
-                                    <div onClick={() => navToSearchResultList(value.name)} className="flex cursor-pointer items-center px-4 py-2 border-gray-300 border-solid border-b hover:bg-gray-200" key={value.name}>
+                                    <div onClick={() => navToSearchResultList(value.name,localSearchHistory)} className="flex cursor-pointer items-center px-4 py-2 border-gray-300 border-solid border-b hover:bg-gray-200" key={value.name}>
                                         <div className="whitespace-no-wrap mr-auto overflow-hidden max-w-xs" style={{ textOverflow: 'ellipsis' }}>
                                             {value.name}
                                         </div>
@@ -111,7 +139,7 @@ const SearchInput: React.FC = () => {
                     <div className="flex flex-wrap content-between">
                         {hotSearchData.map((value, index) => {
                             return (
-                                <div key={value} onClick={() => navToSearchResultList(value)} className="p-2 bg-gray-400 rounded-lg mx-1 mt-2 whitespace-no-wrap overflow-hidden" style={{ maxWidth: '8rem', textOverflow: 'ellipsis' }}>
+                                <div key={value} onClick={() => navToSearchResultList(value,localSearchHistory)} className="p-2 bg-gray-400 rounded-lg mx-1 mt-2 whitespace-no-wrap overflow-hidden" style={{ maxWidth: '8rem', textOverflow: 'ellipsis' }}>
                                     {value}
                                 </div>
                             );
@@ -126,7 +154,7 @@ const SearchInput: React.FC = () => {
                         <div className="flex flex-wrap">
                             {localSearchHistory.map((value) => {
                                 return (
-                                    <div key={value.name} onClick={() => navToSearchResultList(value.name)} className="p-2 bg-gray-400 rounded-lg mx-1 mt-2 whitespace-no-wrap overflow-hidden" style={{ maxWidth: '8rem', textOverflow: 'ellipsis' }}>
+                                    <div key={value.name} onClick={() => navToSearchResultList(value.name,localSearchHistory)} className="p-2 bg-gray-400 rounded-lg mx-1 mt-2 whitespace-no-wrap overflow-hidden" style={{ maxWidth: '8rem', textOverflow: 'ellipsis' }}>
                                         {value.name}
                                     </div>
                                 );
@@ -138,4 +166,4 @@ const SearchInput: React.FC = () => {
         </div>
     );
 };
-export default SearchInput;
+export default observer(SearchInput);

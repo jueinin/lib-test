@@ -15,7 +15,7 @@ const config: webpack.Configuration & Configuration = {
         path: path.resolve(__dirname, 'dist'),
     },
     mode: currentEnv,
-    devtool: false,
+    devtool: "inline-cheap-module-source-map",
     resolve: {
         extensions: ['.tsx', '.ts', '.js', '.jsx'],
     },
@@ -31,15 +31,15 @@ const config: webpack.Configuration & Configuration = {
                 target: 'http://localhost:3000',
                 secure: false,
                 changeOrigin: true,
-                onProxyReq(proxyReq: http.ClientRequest, req: http.IncomingMessage, res: http.ServerResponse): void {
-                    console.log('req',req.url)
-                },
-                onProxyRes(proxyRes: http.IncomingMessage, req: http.IncomingMessage, res: http.ServerResponse): void {
-                    console.log('res',req.url,res.statusCode)
-                },
-                onError(err: Error, req: http.IncomingMessage, res: http.ServerResponse): void {
-                    console.log('error', err);
-                }
+                // onProxyReq(proxyReq: http.ClientRequest, req: http.IncomingMessage, res: http.ServerResponse): void {
+                //     console.log('req',req.url)
+                // },
+                // onProxyRes(proxyRes: http.IncomingMessage, req: http.IncomingMessage, res: http.ServerResponse): void {
+                //     console.log('res',req.url,res.statusCode)
+                // },
+                // onError(err: Error, req: http.IncomingMessage, res: http.ServerResponse): void {
+                //     console.log('error', err);
+                // }
             },
         },
         historyApiFallback: true,

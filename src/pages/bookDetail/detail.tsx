@@ -49,7 +49,7 @@ const Detail = (props) => {
                     if (!detailData.publishInfo[key]) {
                         return null
                     }
-                    return <React.Fragment>
+                    return <React.Fragment key={key}>
                         <div className="col-span-3">{tempKey}:</div>
                         <div className="col-span-9">{detailData.publishInfo[key]}</div>
                     </React.Fragment>;

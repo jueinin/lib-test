@@ -12,17 +12,14 @@ const BookDetail: React.FC = () => {
         productData,
         currentTab,
         bookId,
+        onUseEffect,
         navBar
     } = bookDetailLogic;
-    useEffect(() => {
-        // get bookId
-        return ()=>{
-            bookDetailLogic.unmount()
-        }
-    }, []);
+    useEffect(onUseEffect, []);
+
     return (
         <div>
-            <NavBar centerPart={<div></div>}/>
+            <NavBar centerPart={<div className="w-full px-12 truncate-1-lines">{(productData?.name || '')}</div>}/>
             <nav className="bg-gray-200 flex justify-around">
                 {navBar.map((item: any) => {
                     const active = item.value === currentTab;

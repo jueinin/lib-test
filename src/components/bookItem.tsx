@@ -17,7 +17,7 @@ export interface BookItemProps extends BookItemBaseProperty {
 const BookItem: React.FC<BookItemProps> = (props) => {
     return <div
         key={props.bookId} onClick={props.onClick}
-        className={"mb-2 w-full grid gap-6 grid-cols-10 hover:bg-gray-200 transition-colors duration-500 hover:shadow-md cursor-pointer " + props.className || ''}
+        className={"pb-1 mb-1 w-full grid gap-6 grid-cols-10 transition-colors duration-500 hover:shadow-md cursor-pointer border-b " + props.className || ''}
     >
         <div className="col-span-3 ">
             <img src={props.imgUrl} alt="book cover" className="h-40 w-full"/>

@@ -5,14 +5,16 @@ import { SearchOutlined, ArrowDropUpOutlined, ArrowDropDownOutlined } from '@mat
 import { InputBase, CircularProgress } from '@material-ui/core';
 import { parse } from 'query-string';
 import classNames from 'classnames';
-import { useObservable, useSubscription } from 'observable-hooks';
-import { concatAll, concatMap, concatMapTo, distinctUntilChanged, exhaustMap, filter, map, mapTo, mergeAll, mergeMapTo, switchMap, tap, throttleTime } from 'rxjs/operators';
+import { concatMap, distinctUntilChanged, filter, map, mapTo, skip, switchMap, tap } from 'rxjs/operators';
 import { fromPromise } from 'rxjs/internal-compatibility';
-import { ask, useStateWithSameRef } from '../util';
-import {flatten} from 'ramda';
+import { ask, browserHistory, useStateWithSameRef, whenReachBottom } from '../util';
+import { flatten, ifElse } from 'ramda';
 import BookItem, { BookItemProps } from '../components/bookItem';
-import { fromEvent, interval } from 'rxjs';
+import { BehaviorSubject, bindCallback, fromEvent, interval, of, Subject } from 'rxjs';
 import { useHistory } from 'react-router-dom';
+import { observable, reaction } from 'mobx';
+import { observer, useLocalStore } from 'mobx-react';
+
 type FilterItemName = 'default' | 'sales' | 'ascPrice' | 'descPrice' | 'praise' | 'publishTime';
 type Item = {
     title: string;
@@ -50,80 +52,105 @@ const filterBarItems: (Item | Item[])[] = [
         value: 'publishTime',
     },
 ];
-const SearchResultList: React.FC = () => {
-    const [keyword, setKeyword, refKeyword] = useStateWithSameRef(parse(window.location.search).keyword);
-    const keyword$ = useObservable(() =>
-        interval(300).pipe(
-            map(() => window.location.search),
-            distinctUntilChanged(),
-            map((value) => parse(value).keyword)
-        )
-    ); // listen to change of keyword to refresh data,
-    // doesn't seems to have the onURLSearchChange event,so interval listen
-    useSubscription(keyword$, (value) => {
-        setKeyword(value);
-        setCurrentFilterItem('default');
-        setPage(1);
-    });
-    const [currentFilterItem, setCurrentFilterItem] = useState<FilterItemName>('default');
-    const [page, setPage, refPage] = useStateWithSameRef(1);
-    const [bookData, setBookData, refBookData] = useStateWithSameRef<BookData | null>(null);
-    const currentFilterItem$ = useObservable(
-        (value) =>
-            value.pipe(
-                tap(() => setPage(1)),
-                switchMap(([currentFilterItem]) =>
+class SearchResultListLogic {
+    @observable keyword: string = parse(window.location.search).keyword as string;
+    @observable currentFilterItem: FilterItemName = 'default';
+    @observable page: number = 0;
+    @observable bookData: BookData = null;
+    @observable searchStr: string = '';
+    @observable loading: boolean = false;
+    onUseEffect = () => {
+        const subject = new BehaviorSubject([this.currentFilterItem, this.page]);
+        const subscription = subject
+            .pipe(
+                tap(() => {
+                    this.loading = true;
+                    this.bookData = null;
+                }),
+                switchMap(([currentFilterItem, keyword]) =>
                     fromPromise(
                         ask({
-                            url: `/api/bookSearch?keyword=${refKeyword.current}&sortType=${flatten(filterBarItems).findIndex((value) => value.value === currentFilterItem)}&page=${1}`,
+                            url: `/api/bookSearch?keyword=${keyword}&sortType=${flatten(filterBarItems).findIndex((value) => value.value === currentFilterItem)}&page=${1}`,
                         })
                     )
-                ),
-                map((value) => value.data)
-            ),
-        [currentFilterItem, keyword] as const
-    );
-    useSubscription(currentFilterItem$, (value) => {
-        setBookData(value);
-    });
-    const scroll$ = useObservable(() =>
-        fromEvent(window, 'scroll').pipe(
-            throttleTime(250),
-            map(() => document.body),
-            filter((body) => body.scrollHeight - body.clientHeight - body.scrollTop < 150 && refPage.current <= (bookData?.maxPage || 1)),
-            exhaustMap(() => {
-                return fromPromise(
-                    ask({
-                        url: `/api/bookSearch?keyword=${refKeyword.current}&sortType=${flatten(filterBarItems).findIndex((value) => value.value === currentFilterItem)}&page=${refPage.current + 1}`,
-                    })
-                );
-            }),
-            map((value) => value.data)
-        )
-    );
-
-    useSubscription(scroll$, (value: BookData) => {
-        setPage((page: number) => page + 1);
-        let data = bookData;
-        data!.maxPage = value.maxPage;
-        data!.bookData = data!.bookData.concat(value.bookData);
-        setBookData({ bookData: [], maxPage: 0, ...data });
-    });
-    const history = useHistory();
-    const onSearchBarEnter: KeyboardEventHandler = (event) => {
-        if (event.key === 'Enter') {
-            history.push(`${window.location.pathname}?keyword=${searchStr}`);
-        }
+                )
+            )
+            .subscribe((value) => {
+                this.bookData = value.data;
+                this.page = 1;
+                this.loading = false;
+            });
+        const react = reaction(() => [this.currentFilterItem, this.keyword], subject.next.bind(subject));
+        const scrollSubscription = fromEvent(window, 'scroll')
+            .pipe(
+                whenReachBottom(),
+                filter((value) => {
+                    return this.page < (this.bookData?.maxPage || 9999);
+                }),
+                tap(() => (this.loading = true)),
+                concatMap((value) =>
+                    fromPromise(
+                        ask({
+                            url: `/api/bookSearch?keyword=${this.keyword}&sortType=${flatten(filterBarItems).findIndex((value) => value.value === this.currentFilterItem)}&page=${this.page + 1}`,
+                        }).then((value1) => value1.data)
+                    )
+                )
+            )
+            .subscribe((value: BookData) => {
+                ifElse(
+                    () => this.bookData === null,
+                    () => (this.bookData = value),
+                    () => {
+                        this.bookData.maxPage = value.maxPage;
+                        this.bookData.bookData.push(...value.bookData);
+                    }
+                )(value);
+                this.page += 1;
+                this.loading = false;
+            });
+        const keywordSubscription = interval(300)
+            .pipe(
+                map(() => window.location.search),
+                distinctUntilChanged(),
+                map((value) => parse(value).keyword),
+                skip(1)
+            )
+            .subscribe((value) => {
+                this.keyword = value as string;
+                this.currentFilterItem = 'default';
+                this.page = 1;
+            });
+        return () => {
+            subscription.unsubscribe();
+            scrollSubscription.unsubscribe();
+            keywordSubscription.unsubscribe();
+            react();
+        };
     };
-    const [searchStr, setSearchStr] = useState('');
+}
+const SearchResultList: React.FC = () => {
+    const logic = useLocalStore(() => new SearchResultListLogic());
+    const { keyword, onUseEffect, page, bookData, currentFilterItem, searchStr, loading } = logic;
+    useEffect(onUseEffect, []);
+    const history = useHistory();
     return (
         <div>
             <nav>
                 <NavBar
                     centerPart={
                         <div className="gray-input mx-2">
-                            <SearchOutlined className="text-3xl" />
-                            <InputBase className="" value={searchStr} onChange={(e) => setSearchStr(e.target.value)} onKeyPress={onSearchBarEnter} placeholder={refKeyword.current as string} />
+                            <SearchOutlined className="text-3xl"/>
+                            <InputBase
+                                className=""
+                                value={searchStr}
+                                onChange={(e) => (logic.searchStr = e.target.value)}
+                                onKeyPress={(event) => {
+                                    if (event.key === 'Enter') {
+                                        history.push(`${window.location.pathname}?keyword=${searchStr}`);
+                                    }
+                                }}
+                                placeholder={keyword}
+                            />
                         </div>
                     }
                 />
@@ -135,7 +162,7 @@ const SearchResultList: React.FC = () => {
                             return (
                                 <div
                                     key={value.value}
-                                    onClick={() => setCurrentFilterItem(value.value)}
+                                    onClick={() => (logic.currentFilterItem = value.value)}
                                     className={classNames(
                                         {
                                             'text-red-500': currentFilterItem === value.value,
@@ -156,9 +183,9 @@ const SearchResultList: React.FC = () => {
                                     className="flex py-2"
                                     onClick={() => {
                                         if (isNormal || isDesc) {
-                                            setCurrentFilterItem('ascPrice');
+                                            logic.currentFilterItem = 'ascPrice';
                                         } else {
-                                            setCurrentFilterItem('descPrice');
+                                            logic.currentFilterItem = 'descPrice';
                                         }
                                     }}
                                 >
@@ -174,13 +201,13 @@ const SearchResultList: React.FC = () => {
                                             className={classNames({
                                                 'text-red-500': currentFilterItem === 'ascPrice',
                                             })}
-                                            style={{ width: '0.9rem', height: '0.9rem' }}
+                                            style={{width: '0.9rem', height: '0.9rem'}}
                                         />
                                         <ArrowDropDownOutlined
                                             className={classNames({
                                                 'text-red-500': currentFilterItem === 'descPrice',
                                             })}
-                                            style={{ width: '0.9rem', height: '0.9rem' }}
+                                            style={{width: '0.9rem', height: '0.9rem'}}
                                         />
                                     </div>
                                 </div>
@@ -190,23 +217,39 @@ const SearchResultList: React.FC = () => {
                 </div>
             </section>
             <section data-name={'结果页'}>
-                {bookData ? (
-                    <div>
-                        {bookData.bookData.map((value) => {
+                <div>
+                    {(bookData?.bookData || []).length > 0 ? (
+                        (bookData?.bookData || []).map((value) => {
                             return (
                                 <div key={value.bookId} className="cursor-pointer">
-                                    <BookItem onClick={() => history.push('/bookDetail?bookId=' + value.bookId)} key={value.bookId} {...value} />
+                                    <BookItem onClick={() => history.push('/bookDetail?bookId=' + value.bookId)}
+                                              key={value.bookId} {...value} />
                                 </div>
                             );
-                        })}
-                    </div>
-                ) : (
+                        })
+                    ) : !loading && (
+                        <div className="h-48 w-full flex-center">
+                            <span className="text-red-300"> 暂时无法为您找到搜索结果，换个关键字试试吧！</span>
+                        </div>
+                    ) }
+                </div>
+
+                {loading && (
                     <div className="flex items-center justify-center h-40">
-                        <CircularProgress placeholder="loading" />
+                        <CircularProgress placeholder="loading"/>
+                    </div>
+                )}
+                {(bookData?.maxPage || Number.MAX_VALUE) <= page && page > 1 && (
+                    <div className="relative w-full text-center h-6">
+                        <span className="text-xs px-2 bg-white text-gray-500 absolute z-10"
+                              style={{left: '50%', top: '50%', transform: 'translate(-50%,-50%)'}}>
+                            到底啦
+                        </span>
+                        <div className="bg-gray-500 w-full absolute" style={{top: '50%', height: 2}}/>
                     </div>
                 )}
             </section>
         </div>
     );
 };
-export default SearchResultList;
+export default observer(SearchResultList);

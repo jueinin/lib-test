@@ -12,11 +12,21 @@
 .justify-items-center {
     justify-items: center;
 }
+.flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 * {
     box-sizing: border-box;
 }
 html {
     font-size: 14px;
+}
+body {
+    -webkit-tap-highlight-color: #ccc;
+    user-select: none;
+    overscroll-behavior-y: contain;
 }
 /** {*/
 /*    background: #000 !important;*/
