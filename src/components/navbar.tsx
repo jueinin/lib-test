@@ -1,4 +1,4 @@
-import React, {ReactElement, ReactHTMLElement, ReactNode, useRef, useState} from "react";
+import React, {ReactNode, useRef, useState} from "react";
 import {
     NavigateBefore,
     MoreHoriz,
@@ -8,7 +8,7 @@ import {
     ShoppingCartOutlined,
     PersonOutlined
 } from '@material-ui/icons';
-import {useSpring,animated} from 'react-spring'
+import {useSpring, animated, useTransition} from 'react-spring'
 import {browserHistory} from "../util";
 interface NavBarProps {
     centerPart: ReactNode;
@@ -17,9 +17,15 @@ interface NavBarProps {
 }
 const NavBar: React.FC<NavBarProps> = (props) => {
     const [open, setOpen] = useState(false);
-    const animatedProps = useSpring({
-        to: {
-            height: open ? "65px" : "0",
+    const transition = useTransition(open, null, {
+        from: {
+            height: 0,
+        },
+        enter: {
+            height: 65
+        },
+        leave: {
+            height: 0
         }
     });
     const items = useRef([
@@ -53,15 +59,17 @@ const NavBar: React.FC<NavBarProps> = (props) => {
                 {open ? <Close className="text-3xl "/> : <MoreHoriz className="text-3xl"/>}
             </div>}
         </div>
-        {props.rightPart ? null :
-            <animated.ul className="bg-gray-400 grid grid-cols-4 w-full overflow-hidden" style={animatedProps}>
-                {items.current.map(value => {
-                    return <li key={value.path} className="flex flex-col justify-center items-center ">
-                        <span className="text-gray-800">{value.icon}</span>
-                        <span className="text-lg">{value.title}</span>
-                    </li>
-                })}
-            </animated.ul>}
+        {props.rightPart || transition.map(value => {
+            return value.item &&
+                <animated.ul className="bg-gray-400 grid grid-cols-4 w-full overflow-hidden" style={value.props}>
+                    {items.current.map(value => {
+                        return <li key={value.path} className="flex flex-col justify-center items-center ">
+                            <span className="text-gray-800">{value.icon}</span>
+                            <span className="text-lg">{value.title}</span>
+                        </li>
+                    })}
+                </animated.ul>;
+        })}
     </div>;
 };
 export default NavBar;

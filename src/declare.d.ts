@@ -16,8 +16,3 @@ declare module "*.module.css" {
     let s: any;
     export default s;
 }
-// declare module '*' {
-//     let s: any;
-//     export default s;
-//     export {s};
-// }

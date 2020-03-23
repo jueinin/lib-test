@@ -1,11 +1,10 @@
 import { ask } from '../../util';
 import { action, computed, observable, reaction } from 'mobx';
-import { BehaviorSubject, of } from 'rxjs';
-import { filter, map, skipWhile, switchMap, tap } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
+import { filter, map, switchMap } from 'rxjs/operators';
 import { fromPromise } from 'rxjs/internal-compatibility';
 import { parse } from 'query-string';
 import * as R from 'ramda';
-import {always, prop} from 'ramda';
 export type BookDetailProductDataType = {
     author: string;
     AdGoods: {

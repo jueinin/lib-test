@@ -28,6 +28,9 @@ body {
     user-select: none;
     overscroll-behavior-y: contain;
 }
+input:focus {
+    outline: none;
+}
 /** {*/
 /*    background: #000 !important;*/
 /*    color: #0f0 !important;*/

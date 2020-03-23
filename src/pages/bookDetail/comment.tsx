@@ -2,7 +2,7 @@ import React from 'react';
 import { observer } from 'mobx-react';
 import propTypes from 'prop-types';
 import { BookDetailLogic } from './bookDetailLogic';
-import { __, concat, ifElse, map, repeat, equals, always, identity, pipe, addIndex, apply } from 'ramda';
+import { __, concat, ifElse, map, repeat, equals, always, pipe, addIndex } from 'ramda';
 import { StarOutlined } from '@material-ui/icons';
 interface Props {
     className?: string;

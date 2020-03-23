@@ -2,3 +2,6 @@
 .product-slick :global(.slick-slide) {
     height: inherit;
 }
+.simpleInput:focus-within {
+    border-color: deepskyblue!important;
+}

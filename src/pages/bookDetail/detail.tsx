@@ -4,16 +4,13 @@ import {observer} from "mobx-react";
 import * as R from 'ramda';
 import {CircularProgress} from '@material-ui/core'
 import {always} from "ramda";
-import propTypes from 'prop-types';
 import {BookDetailLogic} from "./bookDetailLogic";
-/*
 interface Props {
     className?:string;
     bookDetailLogic: BookDetailLogic
 }
-*/
 
-const Detail = (props) => {
+const Detail:React.FC<Props> = (props) => {
     const {detailTab,setProductTab,detailData} = props.bookDetailLogic;
     if (!detailData) {
         return <div className={"flex items-center justify-center h-48 "+ props.className}>
@@ -57,10 +54,6 @@ const Detail = (props) => {
             </div>
         </section>
     </div>;
-};
-Detail.propTypes = {
-    className: propTypes.string,
-    bookDetailLogic: propTypes.instanceOf(BookDetailLogic).isRequired
 };
 export default observer(Detail);
 

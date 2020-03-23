@@ -1,11 +1,31 @@
-import {types} from "mobx-state-tree";
+import {computed, observable} from "mobx";
+import {ask} from "../util";
+type UserData= {
+    shoppingCart: {
+        items: {
+            bookId: number,
+            title: string,
+            price: number,
+            count: number,
+            smallImage: string,
+            checked: boolean
+        }[];
+    }
+}
 
-export const shoppingCartItem = types.model({
-    bookId: types.number,
-    title: types.string,
-    price: types.number,
-    count: types.number,
-    smallImage: types.string,
-    checked: types.maybeNull(types.boolean)
-});
-const userStore = types.model({});
+export class UserStore {
+    @observable userData: UserData = null;
+
+    @computed get isLogin() {
+        return !!this.userData;
+    }
+
+    getUserData = () => {
+        ask({
+            url: `/api/userData`
+        }).then(value => {
+            this.userData = value.data;
+        })
+    }
+}
+
