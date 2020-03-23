@@ -5,6 +5,7 @@ import { filter, map, switchMap } from 'rxjs/operators';
 import { fromPromise } from 'rxjs/internal-compatibility';
 import { parse } from 'query-string';
 import * as R from 'ramda';
+import {Toast} from "../../components/Toast";
 export type BookDetailProductDataType = {
     author: string;
     AdGoods: {
@@ -65,10 +66,10 @@ export type CommentItemType = {
 };
 type TabName = 'product' | 'detail' | 'comment' | 'relation';
 type DetailTabName = 'detail' | 'publishInfo';
-type JoinItemType= {
-    shouldRequest: boolean,
-    getPromise?:()=>Promise<any>,
-}
+type JoinItemType = {
+    shouldRequest: boolean;
+    getPromise?: () => Promise<any>;
+};
 export class BookDetailLogic {
     @observable productData: BookDetailProductDataType | null = null;
     @observable bookId: number = Number(parse(window.location.search).bookId);
@@ -76,10 +77,10 @@ export class BookDetailLogic {
     @observable detailTab: DetailTabName = 'detail';
     @observable detailData: BookDetailDetailDataType | null = null;
     @observable commentData: { data: CommentItemType[] } = null;
-    @observable coverPreview={
-        isOpen:false,
-        index: 0
-    }
+    @observable coverPreview = {
+        isOpen: false,
+        index: 0,
+    };
     @observable coverIndex: number = 0;
     @observable navBar: { title: string; value: TabName }[] = [
         {
@@ -115,7 +116,7 @@ export class BookDetailLogic {
             },
             relation: {
                 shouldRequest: false, //
-            } as JoinItemType
+            } as JoinItemType,
         };
     }
     onUseEffect = () => {
@@ -132,13 +133,13 @@ export class BookDetailLogic {
                     )
                 )
             )
-            .subscribe((value: any) =>{
+            .subscribe((value: any) => {
                 R.cond([
-                    [R.pipe(R.prop('tab'), R.equals('product')), () => this.productData = value.data.data],
-                    [R.pipe(R.prop('tab'), R.equals('detail')), () => this.detailData = value.data.data],
-                    [R.pipe(R.prop('tab'), R.equals('comment')), () => this.commentData = value.data.data],
-                    [R.T,()=>{}]
-                ])(value)
+                    [R.pipe(R.prop('tab'), R.equals('product')), () => (this.productData = value.data.data)],
+                    [R.pipe(R.prop('tab'), R.equals('detail')), () => (this.detailData = value.data.data)],
+                    [R.pipe(R.prop('tab'), R.equals('comment')), () => (this.commentData = value.data.data)],
+                    [R.T, () => {}],
+                ])(value);
             });
         const react = reaction(() => this.currentTab, subject.next.bind(subject));
         return () => {
@@ -169,5 +170,37 @@ export class BookDetailLogic {
         this.detailTab = tab;
     }
 
-    setCoverIndex = (index: number) => this.coverIndex = index;
+    setCoverIndex = (index: number) => (this.coverIndex = index);
+
+    @action.bound removeFavorite(id) {
+        ask({
+            url: `/api/removeFromFavorite`,
+            method: 'post',
+            data: {
+                id: id,
+            },
+        }).then((value) =>{
+            this.productData.isFavorited = false
+            Toast.info('取消收藏');
+        });
+    }
+    @action.bound addFavorite(id) {
+        ask({
+            url: `/api/addToFavorite`,
+            method: 'post',
+            data: {
+                bookId: id,
+            },
+        }).then((value) => {
+            this.productData.isFavorited = true
+            Toast.info('添加收藏成功');
+        });
+    }
+    @action.bound addToCart(bookId:number) {
+        ask({
+            url: `/api/addShoppingCart?bookId=${bookId}`,
+        }).then(value => {
+            Toast.info('添加成功！');
+        })
+    }
 }

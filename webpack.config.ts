@@ -4,7 +4,7 @@ import path from 'path';
 import HTMLWebpackPlugin from 'html-webpack-plugin';
 import { Configuration } from 'webpack-dev-server';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
-// const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const currentEnv = 'development';
 process.env.NODE_ENV = currentEnv;
@@ -170,7 +170,7 @@ const config: webpack.Configuration & Configuration = {
                       }],
                       ['@babel/plugin-proposal-class-properties'],
                       ['@babel/plugin-proposal-partial-application'],
-                      // ['react-refresh/babel'],
+                      ['react-refresh/babel'],
                   ],
               },
             },
@@ -188,8 +188,8 @@ const config: webpack.Configuration & Configuration = {
         }),
         new MiniCssExtractPlugin(),
         new webpack.HotModuleReplacementPlugin(),
-        // new ReactRefreshWebpackPlugin(),
-        new BundleAnalyzerPlugin()
+        new ReactRefreshWebpackPlugin(),
+        // new BundleAnalyzerPlugin()
     ],
 };
 export default config;

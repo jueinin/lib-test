@@ -19,6 +19,9 @@ import { animated, useTransition } from 'react-spring';
 import Animate from './pages/animate';
 import Login from './pages/login';
 import SignUp from "./pages/signUp";
+import BrowserHistory from "./pages/BrowserHistory";
+import MyFavorite from "./pages/myFavorite";
+import ShoppingCart from "./pages/shoppingCart";
 
 const App = () => {
     const history = useHistory();
@@ -51,6 +54,18 @@ const App = () => {
                 <Route exact path={'/forum'}>
                     <Forum />
                 </Route>
+                <Route path={'/browserHistory'}>
+                    <BrowserHistory/>
+                </Route>
+                <Route path={'/bookDetail'}>
+                    <BookDetail />
+                </Route>
+                <Route path={'/favorites'}>
+                    <MyFavorite/>
+                </Route>
+                <Route path={'/shoppingCart'}>
+                    <ShoppingCart/>
+                </Route>
                 {transition.map(({ props, key }) => {
                     return (
                         <animated.div
@@ -69,9 +84,6 @@ const App = () => {
                             <Route exact path={'/searchResultList'}>
                                 {/*params=keyword*/}
                                 <SearchResultList />
-                            </Route>
-                            <Route path={'/bookDetail'}>
-                                <BookDetail />
                             </Route>
                             <Route path={'/login'}>
                                 <Login />

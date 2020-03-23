@@ -10,6 +10,11 @@ type UserData= {
             smallImage: string,
             checked: boolean
         }[];
+    },
+    user: {
+        id: number,
+        email: string,
+        userName: string;
     }
 }
 

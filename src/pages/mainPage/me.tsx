@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import BottomBar from '../../components/bottomBar';
 import { observer } from 'mobx-react';
+import {useHistory} from 'react-router-dom'
 import NavBar from '../../components/navbar';
 import {
     NearMeOutlined,
@@ -18,14 +19,22 @@ const defaultAvatar = 'https://jueinin.oss-cn-hongkong.aliyuncs.com/%E5%B0%8F%E7
 const Me: React.FC = () => {
     const { userStore } = useStore();
     const { isLogin, userData } = userStore;
+    const history = useHistory();
+    console.log(isLogin, 'islogin');
     const topItems = useRef([
         {
             title: '浏览历史',
             icon: <NearMeOutlined/>,
+            onClick: ()=>{
+                history.push('/browserHistory')
+            }
         },
         {
             title: '我的收藏',
             icon: <StarOutlined/>,
+            onClick: ()=>{
+                history.push('/favorites');
+            }
         },
         {
             title: '论坛消息',
@@ -34,6 +43,9 @@ const Me: React.FC = () => {
         {
             title: '购物车',
             icon: <ShoppingCartOutlined/>,
+            onClick: ()=>{
+                history.push('/shoppingCart');
+            }
         },
     ]);
     const bottomItems = useRef([
@@ -67,11 +79,13 @@ const Me: React.FC = () => {
     };
     return (
         <div className="bg-gray-200">
-            <NavBar centerPart={'我的'} />
+            <NavBar centerPart={'我的'}/>
             <div className="bg-red-500 p-3" data-name={'top-nav'}>
                 <div className="flex">
-                    <img alt="" src={defaultAvatar} onClick={onAvatarClick} className="w-16 h-16 bg-green-300 rounded-full" />
-                    <div className="text-lg ml-6 text-white" onClick={onAvatarClick}>登录&nbsp;></div>
+                    <img alt="" src={defaultAvatar} onClick={onAvatarClick}
+                         className="w-16 h-16 bg-green-300 rounded-full"/>
+                    <div className="text-lg ml-6 text-white"
+                         onClick={onAvatarClick}>{isLogin ? userData.user.userName : `登录 >`}</div>
                 </div>
             </div>
             <div data-name={'工具栏'} className="w-full" style={{
@@ -79,7 +93,7 @@ const Me: React.FC = () => {
             }}>
                 <div data-name={'上半部分'} className="flex justify-around">
                     {topItems.current.map(value => {
-                        return <div key={value.title} className="flex shadow-sm flex-col items-center">
+                        return <div key={value.title} className="flex shadow-sm flex-col items-center" onClick={value.onClick}>
                             <span className="my-1 text-lg text-red-500">{value.icon}</span>
                             <span className="text-sm">{value.title}</span>
                         </div>
@@ -94,7 +108,7 @@ const Me: React.FC = () => {
                     })}
                 </div>
             </div>
-            <BottomBar currentValue="/me" />
+            <BottomBar currentValue="/me"/>
         </div>
     );
 };
