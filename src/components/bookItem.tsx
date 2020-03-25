@@ -22,7 +22,7 @@ const BookItem: React.FC<BookItemProps> = (props) => {
         <div className="col-span-3 ">
             <img src={props.imgUrl} alt="book cover" className="h-40 w-full"/>
         </div>
-        <div className="grid grid-cols-1 content-between col-span-7 py-2">
+        <div className="grid grid-cols-1 content-between col-span-7 py-2 pr-1">
             <h4 className="text-lg h-12 truncate-2-lines">{props.title}</h4>
             <h5 className="text-sm text-gray-700">{props.author}</h5>
             <span className="font-bold text-lg" style={{color: "red"}}>

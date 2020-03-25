@@ -15,7 +15,6 @@ type Data = {
         title: string;
         price: number;
         image: string;
-        isFavorite: boolean;
     }[];
 }[];
 class Logic {

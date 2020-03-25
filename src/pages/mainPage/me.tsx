@@ -20,7 +20,6 @@ const Me: React.FC = () => {
     const { userStore } = useStore();
     const { isLogin, userData } = userStore;
     const history = useHistory();
-    console.log(isLogin, 'islogin');
     const topItems = useRef([
         {
             title: '浏览历史',
@@ -88,9 +87,7 @@ const Me: React.FC = () => {
                          onClick={onAvatarClick}>{isLogin ? userData.user.userName : `登录 >`}</div>
                 </div>
             </div>
-            <div data-name={'工具栏'} className="w-full" style={{
-                // background: "linear-gradient(to right, #8a2387, #e94057, #f27121)"
-            }}>
+            <div data-name={'工具栏'} className="w-full">
                 <div data-name={'上半部分'} className="flex justify-around">
                     {topItems.current.map(value => {
                         return <div key={value.title} className="flex shadow-sm flex-col items-center" onClick={value.onClick}>

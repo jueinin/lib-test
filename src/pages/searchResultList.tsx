@@ -60,7 +60,7 @@ class SearchResultListLogic {
     @observable searchStr: string = '';
     @observable loading: boolean = false;
     onUseEffect = () => {
-        const subject = new BehaviorSubject([this.currentFilterItem, this.page]);
+        const subject = new BehaviorSubject([this.currentFilterItem, this.keyword]);
         const subscription = subject
             .pipe(
                 tap(() => {

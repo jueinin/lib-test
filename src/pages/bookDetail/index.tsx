@@ -13,6 +13,9 @@ const BookDetail: React.FC = () => {
     const bookDetailLogic = useLocalStore(() => new BookDetailLogic());
     const { productData, currentTab, bookId, onUseEffect, navBar, addFavorite, removeFavorite ,addToCart} = bookDetailLogic;
     useEffect(onUseEffect, []);
+    useEffect(()=>{
+        console.log('mount');
+    },[])
     const history = useHistory();
     return (
         <div>

@@ -2,34 +2,19 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { SearchOutlined, DehazeOutlined } from '@material-ui/icons';
 import { InputBase, CircularProgress } from '@material-ui/core';
 import logo from '../../resource/images/logo.jpeg';
-import Slider from 'react-slick';
+import Slider from "../../components/slider";
 import swiper1 from '../../resource/images/swiper-image1.jpg';
 import swiper2 from '../../resource/images/swiper-image2.jpg';
 import swiper3 from '../../resource/images/swiper-image3.jpg';
 import icon from '../../resource/images/icon.png';
 import { useHistory } from 'react-router-dom';
 import {ask, whenReachBottom} from '../../util';
-import {BehaviorSubject, fromEvent, interval, Observable, of, Subscription} from 'rxjs';
+import { fromEvent, Subscription} from 'rxjs';
 import {
-    bufferTime,
-    concatAll,
     concatMap,
-    count,
-    delay,
-    distinctUntilChanged,
-    exhaust,
-    exhaustMap,
-    filter, ignoreElements,
-    last,
-    map,
-    mapTo,
-    mergeAll,
-    mergeMap,
-    pairwise, retry,
-    skip,
-    startWith, take,
+    retry,
+    startWith,
     tap,
-    throttleTime
 } from 'rxjs/operators';
 import { fromPromise } from 'rxjs/internal-compatibility';
 import { useObservable, useSubscription } from 'observable-hooks';
@@ -38,6 +23,7 @@ import BookItem from '../../components/bookItem';
 import {action, observable} from 'mobx';
 import { observer, useLocalStore } from 'mobx-react';
 import * as R from 'ramda';
+import NavBar from "../../components/navbar";
 export interface BookBaseProperty {
     author: string;
     bookId: number;
@@ -112,21 +98,15 @@ const IndexPage = () => {
     return (
         <div className="h-screen overflow-y-auto" id="indexpage">
             <div className="mb-16">
-                <header data-name={'search-bar'} className="flex-row flex items-center content-around">
-                    <img alt="logo" className="w-6 h-6 p-3 box-content" src={logo} />
-                    <div className="gray-input">
-                        <SearchOutlined className="" />
-                        <InputBase placeholder="搜索钟意的书籍吧!" onFocus={() => push('/searchInput')} className="border-none" />
-                    </div>
-                    <DehazeOutlined className="p-3 box-content" />
-                </header>
-                <section data-name={'轮播图'} className="w-full" style={{ height: 170 }}>
-                    <Slider lazyLoad="ondemand" autoplay arrows={false}>
+                <NavBar centerPart={<div className="gray-input mr-1">
+                    <SearchOutlined className="" />
+                    <InputBase placeholder="搜索钟意的书籍吧!" onFocus={() => push('/searchInput')} className="border-none" />
+                </div>}/>
+                <section data-name={'轮播图'} className="w-full overflow-hidden" style={{ height: 170 }}>
+                    <Slider>
                         {[swiper1, swiper2, swiper3].map((value, index) => {
                             return (
-                                <div key={index}>
-                                    <img src={value} alt="carousel" className="w-full" />
-                                </div>
+                                <img src={value} key={index} alt="carousel" className="w-screen" />
                             );
                         })}
                     </Slider>
@@ -135,7 +115,7 @@ const IndexPage = () => {
                     <div className="flex content-between flex-wrap">
                         {navItems.current.map((value, index) => {
                             return (
-                                <div className="flex flex-col justify-around h-20 w-1/4 items-center" key={index}>
+                                <div className="flex flex-col justify-around h-20 w-1/4 items-center" key={index} onClick={()=>push(`/searchResultList?keyword=${value.title}`)}>
                                     <img src={icon} alt="icon" className="h-12 w-12 shadow-md" />
                                     <span className="text-sm mb-2">{value.title}</span>
                                 </div>

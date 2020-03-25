@@ -1,75 +1,75 @@
-import React, {ReactNode, useRef, useState} from "react";
-import {
-    NavigateBefore,
-    MoreHoriz,
-    Close,
-    HomeOutlined,
-    FindInPageOutlined,
-    ShoppingCartOutlined,
-    PersonOutlined
-} from '@material-ui/icons';
-import {useSpring, animated, useTransition} from 'react-spring'
-import {browserHistory} from "../util";
+import React, { ReactNode, useRef, useState } from 'react';
+import { NavigateBefore, MoreHoriz, Close, HomeOutlined, FindInPageOutlined, ShoppingCartOutlined, PersonOutlined } from '@material-ui/icons';
+import { useSpring, animated, useTransition } from 'react-spring';
+import { browserHistory } from '../util';
+import { useHistory } from 'react-router-dom';
 interface NavBarProps {
     centerPart: ReactNode;
     leftPart?: ReactNode;
     rightPart?: ReactNode;
+    coverPanel?: ReactNode;
 }
 const NavBar: React.FC<NavBarProps> = (props) => {
     const [open, setOpen] = useState(false);
+    const history = useHistory();
     const transition = useTransition(open, null, {
         from: {
             height: 0,
         },
         enter: {
-            height: 65
+            height: 65,
         },
         leave: {
-            height: 0
-        }
+            height: 0,
+        },
     });
     const items = useRef([
         {
-            title: "首页",
-            path: "/",
-            icon: <HomeOutlined className="text-3xl"/>
-        }, {
-            title: "分类",
-            path: "/classification",
-            icon: <FindInPageOutlined className="text-3xl"/>
+            title: '首页',
+            path: '/',
+            icon: <HomeOutlined className="text-3xl" />,
         },
         {
-            title: "购物车",
-            path: "/shoppingCart",
-            icon: <ShoppingCartOutlined className="text-3xl"/>
+            title: '分类',
+            path: '/classification',
+            icon: <FindInPageOutlined className="text-3xl" />,
         },
         {
-            title: "我的",
-            path: "/me",
-            icon: <PersonOutlined className="text-3xl"/>
-        }
+            title: '购物车',
+            path: '/shoppingCart',
+            icon: <ShoppingCartOutlined className="text-3xl" />,
+        },
+        {
+            title: '我的',
+            path: '/me',
+            icon: <PersonOutlined className="text-3xl" />,
+        },
     ]);
-    return <div>
-        <div className="h-12 px-2 bg-white shadow-sm border border-solid border-gray-200 flex items-center">
-            {props.leftPart || <NavigateBefore onClick={() => browserHistory.goBack()} className="text-3xl"/>}
-            <div className="text-center flex-grow">
-                {props.centerPart}
+    return (
+        <div>
+            <div className="h-12 px-2 bg-white shadow-sm border border-solid border-gray-200 flex items-center">
+                {props.leftPart || <NavigateBefore onClick={() => browserHistory.goBack()} className="text-3xl" />}
+                <div className="text-center flex-grow">{props.centerPart}</div>
+                {props.rightPart || <div onClick={() => setOpen(!open)}>{open ? <Close className="text-3xl " /> : <MoreHoriz className="text-3xl" />}</div>}
             </div>
-            {props.rightPart || <div onClick={() => setOpen(!open)}>
-                {open ? <Close className="text-3xl "/> : <MoreHoriz className="text-3xl"/>}
-            </div>}
+            {props.rightPart ? props.coverPanel:
+                transition.map((value) => {
+                    return (
+                        value.item && (
+                            <animated.ul key={value.key} className="bg-gray-400 grid grid-cols-4 w-full overflow-hidden" style={value.props}>
+                                {items.current.map((value,index) => {
+                                    return (
+                                        <li key={index} className="flex flex-col justify-center items-center " onClick={() => history.push(value.path)}>
+                                            <span className="text-red-400">{value.icon}</span>
+                                            <span className="">{value.title}</span>
+                                        </li>
+                                    );
+                                })}
+                            </animated.ul>
+                        )
+                    );
+                })}
         </div>
-        {props.rightPart || transition.map(value => {
-            return value.item &&
-                <animated.ul className="bg-gray-400 grid grid-cols-4 w-full overflow-hidden" style={value.props}>
-                    {items.current.map(value => {
-                        return <li key={value.path} className="flex flex-col justify-center items-center ">
-                            <span className="text-gray-800">{value.icon}</span>
-                            <span className="text-lg">{value.title}</span>
-                        </li>
-                    })}
-                </animated.ul>;
-        })}
-    </div>;
+    );
 };
 export default NavBar;

@@ -13,7 +13,6 @@ import {observer, useLocalStore} from 'mobx-react';
 import {useHistory} from 'react-router-dom';
 interface SearchTipItem {
     name: string;
-    resultCount: number;
 }
 interface LocalItem {
     name: string;
@@ -113,7 +112,7 @@ const SearchInput: React.FC = () => {
                                     }
                                 }}
                             />
-                            {searchStr && <HighlightOffOutlinedIcon onClick={() => (searchStr = '')} className="ml-auto mr-2 text-2xl text-gray-500 cursor-pointer" />}
+                            {searchStr && <HighlightOffOutlinedIcon onClick={() => (logic.searchStr = '')} className="ml-auto mr-2 text-2xl text-gray-500 cursor-pointer" />}
                         </div>
                         <div className="px-3" onClick={() => searchStr.length !== 0 && navToSearchResultList(searchStr,localSearchHistory)}>
                             {searchStr.length === 0 ? '取消' : '搜索'}
@@ -124,10 +123,7 @@ const SearchInput: React.FC = () => {
                             {searchTips.map((value, index) => {
                                 return (
                                     <div onClick={() => navToSearchResultList(value.name,localSearchHistory)} className="flex cursor-pointer items-center px-4 py-2 border-gray-300 border-solid border-b hover:bg-gray-200" key={value.name}>
-                                        <div className="whitespace-no-wrap mr-auto overflow-hidden max-w-xs" style={{ textOverflow: 'ellipsis' }}>
-                                            {value.name}
-                                        </div>
-                                        <div className="text-gray-500 text-sm ml-auto">约{value.resultCount}个结果</div>
+                                        <div className="truncate-1-lines w-full">{value.name}</div>
                                     </div>
                                 );
                             })}

@@ -14,7 +14,7 @@ ask.interceptors.response.use((res) => {
         (window as any).browserHistory.push('/login');
         Toast.info('请先登录再查看该页面');
     }
-    return error;
+    return Promise.reject(error);
 });
 
 export const useStateWithSameRef = <T = undefined>(value: T) => {

@@ -6,9 +6,10 @@ type UserData= {
             bookId: number,
             title: string,
             price: number,
-            count: number,
             smallImage: string,
-            checked: boolean
+            checked: boolean,
+            id: number;
+            count: number;
         }[];
     },
     user: {
@@ -28,8 +29,14 @@ export class UserStore {
     getUserData = () => {
         ask({
             url: `/api/userData`
-        }).then(value => {
-            this.userData = value.data;
+        }).then((value) => {
+            const data: UserData = value.data;
+            data.shoppingCart.items = data.shoppingCart.items.map(value1 => {
+                value1.checked = false;
+                value1.count = 1;
+                return value1
+            });
+            this.userData = data;
         })
     }
 }
