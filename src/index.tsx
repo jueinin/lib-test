@@ -20,6 +20,8 @@ import BrowserHistory from './pages/BrowserHistory';
 import MyFavorite from './pages/myFavorite';
 import ShoppingCart from './pages/shoppingCart';
 import ConfirmOrder from "./pages/confirmOrder";
+import AddAddress from "./pages/addAddress";
+import Order from "./pages/order";
 const Test: React.FC = (props) => {
     console.log(React.Children.count(props.children), 'children count', React.Children.toArray(props.children));
     return <div>{props.children}</div>;
@@ -88,11 +90,17 @@ const App = () => {
                                 <Route path={'/signUp'}>
                                     <SignUp />
                                 </Route>
-                                <Route path={'confirmOrder'}>
+                                <Route path={'/confirmOrder'}>
                                     {/*from: buy =  点击购买，*/}
                                     {/*from: shoppingCart = 购物车购买*/}
                                     {/*bookId: 点击购买的书籍id*/}
                                     <ConfirmOrder/>
+                                </Route>
+                                <Route path={'/addAddress'}>
+                                    <AddAddress/>
+                                </Route>
+                                <Route path={'/order'}>
+                                    <Order/>
                                 </Route>
                             </Switch>
                         </animated.div>

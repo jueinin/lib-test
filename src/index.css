@@ -31,6 +31,9 @@ body {
 input:focus {
     outline: none;
 }
+.simple-card {
+    @apply bg-white w-full shadow-sm rounded-lg;
+}
 /** {*/
 /*    background: #000 !important;*/
 /*    color: #0f0 !important;*/

@@ -9,10 +9,13 @@ import { useHistory } from 'react-router-dom';
 import { BookDetailLogic } from './bookDetailLogic';
 import { HomeOutlined, StarOutlined, ShoppingCartOutlined, StarBorderOutlined } from '@material-ui/icons';
 import { ask } from '../../util';
+import {useStore} from "../../model";
+import {head} from "ramda";
 const BookDetail: React.FC = () => {
     const bookDetailLogic = useLocalStore(() => new BookDetailLogic());
     const { productData, currentTab, bookId, onUseEffect, navBar, addFavorite, removeFavorite ,addToCart} = bookDetailLogic;
     useEffect(onUseEffect, []);
+    const {userStore} = useStore();
     useEffect(()=>{
         console.log('mount');
     },[])
@@ -74,6 +77,16 @@ const BookDetail: React.FC = () => {
                     <div className="flex flex-grow justify-end">
                         <button
                             className="px-2 rounded-bl-lg rounded-tl-lg"
+                            onClick={()=>{
+                                userStore.currentBuyItemInfo = {
+                                    bookId: productData.id,
+                                    title: productData.name,
+                                    price: productData.price,
+                                    smallImages: head(productData.images) || '',
+                                    count: 1,
+                                };
+                                history.push('/confirmOrder')
+                            }}
                             style={{
                                 backgroundImage: 'linear-gradient(62deg, #FBAB7E 0%, #F7CE68 100%)',
                             }}

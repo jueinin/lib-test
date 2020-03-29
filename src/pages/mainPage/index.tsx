@@ -17,12 +17,10 @@ import {
     tap,
 } from 'rxjs/operators';
 import { fromPromise } from 'rxjs/internal-compatibility';
-import { useObservable, useSubscription } from 'observable-hooks';
 import BottomBar from '../../components/bottomBar';
 import BookItem from '../../components/bookItem';
 import {action, observable} from 'mobx';
 import { observer, useLocalStore } from 'mobx-react';
-import * as R from 'ramda';
 import NavBar from "../../components/navbar";
 export interface BookBaseProperty {
     author: string;
@@ -98,10 +96,10 @@ const IndexPage = () => {
     return (
         <div className="h-screen overflow-y-auto" id="indexpage">
             <div className="mb-16">
-                <NavBar centerPart={<div className="gray-input mr-1">
+                <NavBar centerPart={<div className="gray-input mr-1 ml-1">
                     <SearchOutlined className="" />
                     <InputBase placeholder="搜索钟意的书籍吧!" onFocus={() => push('/searchInput')} className="border-none" />
-                </div>}/>
+                </div>} leftPart={<img src={logo} className="h-6 w-6"/>}/>
                 <section data-name={'轮播图'} className="w-full overflow-hidden" style={{ height: 170 }}>
                     <Slider>
                         {[swiper1, swiper2, swiper3].map((value, index) => {

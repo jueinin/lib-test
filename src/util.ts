@@ -45,3 +45,4 @@ export const log = (...message: string[]) => <T>(source$: Observable<T>) => {
 export const isEmail = (value: string) => {
     return /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/.test(value);
 };
+export const isPhoneNumber = (value: string) => /^(?:(?:\+|00)86)?1[3-9]\d{9}$/.test(value);
