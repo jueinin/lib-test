@@ -78,9 +78,9 @@ class Logic {
             }
         });
     };
-    onPay = () => {
+    onPayAll = () => {
         ask({
-            url: `/api/pay`,
+            url: `/api/payAll`,
             method: 'post',
             data: {
                 orderId: this.orderId
@@ -165,7 +165,7 @@ const ConfirmOrder: React.FC = () => {
                         提交订单
                     </button>
                 </div>
-                <PayDialog open={logic.dialogOpen} onClose={()=>logic.dialogOpen=false} onPay={logic.onPay}/>
+                <PayDialog open={logic.dialogOpen} onClose={()=>logic.dialogOpen=false} onPay={logic.onPayAll}/>
             </div>
         </div>
     );

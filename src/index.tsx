@@ -4,7 +4,6 @@ import './tailwind.css';
 import './index.css';
 import IndexPage from './pages/mainPage';
 import { BrowserRouter, Route, Switch, useLocation, useHistory } from 'react-router-dom';
-import CacheRoute, { CacheSwitch } from 'react-router-cache-route';
 import SearchInput from './pages/searchInput';
 import SearchResultList from './pages/searchResultList';
 import Forum from './pages/mainPage/forum';
@@ -22,6 +21,7 @@ import ShoppingCart from './pages/shoppingCart';
 import ConfirmOrder from "./pages/confirmOrder";
 import AddAddress from "./pages/addAddress";
 import Order from "./pages/order";
+import Comment from "./pages/comment";
 const Test: React.FC = (props) => {
     console.log(React.Children.count(props.children), 'children count', React.Children.toArray(props.children));
     return <div>{props.children}</div>;
@@ -101,6 +101,9 @@ const App = () => {
                                 </Route>
                                 <Route path={'/order'}>
                                     <Order/>
+                                </Route>
+                                <Route path={'/comment'}>
+                                    <Comment/>
                                 </Route>
                             </Switch>
                         </animated.div>
