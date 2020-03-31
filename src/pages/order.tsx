@@ -104,6 +104,8 @@ const statusToName = (value: string) => {
         [equals('pendingPayment'), always('待付款')],
         [equals('pendingReceived'), always('待收货')],
         [equals('pendingComment'), always('待评价')],
+        [equals('finish'),always('交易成功')],
+        [equals('cancel'),always('交易取消')]
     ])(value);
 };
 const Order: React.FC = () => {

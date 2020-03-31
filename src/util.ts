@@ -4,18 +4,22 @@ import { useEffect, useRef, useState } from 'react';
 import * as R from 'ramda';
 import { Observable } from 'rxjs';
 import { distinctUntilChanged, filter, map, tap, throttleTime } from 'rxjs/operators';
-import {Toast} from "./components/Toast";
+import { Toast } from './components/Toast';
 export const browserHistory = createBrowserHistory();
 export const ask = Axios.create({});
-ask.interceptors.response.use((res) => {
-    return res;
-},error => {
-    if (error.response.status === 403) {
-        (window as any).browserHistory.push('/login');
-        Toast.info('请先登录再查看该页面');
+export const defaultAvatar = 'https://jueinin.oss-cn-hongkong.aliyuncs.com/%E5%B0%8F%E7%A8%8B%E5%BA%8F/%E9%BB%98%E8%AE%A4%E5%A4%B4%E5%83%8F.jpg';
+ask.interceptors.response.use(
+    (res) => {
+        return res;
+    },
+    (error) => {
+        if (error.response.status === 403) {
+            (window as any).browserHistory.push('/login');
+            Toast.info('请先登录再查看该页面');
+        }
+        return Promise.reject(error);
     }
-    return Promise.reject(error);
-});
+);
 
 export const useStateWithSameRef = <T = undefined>(value: T) => {
     const [state, setState] = useState<T>(value);

@@ -6,8 +6,9 @@ import NavBar from '../../components/navbar';
 import { NearMeOutlined, CardMembership, LocalShippingOutlined, ChatOutlined, SettingsBackupRestoreOutlined, ReorderOutlined, StarOutlined, ShoppingCartOutlined } from '@material-ui/icons';
 import { useStore } from '../../model';
 import { equals, ifElse } from 'ramda';
+import {defaultAvatar} from "../../util";
 
-const defaultAvatar = 'https://jueinin.oss-cn-hongkong.aliyuncs.com/%E5%B0%8F%E7%A8%8B%E5%BA%8F/%E9%BB%98%E8%AE%A4%E5%A4%B4%E5%83%8F.jpg';
+
 const Me: React.FC = () => {
     const { userStore } = useStore();
     const { isLogin, userData } = userStore;

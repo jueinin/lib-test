@@ -22,6 +22,8 @@ import ConfirmOrder from "./pages/confirmOrder";
 import AddAddress from "./pages/addAddress";
 import Order from "./pages/order";
 import Comment from "./pages/comment";
+import PosterAdd from "./pages/posterAdd";
+import PostDetail from "./pages/postDetail";
 const Test: React.FC = (props) => {
     console.log(React.Children.count(props.children), 'children count', React.Children.toArray(props.children));
     return <div>{props.children}</div>;
@@ -104,6 +106,12 @@ const App = () => {
                                 </Route>
                                 <Route path={'/comment'}>
                                     <Comment/>
+                                </Route>
+                                <Route path={'/posterAdd'}>
+                                    <PosterAdd/>
+                                </Route>
+                                <Route path={'/postDetail'}>
+                                    <PostDetail/>
                                 </Route>
                             </Switch>
                         </animated.div>

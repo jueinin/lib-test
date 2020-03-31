@@ -19,7 +19,7 @@ type Data = {
 }[];
 class Logic {
     @observable data: Data = [];
-    @observable open: boolean = false;
+    @observable open: boolean = false;  // todo add emotion feature
     browserIdToDelete: number;
     onUseEffect = () => {
         this.onRequestData();
@@ -85,7 +85,7 @@ const BrowserHistory: React.FC = () => {
                     </div>
                 );
             })}
-            <Dialog open={logic.open} onClose={logic.onDialogClose}>
+            <Dialog open={logic.open} className="bg-transparent" onClose={logic.onDialogClose}>
                 <DialogContent>
                     确认删除吗?
                 </DialogContent>
