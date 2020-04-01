@@ -28,7 +28,7 @@ const config: webpack.Configuration & Configuration = {
         disableHostCheck: true,
         proxy: {
             '/api': {
-                target: 'http://localhost:3000',
+                target: process.env.STATUS === 'deploy' ? 'http://nest:3000' : 'http://localhost:3000',
                 secure: false,
                 changeOrigin: true,
                 // onProxyReq(proxyReq: http.ClientRequest, req: http.IncomingMessage, res: http.ServerResponse): void {

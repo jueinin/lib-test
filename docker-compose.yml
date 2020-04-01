@@ -1,0 +1,7 @@
+version: 3
+services:
+  react:
+    image: Dockerfile
+    container_name: react
+    ports:
+    - 3001:3001
