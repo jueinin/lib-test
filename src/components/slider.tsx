@@ -59,8 +59,8 @@ const Slider: React.FC<Props> = (props) => {
             });
         } else {
             let changeIndex = cond([
-                [(x) => x > innerWidth / 2, always(-1)],
-                [(x) => x < -innerWidth / 2, always(1)],
+                [(x) => x > innerWidth / 3, always(-1)],
+                [(x) => x < -innerWidth / 3, always(1)],
                 [T, always(0)],
             ])(x);
             const currentIndex = clamp(0, React.Children.count(props.children) - 1, index + changeIndex);

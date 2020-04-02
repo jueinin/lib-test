@@ -1,11 +1,12 @@
 import { ask } from '../../util';
 import { action, computed, observable, reaction } from 'mobx';
-import { BehaviorSubject } from 'rxjs';
+import {BehaviorSubject, fromEvent} from 'rxjs';
 import { filter, map, switchMap } from 'rxjs/operators';
 import { fromPromise } from 'rxjs/internal-compatibility';
 import { parse } from 'query-string';
 import * as R from 'ramda';
 import {Toast} from "../../components/Toast";
+import {UserStore} from "../../model/userStore";
 export type BookDetailProductDataType = {
     author: string;
     AdGoods: {
@@ -71,6 +72,8 @@ type JoinItemType = {
     getPromise?: () => Promise<any>;
 };
 export class BookDetailLogic {
+    constructor(private userStore:UserStore) {
+    }
     @observable productData: BookDetailProductDataType | null = null;
     @observable bookId: number = Number(parse(window.location.search).bookId);
     @observable currentTab: TabName = 'product';
@@ -201,6 +204,7 @@ export class BookDetailLogic {
             url: `/api/addShoppingCart?bookId=${bookId}`,
         }).then(value => {
             Toast.info('添加成功！');
+            this.userStore.getUserData();
         })
     }
 }

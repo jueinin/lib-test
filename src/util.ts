@@ -34,7 +34,7 @@ export const useStateWithSameRef = <T = undefined>(value: T) => {
 };
 export const whenReachBottom = (id?: string) => <T>(source$: Observable<T>) => {
     return source$.pipe(
-        throttleTime(150),
+        throttleTime(100),
         map(() => {
             const element = id ? document.getElementById(id) : document.body;
             return element.scrollHeight - element.clientHeight - element.scrollTop < 150;

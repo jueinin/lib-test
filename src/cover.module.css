@@ -5,3 +5,12 @@
 .simpleInput:focus-within {
     border-color: deepskyblue!important;
 }
+.readonly-quill {
+
+}
+.readonly-quill :global(.ql-editor) {
+    height: unset;
+}
+.readonly-quill :global(.ql-container) {
+    height: unset;
+}

@@ -99,12 +99,12 @@ const IndexPage = () => {
                 <NavBar centerPart={<div className="gray-input mr-1 ml-1">
                     <SearchOutlined className="" />
                     <InputBase placeholder="搜索钟意的书籍吧!" onFocus={() => push('/searchInput')} className="border-none" />
-                </div>} leftPart={<img src={logo} className="h-6 w-6"/>}/>
+                </div>} leftPart={<img src={logo} className="h-6 w-6 mr-1"/>}/>
                 <section data-name={'轮播图'} className="w-full overflow-hidden" style={{ height: 170 }}>
                     <Slider>
                         {[swiper1, swiper2, swiper3].map((value, index) => {
                             return (
-                                <img src={value} key={index} alt="carousel" className="w-screen" />
+                                <img src={value} key={index} alt="carousel" className="ripple w-screen" />
                             );
                         })}
                     </Slider>
@@ -113,7 +113,7 @@ const IndexPage = () => {
                     <div className="flex content-between flex-wrap">
                         {navItems.current.map((value, index) => {
                             return (
-                                <div className="flex flex-col justify-around h-20 w-1/4 items-center" key={index} onClick={()=>push(`/searchResultList?keyword=${value.title}`)}>
+                                <div className="flex flex-col justify-around h-20 w-1/4 items-center ripple" key={index} onClick={()=>push(`/searchResultList?keyword=${value.title}`)}>
                                     <img src={icon} alt="icon" className="h-12 w-12 shadow-md" />
                                     <span className="text-sm mb-2">{value.title}</span>
                                 </div>

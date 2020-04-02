@@ -11,6 +11,7 @@ import { fromPromise } from 'rxjs/internal-compatibility';
 import { observer, useLocalStore } from 'mobx-react';
 import {MessageOutlined,ThumbUpAltOutlined} from "@material-ui/icons";
 import Loading from '../../components/Loading';
+import BottomBar from "../../components/bottomBar";
 class Logic {
     @observable data = [];
     @observable page = 0;
@@ -53,10 +54,10 @@ const Forum: React.FC = () => {
     return (
         <div className="h-screen bg-gray-200" id="forum">
             <NavBar centerPart={'社区论坛'} rightPart={<Search />} />
-            <Fab onClick={() => history.push('/posterAdd')} className="fixed bg-green-500 text-white" style={{ bottom: 50, right: 20 }}>
+            <Fab onClick={() => history.push('/posterAdd')} className="fixed bg-green-500 text-white transform " style={{ bottom: 70, right: 20 }}>
                 <Add />
             </Fab>
-            <div className="">
+            <div className="mb-16">
                 {logic.data.map((value) => {
                     return (
                         <Link to={`/postDetail?postId=${value.id}`} className="flex p-2 flex-col border rounded-lg bg-white mt-1" key={value.id} >
@@ -73,6 +74,7 @@ const Forum: React.FC = () => {
                 {<Loading loading={logic.dataLoading} />}
                 {logic.page > 1 && logic.page >= logic.maxPage && <div className="text-sm text-gray-500">我也是有底线的 ！</div>}
             </div>
+            <BottomBar currentValue="/forum"/>
         </div>
     );
 };

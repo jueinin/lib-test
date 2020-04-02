@@ -1,13 +1,23 @@
 import React, { useEffect, useRef } from 'react';
 import BottomBar from '../../components/bottomBar';
 import { observer } from 'mobx-react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Redirect } from 'react-router-dom';
 import NavBar from '../../components/navbar';
-import { NearMeOutlined, CardMembership, LocalShippingOutlined, ChatOutlined, SettingsBackupRestoreOutlined, ReorderOutlined, StarOutlined, ShoppingCartOutlined } from '@material-ui/icons';
+import {
+    NearMeOutlined,
+    CardMembership,
+    LocalShippingOutlined,
+    ChatOutlined,
+    SettingsBackupRestoreOutlined,
+    ReorderOutlined,
+    StarBorderOutlined,
+    ShoppingCartOutlined,
+    StarOutlined,
+    MessageOutlined
+} from '@material-ui/icons';
 import { useStore } from '../../model';
 import { equals, ifElse } from 'ramda';
-import {defaultAvatar} from "../../util";
-
+import { defaultAvatar } from '../../util';
 
 const Me: React.FC = () => {
     const { userStore } = useStore();
@@ -23,14 +33,14 @@ const Me: React.FC = () => {
         },
         {
             title: '我的收藏',
-            icon: <StarOutlined />,
+            icon: <StarBorderOutlined/>,
             onClick: () => {
                 history.push('/favorites');
             },
         },
         {
             title: '论坛消息',
-            icon: <StarOutlined />,
+            icon: <MessageOutlined />,
         },
         {
             title: '购物车',

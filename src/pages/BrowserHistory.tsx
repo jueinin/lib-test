@@ -7,6 +7,8 @@ import {useHistory} from 'react-router-dom';
 import {DeleteOutlined} from "@material-ui/icons";
 import {Button, Dialog, DialogActions, DialogContent} from "@material-ui/core";
 import {Toast} from "../components/Toast";
+import {always} from "ramda";
+import Loading from "../components/Loading";
 type Data = {
     time: string;
     items: {
@@ -18,8 +20,10 @@ type Data = {
     }[];
 }[];
 class Logic {
-    @observable data: Data = [];
-    @observable open: boolean = false;  // todo add emotion feature
+    @observable data: Data = null;
+    @observable loading = false;
+    @observable noneOfData = false;
+    @observable open: boolean = false;
     browserIdToDelete: number;
     onUseEffect = () => {
         this.onRequestData();
@@ -38,11 +42,16 @@ class Logic {
         })
     };
     onRequestData = () => {
+        this.loading = true;
         ask({
             url: `/api/browsingHistory`,
         }).then(value => {
-            this.data = value.data;
-        });
+            if (value.data.length === 0) {
+                this.noneOfData = true;
+            } else {
+                this.data = value.data;
+            }
+        }).finally(() => this.loading = false);
     };
     onDialogClose=()=>{
         this.open = false;
@@ -54,19 +63,20 @@ const BrowserHistory: React.FC = () => {
     const history = useHistory();
     return (
         <div>
-            <NavBar centerPart={'浏览历史'} />
-            {logic.data.map((value) => {
+            <NavBar centerPart={'浏览历史'}/>
+            <div className="mt-2 pl-2 ">仅保留最近100条记录哦！</div>
+            {logic.data && logic.data.map((value) => {
                 return (
                     <div className="mt-2" key={value.time}>
                         <div className="px-2 bg-gray-200">{value.time}</div>
                         <div>
                             {value.items.map((value1, index) => {
                                 return (
-                                    <div key={index} className="flex px-2 border-b mt-1" onClick={()=>{
+                                    <div key={index} className="flex px-2 border-b mt-1" onClick={() => {
                                         history.push(`/bookDetail?bookId=${value1.bookId}`);
                                     }}>
-                                        <img alt="cover" src={value1.image} className="w-1/4" />
-                                        <div className="flex flex-col flex-grow">
+                                        <img alt="cover" src={value1.image} className="w-1/4"/>
+                                        <div className="flex flex-col flex-grow ml-1">
                                             <div className="truncate-2-lines h-12 mt-1">{value1.title}</div>
                                             <div className="text-red-500 mt-auto mb-2 flex">
                                                 <span>￥{value1.price}</span>
@@ -85,6 +95,10 @@ const BrowserHistory: React.FC = () => {
                     </div>
                 );
             })}
+            <Loading loading={logic.loading}/>
+            {logic.noneOfData && <div className="w-full h-40 flex-center">
+                居然还没有历史记录,快去转转吧!
+            </div>}
             <Dialog open={logic.open} className="bg-transparent" onClose={logic.onDialogClose}>
                 <DialogContent>
                     确认删除吗?

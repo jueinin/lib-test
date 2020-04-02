@@ -12,10 +12,11 @@ import { ask } from '../../util';
 import {useStore} from "../../model";
 import {head} from "ramda";
 const BookDetail: React.FC = () => {
-    const bookDetailLogic = useLocalStore(() => new BookDetailLogic());
+    const {userStore} = useStore();
+    const bookDetailLogic = useLocalStore(() => new BookDetailLogic(userStore));
     const { productData, currentTab, bookId, onUseEffect, navBar, addFavorite, removeFavorite ,addToCart} = bookDetailLogic;
     useEffect(onUseEffect, []);
-    const {userStore} = useStore();
+
     useEffect(()=>{
         console.log('mount');
     },[])
@@ -47,14 +48,14 @@ const BookDetail: React.FC = () => {
                     <Product bookDetailLogic={bookDetailLogic} className={currentTab === 'product' ? '' : 'hidden'}/>
                     <Detail bookDetailLogic={bookDetailLogic} className={currentTab === 'detail' ? '' : 'hidden'}/>
                     <Comment bookDetailLogic={bookDetailLogic} className={currentTab === 'comment' ? '' : 'hidden'}/>
-                    <div className="w-full" style={{height: '55px'}}></div>
+                    <div className="w-full" style={{height: '55px'}}/>
                 </div>
             </div>
             <div className="fixed bottom-0 w-full bg-white">
                 <div className="flex px-2 py-1 w-full">
                     <div className="flex items-center justify-around w-1/2">
                         <div
-                            className="flex flex-col items-center"
+                            className="flex flex-col items-center ripple"
                             onClick={() => {
                                 history.push('/');
                             }}
@@ -69,7 +70,7 @@ const BookDetail: React.FC = () => {
                                                     onClick={() => addFavorite(productData.id)}/>}
                             <span>{productData?.isFavorited ? '取消收藏' : '收藏'}</span>
                         </div>
-                        <div className="flex flex-col items-center" onClick={() => history.push('/shoppingCart')}>
+                        <div className="flex flex-col items-center ripple" onClick={() => history.push('/shoppingCart')}>
                             <ShoppingCartOutlined className="text-3xl text-red-500"/>
                             <span>购物车</span>
                         </div>

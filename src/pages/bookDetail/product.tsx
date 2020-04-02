@@ -48,7 +48,9 @@ const Product: React.FC<ProductProps> = (props) => {
                 <div style={{ margin: '-0.5rem' }}>
                     <Slider afterChange={setCoverIndex} autoPlay>
                         {(data.images || []).map((value) => {
-                            return <img alt="slider pic" src={value} className="w-screen" key={value} onClick={() => (bookDetailLogic.coverPreview.isOpen = true)} />;
+                            return <img alt="slider pic" src={value} className="w-screen" key={value} onClick={() => {
+                                bookDetailLogic.coverPreview.isOpen = true;
+                            }} />;
                         })}
                     </Slider>
                 </div>

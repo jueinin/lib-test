@@ -12,9 +12,9 @@ import NavBar from '../components/navbar';
 import { filter, head, map, pipe, sum } from 'ramda';
 import ShoppingCart from './shoppingCart';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, InputBase } from '@material-ui/core';
-import {Toast} from "../components/Toast";
-import PayDialog from "../components/PayDialog";
-import NumberInput from "../components/NumberInput";
+import { Toast } from '../components/Toast';
+import PayDialog from '../components/PayDialog';
+import NumberInput from '../components/NumberInput';
 // 这个页面如果购物车进来很简单就搞定了，直接从购物车拿数据即可，但是如果直接点击购买的呢，一刷新客户端就不知道点击了啥了，要不然存服务端要不然存sessionStorage里
 
 class Logic {
@@ -48,7 +48,7 @@ class Logic {
         }
     }
     @computed get userAddress() {
-        return (this.userStore?.userData?.user?.addresses || []).filter((value) => value.isDefaultAddress)[0];
+        return (this.userStore?.userData?.user?.addresses || []).filter((value) => value.isDefaultAddress)[0] || this.userStore?.userData?.user?.addresses[0];
     }
     @computed get shoppingCartData() {
         return (this.userStore.userData?.shoppingCart?.items || []).filter((value) => value.checked);
@@ -59,6 +59,11 @@ class Logic {
     }
 
     onSubmit = () => {
+        const addressId = this.userAddress?.id;
+        if (!addressId) {
+            Toast.info('先点击上方输入收货地址吧！')
+            return;
+        }
         // @ts-ignore
         const orderItems = (this.isFromShoppingCart ? this.shoppingCartData : [this.currentBuyInfo]).map((value) => ({
             bookId: value.bookId,
@@ -70,6 +75,7 @@ class Logic {
             method: 'post',
             data: {
                 orderItems,
+                addressId
             },
         }).then((value) => {
             if (value.data.status === 'ok') {
@@ -83,10 +89,10 @@ class Logic {
             url: `/api/payAll`,
             method: 'post',
             data: {
-                orderId: this.orderId
-            }
-        }).then(value => {
-            this.dialogOpen=false;
+                orderId: this.orderId,
+            },
+        }).then((value) => {
+            this.dialogOpen = false;
             Toast.info('付款成功！');
         });
     };
@@ -103,14 +109,17 @@ const ConfirmOrder: React.FC = () => {
             <NavBar centerPart={'确认订单'} />
             <div className="p-1 ">
                 {logic.userAddress ? (
-                    <div className="simple-card py-4 px-1 flex ">
+                    <div className="simple-card py-4 px-1 flex items-center" onClick={() => history.push('/addressList')}>
                         <LocationOnOutlined className="bg-red-500 ml-2 rounded-full text-white" />
-                        <div className="flex-grow flex flex-col ml-4">
+                        <div className="flex-grow flex flex-col mx-4">
                             <div>
                                 {logic.userAddress.name}
                                 <span className="text-gray-700 ml-3  text-sm">{logic.userAddress.phoneNumber}</span>
                             </div>
                             <div className="text-sm">{logic.userAddress.address}</div>
+                        </div>
+                        <div className="mr-2 text-gray-700 text-lg">
+                            >
                         </div>
                     </div>
                 ) : (
@@ -122,9 +131,9 @@ const ConfirmOrder: React.FC = () => {
                     <div>
                         {logic.shoppingCartData.map((value) => {
                             return (
-                                <div key={value.bookId} className="simple-card flex mb-2 mt-2" onClick={() => history.push(`/bookDetail?bookId=${value.bookId}`)}>
+                                <div key={value.bookId} className="simple-card flex mb-2 mt-2 py-1 shadow-sm" onClick={() => history.push(`/bookDetail?bookId=${value.bookId}`)}>
                                     <img alt="" src={value.smallImage} className="w-1/4" />
-                                    <div className="flex-grow truncate-2-lines text-sm">{value.title}</div>
+                                    <div className="flex-grow truncate-2-lines text-sm h-10 overflow-hidden">{value.title}</div>
                                     <div className="flex flex-col mx-2">
                                         <span className="text-sm">￥{value.price}</span>
                                         <span className="text-sm ml-auto text-gray-500">x{value.count}</span>
@@ -134,29 +143,35 @@ const ConfirmOrder: React.FC = () => {
                         })}
                     </div>
                 ) : (
-                    <div className="simple-card flex mb-2 mt-2" onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        history.push(`/bookDetail?bookId=${logic.currentBuyInfo.bookId}`);
-                    }}>
+                    <div
+                        className="simple-card flex mb-2 mt-2 py-1 shadow-sm"
+                        onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            history.push(`/bookDetail?bookId=${logic.currentBuyInfo.bookId}`);
+                        }}
+                    >
                         <img alt="" src={logic.currentBuyInfo.smallImages} className="w-1/4" />
-                        <div className="flex-grow truncate-2-lines text-sm">{logic.currentBuyInfo.title}</div>
+                        <div className="flex-grow truncate-2-lines text-sm ml-1 overflow-hidden h-10">{logic.currentBuyInfo.title}</div>
                         <div className="flex flex-col mx-2 pt-2">
                             <span className="text-sm ml-auto">￥{logic.currentBuyInfo.price}</span>
                             <span className="text-sm ml-auto text-gray-500">x{logic.currentBuyInfo.count}</span>
                             <div className="mt-auto mb-2">
-                                <NumberInput value={logic.currentBuyInfo.count} onIncrement={(e)=>{
-                                    e.stopPropagation();
-                                    e.preventDefault();
-                                    logic.currentBuyInfo.count++
-                                }} onDecrement={(e)=>{
-                                    e.stopPropagation();
-                                    e.preventDefault();
-                                    logic.currentBuyInfo.count--
-                                }}/>
+                                <NumberInput
+                                    value={logic.currentBuyInfo.count}
+                                    onIncrement={(e) => {
+                                        e.stopPropagation();
+                                        e.preventDefault();
+                                        logic.currentBuyInfo.count++;
+                                    }}
+                                    onDecrement={(e) => {
+                                        e.stopPropagation();
+                                        e.preventDefault();
+                                        logic.currentBuyInfo.count--;
+                                    }}
+                                />
                             </div>
                         </div>
-
                     </div>
                 )}
                 <div className="fixed bottom-0 flex justify-end items-center w-full bg-white shadow-md py-2 px-2 border left-0">
@@ -165,7 +180,7 @@ const ConfirmOrder: React.FC = () => {
                         提交订单
                     </button>
                 </div>
-                <PayDialog open={logic.dialogOpen} onClose={()=>logic.dialogOpen=false} onPay={logic.onPayAll}/>
+                <PayDialog open={logic.dialogOpen} onClose={() => (logic.dialogOpen = false)} onPay={logic.onPayAll} />
             </div>
         </div>
     );

@@ -1,38 +1,39 @@
-import {computed, observable} from "mobx";
-import {ask} from "../util";
-import {persist} from "mobx-persist";
+import { computed, observable } from 'mobx';
+import { ask } from '../util';
+import { persist } from 'mobx-persist';
 export interface UserAddressItem {
     id: number;
     name: string;
     address: string;
-    phoneNumber: number;
+    phoneNumber: string;
     isDefaultAddress: boolean;
 }
-export interface ShoppingCartItem  {
-    bookId: number,
-    title: string,
-    price: number,
-    smallImage: string,
-    checked: boolean,
+export interface ShoppingCartItem {
+    bookId: number;
+    title: string;
+    price: number;
+    smallImage: string;
+    checked: boolean;
     id: number;
     count: number;
 }
-type UserData= {
+type UserData = {
     shoppingCart: {
         items: ShoppingCartItem[];
-    },
+    };
     user: {
-        id: number,
-        email: string,
+        id: number;
+        email: string;
         userName: string;
-        addresses: UserAddressItem[]
-    },
-}
+        addresses: UserAddressItem[];
+    };
+};
 
 export class UserStore {
     @observable userData: UserData = null;
-    @persist("object") @observable currentBuyItemInfo: { // 点击立即购买时订单结算页的信息，其实最好的办法是传给服务端再获取，不然会有一堆问题
-        bookId: number,
+    @persist('object') @observable currentBuyItemInfo: {
+        // 点击立即购买时订单结算页的信息，其实最好的办法是传给服务端再获取，不然会有一堆问题
+        bookId: number;
         title: string;
         price: number;
         smallImages: string;
@@ -44,16 +45,22 @@ export class UserStore {
 
     getUserData = () => {
         ask({
-            url: `/api/userData`
+            url: `/api/userData`,
         }).then((value) => {
             const data: UserData = value.data;
-            data.shoppingCart.items = data.shoppingCart.items.map(value1 => {
+            data.shoppingCart.items = data.shoppingCart.items.map((value1) => {
                 value1.checked = false;
                 value1.count = 1;
-                return value1
+                return value1;
             });
             this.userData = data;
-        })
-    }
+        });
+    };
+    getAddress = () => {
+        ask({
+            url: '/api/getAddress',
+        }).then((value) => {
+            this.userData.user.addresses = value.data;
+        });
+    };
 }
-

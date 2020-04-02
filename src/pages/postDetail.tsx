@@ -7,10 +7,9 @@ import { parse } from 'query-string';
 import Quill from 'quill';
 import { CircularProgress, Dialog, TextareaAutosize } from '@material-ui/core';
 import { MessageOutlined, ThumbUpAltOutlined, Fullscreen, Close, Check } from '@material-ui/icons';
-import Editor from '../components/editor';
 import { Toast } from '../components/Toast';
 import Loading from '../components/Loading';
-
+import style from '../cover.module.css';
 class Logic {
     @computed get postId() {
         return Number(parse(window.location.search.slice(1)).postId);
@@ -24,6 +23,7 @@ class Logic {
     @observable commentData = null;
     @observable viewDetailCommentOpen = false;
     @observable commentChildDetailData = null;
+    @observable selectedReplyComment = null;  // select someone to reply
     onUseEffect = () => {
         this.getCommentData();
         const editor = new Quill(document.getElementById('quill'), {
@@ -50,13 +50,18 @@ class Logic {
                 if (value.data.status === 'ok') {
                     Toast.info('评论成功');
                     this.commentStr = '';
-                    this.getCommentData();
+                    this.getCommentData().then((value1) => {
+                        document.body.scrollTo({
+                            top: document.body.scrollHeight,
+                        });
+                    });
+                    this.editCommentDialogOpen = false;
                 }
             })
             .finally(() => (this.submitLoading = false));
     };
     getCommentData = () => {
-        ask({
+        return ask({
             url: `/api/postComments?postId=${this.postId}`,
         }).then((value) => {
             this.commentData = value.data;
@@ -67,6 +72,8 @@ class Logic {
             url: `/api/commentChild?commentId=${commentId}`,
         }).then((value) => {
             this.commentChildDetailData = value.data;
+            this.selectedReplyComment = value.data.currentComment;
+
         });
     };
     onReplyComment = (parentCommentId: number) => {
@@ -92,7 +99,8 @@ type SimpleUserInfoTabProps = {
     rightPart: ReactNode;
     className?: string;
 };
-const SimpleUserInfoTab: React.FC<SimpleUserInfoTabProps> = (props) => {  // user profile line
+const SimpleUserInfoTab: React.FC<SimpleUserInfoTabProps> = (props) => {
+    // user profile line
     return (
         <div className={'flex items-center ' + props.className || ''}>
             <img src={props.avatar} className="w-8 h-8 rounded-full" />
@@ -107,64 +115,69 @@ const SimpleUserInfoTab: React.FC<SimpleUserInfoTabProps> = (props) => {  // use
 const PostDetail: React.FC = () => {
     const logic = useLocalStore(() => new Logic());
     useEffect(logic.onUseEffect, []);
+    console.log(logic.selectedReplyComment?.id === logic.commentChildDetailData?.currentComment?.id,logic.selectedReplyComment?.id ,logic.commentChildDetailData?.currentComment?.id)
     return (
         <div>
-            <NavBar centerPart={'详情'} />
-            <div className="p-1">
+            <NavBar centerPart={'详情'}/>
+            <div className={'p-1 ' + style['readonly-quill']}>
                 {logic.article && (
                     <section data-name={'顶部帖子信息栏'} className="mt-2 mb-2 border-b">
                         <div className="my-2">{logic.article.title}</div>
-                        <SimpleUserInfoTab avatar={defaultAvatar} userName={logic.article.user.userName} time={new Date(logic.article.createDate).toLocaleString('cn')} rightPart={<span>{logic.article.views}浏览</span>} />
+                        <SimpleUserInfoTab avatar={defaultAvatar} userName={logic.article.user.userName}
+                                           time={new Date(logic.article.createDate).toLocaleString('cn')}
+                                           rightPart={<span>{logic.article.views}浏览</span>}/>
                     </section>
                 )}
-                <div id="quill" />
-                <div className="" style={{ marginBottom: 72 }} id="comment" data-name={'评论区'}>
+                <div id="quill" className="select-auto" style={{}}/>
+                <div className="" style={{marginBottom: 72}} id="comment" data-name={'评论区'}>
                     {logic.commentData &&
-                        logic.commentData.map((value) => {
-                            return (
-                                <div
-                                    className="w-full p-2 border-b"
-                                    key={value.id}
-                                    onClick={() => {
-                                        logic.viewDetailCommentOpen = true;
-                                        logic.getAllChildComment(value.id);
-                                    }}
-                                >
-                                    <SimpleUserInfoTab
-                                        avatar={defaultAvatar}
-                                        userName={value.user.userName}
-                                        time={new Date(value.createDate).toLocaleString('cn')}
-                                        rightPart={
-                                            <span>
-                                                <ThumbUpAltOutlined className="text-gray-900 mr-2 text-xl" />
+                    logic.commentData.map((value) => {
+                        return (
+                            <div
+                                className="w-full p-2 border-b"
+                                key={value.id}
+                                onClick={() => {
+                                    logic.viewDetailCommentOpen = true;
+                                    logic.getAllChildComment(value.id);
+                                }}
+                            >
+                                <SimpleUserInfoTab
+                                    avatar={defaultAvatar}
+                                    userName={value.user.userName}
+                                    time={new Date(value.createDate).toLocaleString('cn')}
+                                    rightPart={
+                                        <span>
+                                                <ThumbUpAltOutlined className="text-gray-900 mr-2 text-xl"/>
                                                 <span className="text-green-500">{value.likeCount}</span>
                                             </span>
-                                        }
-                                    />
-                                    <div className="mt-2 ml-10">{value.content}</div>
-                                    {value.childCount > 0 && (
-                                        <div className="bg-gray-300 p-2 mt-2 ml-10 text-sm text-gray-700">
-                                            {value.childComment.map((value) => {
-                                                return (
-                                                    <div key={value.id} className="mb-4">
-                                                        <span className="text-green-500">{value.user.userName}</span>回复： {value.content}
-                                                    </div>
-                                                );
-                                            })}
-                                            {value.childCount > 2 && (
-                                                <div className="flex">
-                                                    <div className="ml-auto">
-                                                        共<span className="text-green-500">{value.childCount}</span>条回复
-                                                    </div>
+                                    }
+                                />
+                                <div className="mt-2 ml-10">{value.content}</div>
+                                {value.childCount > 0 && (
+                                    <div className="bg-gray-300 p-2 mt-2 ml-10 text-sm text-gray-700">
+                                        {value.childComment.map((value) => {
+                                            return (
+                                                <div key={value.id} className="mb-4">
+                                                    <span
+                                                        className="text-green-500">{value.user.userName}</span>回复： {value.content}
                                                 </div>
-                                            )}
-                                        </div>
-                                    )}
-                                </div>
-                            );
-                        })}
+                                            );
+                                        })}
+                                        {value.childCount > 2 && (
+                                            <div className="flex">
+                                                <div className="ml-auto">
+                                                    共<span className="text-green-500">{value.childCount}</span>条回复
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+                        );
+                    })}
                 </div>
-                <div data-name={'底部评论按钮'} className="fixed flex flex-col bottom-0 w-full left-0 p-1 shadow-sm border-t-4 text-gray-700 bg-white">
+                <div data-name={'底部评论按钮'}
+                     className="fixed flex flex-col bottom-0 w-full left-0 p-1 shadow-sm border-t-4 text-gray-700 bg-white">
                     {logic.inEditMode && (
                         <div className="items-center flex">
                             <input
@@ -178,7 +191,8 @@ const PostDetail: React.FC = () => {
                                     }
                                 }}
                             />
-                            {logic.submitLoading ? <CircularProgress style={{ width: 20, height: 20 }} /> : <Fullscreen className="text-3xl" onClick={() => (logic.editCommentDialogOpen = true)} />}
+                            {logic.submitLoading ? <CircularProgress style={{width: 20, height: 20}}/> :
+                                <Fullscreen className="text-3xl" onClick={() => (logic.editCommentDialogOpen = true)}/>}
                         </div>
                     )}
                     <div className="flex">
@@ -189,59 +203,76 @@ const PostDetail: React.FC = () => {
                                 logic.inEditMode = !logic.inEditMode;
                             }}
                         >
-                            <MessageOutlined />
+                            <MessageOutlined/>
                             <span className="text-sm">评论</span>
                         </div>
                         <div className="flex flex-col w-1/4 items-center">
-                            <ThumbUpAltOutlined />
+                            <ThumbUpAltOutlined/>
                             <span className="text-sm">点赞</span>
                         </div>
                     </div>
                 </div>
                 <Dialog open={logic.editCommentDialogOpen} fullScreen disableBackdropClick>
-                    <NavBar centerPart={'添加评论'} leftPart={<Close onClick={() => (logic.editCommentDialogOpen = false)} />} rightPart={logic.submitLoading ? <CircularProgress style={{ width: 20, height: 20 }} /> : <Check className="text-green-400" onClick={logic.onSubmit} />} />
+                    <NavBar centerPart={'添加评论'}
+                            leftPart={<Close onClick={() => (logic.editCommentDialogOpen = false)}/>}
+                            rightPart={logic.submitLoading ? <CircularProgress style={{width: 20, height: 20}}/> :
+                                <Check className="text-green-400" onClick={logic.onSubmit}/>}/>
                     <div className="">
-                        <TextareaAutosize autoFocus className="h-screen w-full" placeholder="说点什么吧！" value={logic.commentStr} onChange={(event) => (logic.commentStr = event.target.value)} />
+                        <TextareaAutosize autoFocus className="h-screen w-full" placeholder="说点什么吧！"
+                                          value={logic.commentStr}
+                                          onChange={(event) => (logic.commentStr = event.target.value)}/>
                     </div>
                 </Dialog>
                 <Dialog open={logic.viewDetailCommentOpen} fullScreen disableBackdropClick>
                     <div className="bg-gray-200 min-h-screen flex flex-col">
-                        <NavBar centerPart={logic.commentChildDetailData?.child?.length ? `${logic.commentChildDetailData?.child?.length}条回复` : '加载中...'} leftPart={<Close onClick={() => (logic.viewDetailCommentOpen = false)} />} />
+                        <NavBar
+                            centerPart={logic.commentChildDetailData?.child?.length ? `${logic.commentChildDetailData?.child?.length}条回复` : '加载中...'}
+                            leftPart={<Close onClick={() => (logic.viewDetailCommentOpen = false)}/>}/>
                         {logic.commentChildDetailData === null ? (
-                            <Loading loading={true} />
+                            <Loading loading={true}/>
                         ) : (
                             <div className="">
-                                <div className="bg-white p-2">
+                                <div className="bg-white p-2"
+                                     onClick={() => logic.selectedReplyComment = logic.commentChildDetailData?.currentComment}>
                                     <SimpleUserInfoTab
                                         avatar={defaultAvatar}
                                         userName={logic.commentChildDetailData.currentComment.user.userName}
                                         time={new Date(logic.commentChildDetailData.currentComment.createDate).toLocaleString('cn')}
                                         rightPart={
                                             <span>
-                                                <ThumbUpAltOutlined className="text-gray-900 mr-2 text-xl" />
-                                                <span className="text-green-500">{logic.commentChildDetailData.currentComment.likeCount}</span>
+                                                <ThumbUpAltOutlined className="text-gray-900 mr-2 text-xl"/>
+                                                <span
+                                                    className="text-green-500">{logic.commentChildDetailData.currentComment.likeCount}</span>
                                             </span>
                                         }
                                     />
                                     <div className="ml-10">{logic.commentChildDetailData.currentComment.content}</div>
                                 </div>
-                                <div className="my-2 p-1 bg-white pl-2">{logic.commentChildDetailData.child.length}条回复</div>
+                                <div className="my-2 p-1 bg-white pl-2">{logic.commentChildDetailData.child.length}条回复
+                                </div>
                                 {logic.commentChildDetailData.child.map((value) => {
                                     return (
-                                        <div className="bg-white p-2">
+                                        <div
+                                            key={value.id}
+                                            className="bg-white p-2"
+                                            onClick={() => {
+                                                logic.selectedReplyComment = value;
+                                            }}
+                                        >
                                             <SimpleUserInfoTab
                                                 avatar={defaultAvatar}
                                                 userName={value.user.userName}
                                                 time={new Date(value.createDate).toLocaleString('cn')}
                                                 rightPart={
                                                     <span>
-                                                        <ThumbUpAltOutlined className="text-gray-900 mr-2 text-xl" />
+                                                        <ThumbUpAltOutlined className="text-gray-900 mr-2 text-xl"/>
                                                         <span className="text-green-500">{value.likeCount}</span>
                                                     </span>
                                                 }
                                             />
                                             <div className="ml-10">
-                                                回复<span className="text-green-500">{value.parentComment.user.userName}</span>的评论: {value.content}
+                                                回复<span
+                                                className="text-green-500">{value.parentComment.user.userName}</span>的评论: {value.content}
                                             </div>
                                         </div>
                                     );
@@ -249,12 +280,19 @@ const PostDetail: React.FC = () => {
                             </div>
                         )}
                         <div className="items-center flex mt-auto border bg-white p-2">
-                            <input className="flex-grow" value={logic.replyCommentStr} onKeyPress={(event)=>{
-                                if (event.key === 'Enter') {
-                                    logic.onReplyComment(logic.commentChildDetailData.currentComment.id)
-                                }
-                            }} onChange={(event) => (logic.replyCommentStr = event.target.value)} />
-                            <span className="text-green-500" onClick={() => logic.onReplyComment(logic.commentChildDetailData.currentComment.id)}>
+                            <input
+                                className="flex-grow"
+                                value={logic.replyCommentStr}
+                                placeholder={logic.selectedReplyComment?.id === logic.commentChildDetailData?.currentComment?.id ? '回复层主' : `@${logic.selectedReplyComment?.user?.userName}:`}
+                                onKeyPress={(event) => {
+                                    if (event.key === 'Enter') {
+                                        logic.onReplyComment(logic.commentChildDetailData.currentComment.id);
+                                    }
+                                }}
+                                onChange={(event) => (logic.replyCommentStr = event.target.value)}
+                            />
+                            <span className="text-green-500"
+                                  onClick={() => logic.onReplyComment(logic.selectedReplyComment?.id)}>
                                 发送
                             </span>
                         </div>

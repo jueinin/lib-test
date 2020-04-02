@@ -24,10 +24,8 @@ import Order from "./pages/order";
 import Comment from "./pages/comment";
 import PosterAdd from "./pages/posterAdd";
 import PostDetail from "./pages/postDetail";
-const Test: React.FC = (props) => {
-    console.log(React.Children.count(props.children), 'children count', React.Children.toArray(props.children));
-    return <div>{props.children}</div>;
-};
+import CacheRoute, {CacheSwitch} from "react-router-cache-route";
+import AddressList from "./pages/addresssList";
 const App = () => {
     const history = useHistory();
     const { userStore } = useStore();
@@ -49,7 +47,66 @@ const App = () => {
     });
     return (
         <div className="w-full">
-                {transition.map((value) => {
+            <CacheSwitch>
+                <CacheRoute exact path={'/'} component={IndexPage}/>
+                <CacheRoute exact path={'/me'}>
+                    <Me />
+                </CacheRoute>
+                <CacheRoute exact path={'/forum'}>
+                    <Forum />
+                </CacheRoute>
+                <CacheRoute path={'/browserHistory'}>
+                    <BrowserHistory />
+                </CacheRoute>
+                <CacheRoute path={'/bookDetail'}>
+                    <BookDetail />
+                </CacheRoute>
+                <CacheRoute path={'/favorites'}>
+                    <MyFavorite />
+                </CacheRoute>
+                <CacheRoute path={'/shoppingCart'}>
+                    <ShoppingCart />
+                </CacheRoute>
+                <CacheRoute path={'/animate'}>
+                    <Animate />
+                </CacheRoute>
+                <CacheRoute exact path={'/searchInput'} component={SearchInput}/>
+                <CacheRoute exact path={'/searchResultList'}>
+                    {/*params=keyword*/}
+                    <SearchResultList />
+                </CacheRoute>
+                <CacheRoute path={'/login'}>
+                    <Login />
+                </CacheRoute>
+                <CacheRoute path={'/signUp'}>
+                    <SignUp />
+                </CacheRoute>
+                <CacheRoute path={'/confirmOrder'}>
+                    {/*from: buy =  点击购买，*/}
+                    {/*from: shoppingCart = 购物车购买*/}
+                    {/*bookId: 点击购买的书籍id*/}
+                    <ConfirmOrder/>
+                </CacheRoute>
+                <CacheRoute path={['/addAddress','/editAddress']}>
+                    <AddAddress/>
+                </CacheRoute>
+                <CacheRoute path={'/order'}>
+                    <Order/>
+                </CacheRoute>
+                <CacheRoute path={'/comment'}>
+                    <Comment/>
+                </CacheRoute>
+                <CacheRoute path={'/posterAdd'}>
+                    <PosterAdd/>
+                </CacheRoute>
+                <CacheRoute path={'/postDetail'}>
+                    <PostDetail/>
+                </CacheRoute>
+                <Route path={'/addressList'}>
+                    <AddressList/>
+                </Route>
+            </CacheSwitch>
+                {/*{transition.map((value) => {
                     return (
                         <animated.div
                             key={value.key}
@@ -83,7 +140,7 @@ const App = () => {
                                 </Route>
                                 <Route exact path={'/searchInput'} component={SearchInput}/>
                                 <Route exact path={'/searchResultList'}>
-                                    {/*params=keyword*/}
+                                    params=keyword
                                     <SearchResultList />
                                 </Route>
                                 <Route path={'/login'}>
@@ -93,9 +150,9 @@ const App = () => {
                                     <SignUp />
                                 </Route>
                                 <Route path={'/confirmOrder'}>
-                                    {/*from: buy =  点击购买，*/}
-                                    {/*from: shoppingCart = 购物车购买*/}
-                                    {/*bookId: 点击购买的书籍id*/}
+                                    from: buy =  点击购买，
+                                    from: shoppingCart = 购物车购买
+                                    bookId: 点击购买的书籍id
                                     <ConfirmOrder/>
                                 </Route>
                                 <Route path={'/addAddress'}>
@@ -116,7 +173,7 @@ const App = () => {
                             </Switch>
                         </animated.div>
                     );
-                })}
+                })}*/}
         </div>
     );
 };

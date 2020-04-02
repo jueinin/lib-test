@@ -7,7 +7,7 @@ const hydrate = create({
     jsonify: true,
 });
 const userStore = new UserStore();
-hydrate('userStore', userStore).then(() => console.log('hydrate'));
+hydrate('userStore', userStore)
 export const rootStore = {
     userStore: userStore
 };

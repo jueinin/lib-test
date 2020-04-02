@@ -7,6 +7,7 @@ import { DeleteOutlined } from '@material-ui/icons';
 import NavBar from '../components/navbar';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@material-ui/core';
 import { Toast } from '../components/Toast';
+import Loading from "../components/Loading";
 type Data = {
     image: string;
     bookId: number;
@@ -15,7 +16,9 @@ type Data = {
     favorites: number;
 }[];
 class Logic {
-    @observable data: Data = [];
+    @observable data: Data = null;
+    @observable loading = false;
+    @observable noneOfData = false;
     @observable dialogOpen: boolean = false;
     idToDelete: number;
     onUseEffect = () => {
@@ -26,9 +29,15 @@ class Logic {
         this.dialogOpen = false;
     };
     onRequestData = () => {
+        this.loading = true;
         ask(`/api/favorites`).then((value) => {
-            this.data = value.data;
-        });
+            if (value.data.length === 0) {
+                this.noneOfData = true;
+            } else {
+                this.data = value.data;
+            }
+        }).finally(() => this.loading = false);
+
     };
     deleteFavorite = () => {
         this.dialogOpen = false;
@@ -52,7 +61,7 @@ const MyFavorite: React.FC = () => {
         <div className="">
             <NavBar centerPart={'我的收藏'} />
             <div>
-                {logic.data.map((value) => {
+                {logic.data && logic.data.map((value) => {
                     return (
                         <div key={value.bookId} className="w-full flex" onClick={() => history.push(`/bookDetail?bookId=${value.bookId}`)}>
                             <img alt="book cover" src={value.image} className="w-1/3" />
@@ -78,6 +87,10 @@ const MyFavorite: React.FC = () => {
                     );
                 })}
             </div>
+            <Loading loading={logic.loading}/>
+            {logic.noneOfData && <div className="w-full h-40 flex-center">
+                居然还没有收藏的商品,快去转转吧!
+            </div>}
             <Dialog open={logic.dialogOpen} onClose={logic.onCloseDialog}>
                 <DialogTitle>确认</DialogTitle>
                 <DialogContent>是否确认删除?</DialogContent>

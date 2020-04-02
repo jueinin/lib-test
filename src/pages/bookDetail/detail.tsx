@@ -22,11 +22,11 @@ const Detail:React.FC<Props> = (props) => {
              className="relative grid grid-cols-2 grid-rows-1 justify-items-center shadow-sm border-b border-solid  border-gray-300">
             <div className={classNames({
                 'text-red-600 border-solid border-red-600 border-b-2': detailTab === "detail"
-            }, 'p-3 px-6')} onClick={() => setProductTab("detail")}>图书详情
+            }, 'p-3 px-6 ripple')} onClick={() => setProductTab("detail")}>图书详情
             </div>
             <div className={classNames({
                 'text-red-600 border-solid border-red-600 border-b-2': detailTab === "publishInfo"
-            }, 'p-3 px-6')} onClick={() => setProductTab("publishInfo")}>出版信息
+            }, 'p-3 px-6 ripple')} onClick={() => setProductTab("publishInfo")}>出版信息
             </div>
             <div className="bg-gray-400 top-0 h-6 mt-3 absolute" style={{left: "50%", width: 1}}/>
         </nav>

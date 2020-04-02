@@ -64,6 +64,14 @@ const ShoppingCart: React.FC = () => {
         return null;
     }
     const checkedItemsLength = userStore.userData.shoppingCart.items.filter((value) => value.checked).length;
+    if (userStore.userData.shoppingCart.items.length === 0) {
+        return <div className="bg-gray-200">
+            <NavBar centerPart={'购物车'}/>
+            <div className="w-full h-40 flex-center">
+                购物车里空空的，去转转吧！
+            </div>
+        </div>
+    }
     return (
         <div className="bg-gray-200">
             <NavBar centerPart={'购物车'} rightPart={logic.inManageMode ? <span onClick={() => (logic.inManageMode = false)}>完成</span> : <span onClick={() => (logic.inManageMode = true)}>管理</span>} />
@@ -117,7 +125,9 @@ const ShoppingCart: React.FC = () => {
                     <div className="ml-auto flex items-center mr-1">
                         合计<span className="text-red-500 text-sm">￥{logic.allPrice}</span>
                         <button className="bg-red-400 text-white rounded-full ml-2 px-4 py-2" onClick={()=>{
-                            history.push('/confirmOrder?from=shoppingCart');
+                            if (userStore.userData.shoppingCart.items.filter(value => value.checked).length > 0) {
+                                history.push('/confirmOrder?from=shoppingCart');
+                            }
                         }}>结算{checkedItemsLength === 0 ? '' : `(${checkedItemsLength})`}</button>
                     </div>
                 </div>
