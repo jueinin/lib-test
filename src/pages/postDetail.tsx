@@ -115,7 +115,6 @@ const SimpleUserInfoTab: React.FC<SimpleUserInfoTabProps> = (props) => {
 const PostDetail: React.FC = () => {
     const logic = useLocalStore(() => new Logic());
     useEffect(logic.onUseEffect, []);
-    console.log(logic.selectedReplyComment?.id === logic.commentChildDetailData?.currentComment?.id,logic.selectedReplyComment?.id ,logic.commentChildDetailData?.currentComment?.id)
     return (
         <div>
             <NavBar centerPart={'详情'}/>

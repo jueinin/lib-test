@@ -2,7 +2,8 @@
   "name": "lib-test",
   "scripts": {
     "start": "webpack-dev-server --config webpack.config.ts",
-    "tailwind": "tailwind build src/style.css -o src/tailwind.css"
+    "tailwind": "tailwind build src/style.css -o src/tailwind.css",
+    "build": "set NODE_ENV=production && webpack --config webpack.config.ts"
   },
   "dependencies": {
     "@babel/plugin-proposal-class-properties": "^7.8.3",
@@ -69,7 +70,8 @@
     "tailwindcss-truncate-multiline": "^1.0.3",
     "webpack": "^4.41.5",
     "webpack-cli": "^3.3.10",
-    "webpack-dev-server": "^3.10.3"
+    "webpack-dev-server": "^3.10.3",
+    "webpack-pwa-manifest": "^4.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.8.4",

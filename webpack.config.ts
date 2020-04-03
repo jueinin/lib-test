@@ -4,6 +4,7 @@ import path from 'path';
 import HTMLWebpackPlugin from 'html-webpack-plugin';
 import { Configuration } from 'webpack-dev-server';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import WebpackPwaManifest from 'webpack-pwa-manifest'
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const currentEnv = 'development';

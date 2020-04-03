@@ -1,0 +1,17 @@
+{
+  "name": "PWA Website",
+  "short_name": "PWA",
+  "description": "An example PWA website",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#ACE",
+  "theme_color": "#ACE",
+  "icons": [
+    {
+      "src": "./resource/images/logo.png",
+      "sizes": "72x72",
+      "type": "image/png"
+    }
+  ]
+}
