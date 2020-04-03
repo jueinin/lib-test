@@ -26,7 +26,6 @@ import PosterAdd from './pages/posterAdd';
 import PostDetail from './pages/postDetail';
 import CacheRoute, { CacheSwitch } from 'react-router-cache-route';
 import AddressList from './pages/addresssList';
-require('./resource/manifest.json')
 if (navigator.serviceWorker) {
     navigator.serviceWorker.register('/service-worker.js');
 }

@@ -8,6 +8,7 @@ import CopyWebpackPlugin from 'copy-webpack-plugin';
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const currentEnv = process.env.NODE_ENV as 'development' | 'production';
+const isDev = currentEnv === 'development';
 const config: webpack.Configuration & Configuration = {
     entry: './src/index.tsx',
     output: {
@@ -15,9 +16,9 @@ const config: webpack.Configuration & Configuration = {
         path: path.resolve(__dirname, 'dist'),
     },
     mode: currentEnv,
-    devtool: "inline-cheap-module-source-map",
+    devtool: isDev ? 'inline-cheap-module-source-map' : false,
     resolve: {
-        extensions: ['.tsx', '.ts', '.js', '.jsx'],
+        extensions: ['.tsx', '.ts', '.js', '.jsx','json'],
     },
     devServer: {
         hot: true,
@@ -45,142 +46,145 @@ const config: webpack.Configuration & Configuration = {
         historyApiFallback: true,
     },
     module: {
-      rules: [
-        {
-          test: /\.css$/,
-          exclude: /\.module\.css/,
-          use: [
+        rules: [
             {
-              loader: MiniCssExtractPlugin.loader,
-              options: {
-                hmr: currentEnv === 'development',
-              },
-            },
-            {
-              loader: 'css-loader',
-              options: {
-                // importLoaders: 1,
-                sourceMap: false,
-              },
-            },
-            {
-              loader: "postcss-loader",
-              options: {
-                plugins: [require("tailwindcss")],
-                sourceMap: false
-              }
-            }
-          ],
-        },
-        {
-          test: /\.module\.css$/,
-          use: [
-            {
-              loader: MiniCssExtractPlugin.loader,
-              options: {
-                hmr: currentEnv === "development"
-              }
-            },
-            {
-              loader: 'css-loader',
-              options: {
-                // importLoaders: 1,
-                sourceMap: false,
-                modules: {
-                  mode: 'local',
-                  localIdentName: '[path][name]__[local]--[hash:base64:5]',
-                  context: path.resolve(__dirname, 'src'),
-                },
-                esModule: true
-              },
-            },
-          ],
-        },
-        {
-          test: /\.scss$/,
-          use: [
-            {
-              loader: MiniCssExtractPlugin.loader,
-              options: {
-                hmr: currentEnv === 'development',
-              },
-            },
-            {
-              loader: 'css-loader',
-              options: {
-                importLoaders: 1,
-                sourceMap: false,
-              },
-            },
-            {
-              loader: 'sass-loader',
-            },
-          ],
-        },
-        {
-          test: /\.(ts|tsx|js|jsx)$/,
-          exclude: /node_modules/,
-          use: [
-            {
-              loader: 'babel-loader',
-              options: {
-                presets: [
-                  [
-                    '@babel/preset-react',
+                test: /\.css$/,
+                exclude: /\.module\.css/,
+                use: [
                     {
-                      targets: {
-                        browsers: ['last 1 Chrome versions'],
-                      },
+                        loader: MiniCssExtractPlugin.loader,
+                        options: {
+                            hmr: currentEnv === 'development',
+                        },
                     },
-                  ],
-                  ['@babel/preset-env'],
-                  ['@babel/preset-typescript'],
+                    {
+                        loader: 'css-loader',
+                        options: {
+                            // importLoaders: 1,
+                            sourceMap: false,
+                        },
+                    },
+                    {
+                        loader: 'postcss-loader',
+                        options: {
+                            plugins: [require('tailwindcss')],
+                            sourceMap: false,
+                        },
+                    },
                 ],
-                  plugins: [
-                      ['@babel/plugin-transform-runtime'],
-                      [
-                          'babel-plugin-import',
-                          {
-                              libraryName: '@material-ui/core',
-                              libraryDirectory: 'esm',
-                              camel2DashComponentName: false,
-                          },
-                          'core',
-                      ],
-                      [
-                          'babel-plugin-import',
-                          {
-                              libraryName: '@material-ui/icons',
-                              libraryDirectory: 'esm',
-                              camel2DashComponentName: false,
-                          },
-                          'icons',
-                      ],
-                      [
-                          'babel-plugin-import',
-                          {
-                              libraryName: '@umijs/hooks',
-                              libraryDirectory: 'es',
-                              camel2DashComponentName: false,
-                          },
-                      ],
-                      ["@babel/plugin-proposal-pipeline-operator", {"proposal": "fsharp"}],
-                      ['@babel/plugin-proposal-decorators',{
-                          legacy: true
-                      }],
-                      ['@babel/plugin-proposal-class-properties'],
-                      ['@babel/plugin-proposal-partial-application'],
-                      ['react-refresh/babel'],
-                  ],
-              },
             },
-          ],
-        },
-        {
-          test: /\.(png|svg|jpg|gif|jpeg|woff|woff2|ttf|eot)$/,
-          use: ['file-loader'],
-        },
-      ],
+            {
+                test: /\.module\.css$/,
+                use: [
+                    {
+                        loader: MiniCssExtractPlugin.loader,
+                        options: {
+                            hmr: currentEnv === 'development',
+                        },
+                    },
+                    {
+                        loader: 'css-loader',
+                        options: {
+                            // importLoaders: 1,
+                            sourceMap: false,
+                            modules: {
+                                mode: 'local',
+                                localIdentName: '[path][name]__[local]--[hash:base64:5]',
+                                context: path.resolve(__dirname, 'src'),
+                            },
+                            esModule: true,
+                        },
+                    },
+                ],
+            },
+            {
+                test: /\.scss$/,
+                use: [
+                    {
+                        loader: MiniCssExtractPlugin.loader,
+                        options: {
+                            hmr: currentEnv === 'development',
+                        },
+                    },
+                    {
+                        loader: 'css-loader',
+                        options: {
+                            importLoaders: 1,
+                            sourceMap: false,
+                        },
+                    },
+                    {
+                        loader: 'sass-loader',
+                    },
+                ],
+            },
+            {
+                test: /\.(ts|tsx|js|jsx)$/,
+                exclude: /node_modules/,
+                use: [
+                    {
+                        loader: 'babel-loader',
+                        options: {
+                            presets: [
+                                [
+                                    '@babel/preset-react',
+                                    {
+                                        targets: {
+                                            browsers: ['last 1 Chrome versions'],
+                                        },
+                                    },
+                                ],
+                                ['@babel/preset-env'],
+                                ['@babel/preset-typescript'],
+                            ],
+                            plugins: [
+                                ['@babel/plugin-transform-runtime'],
+                                [
+                                    'babel-plugin-import',
+                                    {
+                                        libraryName: '@material-ui/core',
+                                        libraryDirectory: 'esm',
+                                        camel2DashComponentName: false,
+                                    },
+                                    'core',
+                                ],
+                                [
+                                    'babel-plugin-import',
+                                    {
+                                        libraryName: '@material-ui/icons',
+                                        libraryDirectory: 'esm',
+                                        camel2DashComponentName: false,
+                                    },
+                                    'icons',
+                                ],
+                                [
+                                    'babel-plugin-import',
+                                    {
+                                        libraryName: '@umijs/hooks',
+                                        libraryDirectory: 'es',
+                                        camel2DashComponentName: false,
+                                    },
+                                ],
+                                ['@babel/plugin-proposal-pipeline-operator', { proposal: 'fsharp' }],
+                                [
+                                    '@babel/plugin-proposal-decorators',
+                                    {
+                                        legacy: true,
+                                    },
+                                ],
+                                ['@babel/plugin-proposal-class-properties'],
+                                ['@babel/plugin-proposal-partial-application'],
+                                isDev && ['react-refresh/babel'],
+                            ].filter(Boolean),
+                        },
+                    },
+                ],
+            },
+            {
+                test: /\.(png|svg|jpg|gif|jpeg|woff|woff2|ttf|eot)$/,
+                use: ['file-loader'],
+            },
+        ],
     },
     plugins: [
         new HTMLWebpackPlugin({
@@ -190,12 +194,12 @@ const config: webpack.Configuration & Configuration = {
         new CopyWebpackPlugin([
             {
                 from: './src/resource',
-                to: ''
-            }
+                to: '',
+            },
         ]),
-        new webpack.HotModuleReplacementPlugin(),
-        new ReactRefreshWebpackPlugin(),
+        isDev && new webpack.HotModuleReplacementPlugin(),
+        isDev && new ReactRefreshWebpackPlugin(),
         // new BundleAnalyzerPlugin()
-    ],
+    ].filter(Boolean),
 };
 export default config;
