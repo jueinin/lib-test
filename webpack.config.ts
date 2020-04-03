@@ -7,8 +7,7 @@ import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-const currentEnv = 'development';
-process.env.NODE_ENV = currentEnv;
+const currentEnv = process.env.NODE_ENV as 'development' | 'production';
 const config: webpack.Configuration & Configuration = {
     entry: './src/index.tsx',
     output: {
