@@ -4,7 +4,7 @@ import path from 'path';
 import HTMLWebpackPlugin from 'html-webpack-plugin';
 import { Configuration } from 'webpack-dev-server';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
-import WebpackPwaManifest from 'webpack-pwa-manifest'
+import CopyWebpackPlugin from 'copy-webpack-plugin';
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const currentEnv = 'development';
@@ -188,6 +188,12 @@ const config: webpack.Configuration & Configuration = {
             template: './src/index.html',
         }),
         new MiniCssExtractPlugin(),
+        new CopyWebpackPlugin([
+            {
+                from: './src/resource',
+                to: ''
+            }
+        ]),
         new webpack.HotModuleReplacementPlugin(),
         new ReactRefreshWebpackPlugin(),
         // new BundleAnalyzerPlugin()
