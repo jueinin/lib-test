@@ -18,14 +18,18 @@ import SignUp from './pages/signUp';
 import BrowserHistory from './pages/BrowserHistory';
 import MyFavorite from './pages/myFavorite';
 import ShoppingCart from './pages/shoppingCart';
-import ConfirmOrder from "./pages/confirmOrder";
-import AddAddress from "./pages/addAddress";
-import Order from "./pages/order";
-import Comment from "./pages/comment";
-import PosterAdd from "./pages/posterAdd";
-import PostDetail from "./pages/postDetail";
-import CacheRoute, {CacheSwitch} from "react-router-cache-route";
-import AddressList from "./pages/addresssList";
+import ConfirmOrder from './pages/confirmOrder';
+import AddAddress from './pages/addAddress';
+import Order from './pages/order';
+import Comment from './pages/comment';
+import PosterAdd from './pages/posterAdd';
+import PostDetail from './pages/postDetail';
+import CacheRoute, { CacheSwitch } from 'react-router-cache-route';
+import AddressList from './pages/addresssList';
+
+if (navigator.serviceWorker) {
+    navigator.serviceWorker.register('/service-worker.js');
+}
 const App = () => {
     const history = useHistory();
     const { userStore } = useStore();
@@ -43,12 +47,12 @@ const App = () => {
     const transition = useTransition(location, (location) => location.pathname, {
         from: { opacity: 0, transform: 'translate3d(100%,0,0)' },
         enter: { opacity: 1, transform: 'translate3d(0%,0,0)' },
-        leave: { display: 'none'},
+        leave: { display: 'none' },
     });
     return (
         <div className="w-full">
             <CacheSwitch>
-                <CacheRoute exact path={'/'} component={IndexPage}/>
+                <CacheRoute exact path={'/'} component={IndexPage} />
                 <CacheRoute exact path={'/me'}>
                     <Me />
                 </CacheRoute>
@@ -70,7 +74,7 @@ const App = () => {
                 <CacheRoute path={'/animate'}>
                     <Animate />
                 </CacheRoute>
-                <CacheRoute exact path={'/searchInput'} component={SearchInput}/>
+                <CacheRoute exact path={'/searchInput'} component={SearchInput} />
                 <CacheRoute exact path={'/searchResultList'}>
                     {/*params=keyword*/}
                     <SearchResultList />
@@ -85,28 +89,28 @@ const App = () => {
                     {/*from: buy =  点击购买，*/}
                     {/*from: shoppingCart = 购物车购买*/}
                     {/*bookId: 点击购买的书籍id*/}
-                    <ConfirmOrder/>
+                    <ConfirmOrder />
                 </CacheRoute>
-                <CacheRoute path={['/addAddress','/editAddress']}>
-                    <AddAddress/>
+                <CacheRoute path={['/addAddress', '/editAddress']}>
+                    <AddAddress />
                 </CacheRoute>
                 <CacheRoute path={'/order'}>
-                    <Order/>
+                    <Order />
                 </CacheRoute>
                 <CacheRoute path={'/comment'}>
-                    <Comment/>
+                    <Comment />
                 </CacheRoute>
                 <CacheRoute path={'/posterAdd'}>
-                    <PosterAdd/>
+                    <PosterAdd />
                 </CacheRoute>
                 <CacheRoute path={'/postDetail'}>
-                    <PostDetail/>
+                    <PostDetail />
                 </CacheRoute>
                 <Route path={'/addressList'}>
-                    <AddressList/>
+                    <AddressList />
                 </Route>
             </CacheSwitch>
-                {/*{transition.map((value) => {
+            {/*{transition.map((value) => {
                     return (
                         <animated.div
                             key={value.key}

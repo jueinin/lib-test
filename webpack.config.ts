@@ -22,7 +22,7 @@ const config: webpack.Configuration & Configuration = {
     },
     devServer: {
         hot: true,
-        contentBase: path.join(__dirname, 'dist'),
+        contentBase: path.join(__dirname, 'src/resource'), // 没有被打包的一些在resource的静态文件直接通过/文件名访问
         compress: true,
         port: 3001,
         host: '0.0.0.0',
