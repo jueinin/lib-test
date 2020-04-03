@@ -1,12 +1,12 @@
 {
-  "name": "PWA Website",
-  "short_name": "PWA",
-  "description": "An example PWA website",
+  "name": "啄木鸟书城",
+  "short_name": "啄木鸟书城",
+  "description": "啄木鸟书城",
   "start_url": ".",
   "display": "standalone",
-  "orientation": "any",
-  "background_color": "#ACE",
-  "theme_color": "#ACE",
+  "orientation": "portrait",
+  "background_color": "#fff",
+  "theme_color": "#fff",
   "icons": [
     {
       "src": "/logo.png",
