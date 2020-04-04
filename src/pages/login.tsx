@@ -45,6 +45,9 @@ const Login = () => {
                         onClick={() => logic.onLogin().then(userStore.getUserData).then(() => {
                             history.push('/');
                             Toast.info('登录成功，跳转中...')
+                        }).catch(err=>{
+                            const errMsg = err.response.data.message;
+                            Toast.info(errMsg);
                         })}>登录
                 </button>
             </div>
