@@ -10,7 +10,9 @@ module.exports = {
       }
     }
   },
-  variants: {},
+  variants: {
+    backgroundColor: ['hover', 'active'],
+  },
   plugins: [
     require('tailwindcss-truncate-multiline')(),
   ],

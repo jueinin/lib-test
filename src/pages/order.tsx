@@ -4,7 +4,7 @@ import { observable, reaction } from 'mobx';
 import { observer, useLocalStore } from 'mobx-react';
 import { CircularProgress, Popover, Tab, Tabs } from '@material-ui/core';
 import { parse } from 'query-string';
-import { ask } from '../util';
+import {ask, eventEmitter} from '../util';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 import { fromPromise } from 'rxjs/internal-compatibility';
@@ -52,12 +52,16 @@ class Logic {
             });
     };
     onUseEffect = () => {
+        eventEmitter.addListener('order:refresh',()=>{
+            this.getData(this.currentTab)
+        })
         this.getData(this.currentTab);
         const dispose = reaction(
             () => this.currentTab,
             (v) => this.getData(v)
         );
         return () => {
+            eventEmitter.removeAllListeners('order:refresh')
             dispose();
         };
     };

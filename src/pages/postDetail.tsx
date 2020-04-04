@@ -20,7 +20,7 @@ class Logic {
     @observable editCommentDialogOpen = false; // edit comment in full screen dialog
     @observable article = null;
     @observable inEditMode = false;
-    @observable commentData = null;
+    @observable commentData = null;  // comment below with article
     @observable viewDetailCommentOpen = false;
     @observable commentChildDetailData = null;
     @observable selectedReplyComment = null;  // select someone to reply

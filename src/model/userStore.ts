@@ -25,6 +25,9 @@ type UserData = {
         id: number;
         email: string;
         userName: string;
+        avatar: string;
+        sex: string;
+        description: string;
         addresses: UserAddressItem[];
     };
 };

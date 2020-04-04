@@ -24,7 +24,7 @@ html {
     font-size: 14px;
 }
 body {
-    -webkit-tap-highlight-color: #ccc;
+    /*-webkit-tap-highlight-color: #ccc;*/
     user-select: none;
     overscroll-behavior-y: contain;
 }

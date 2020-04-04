@@ -5,6 +5,7 @@ import * as R from 'ramda';
 import { Observable } from 'rxjs';
 import { distinctUntilChanged, filter, map, tap, throttleTime } from 'rxjs/operators';
 import { Toast } from './components/Toast';
+import {EventEmitter} from "events";
 export const browserHistory = createBrowserHistory();
 export const ask = Axios.create({});
 export const defaultAvatar = 'https://jueinin.oss-cn-hongkong.aliyuncs.com/%E5%B0%8F%E7%A8%8B%E5%BA%8F/%E9%BB%98%E8%AE%A4%E5%A4%B4%E5%83%8F.jpg';
@@ -50,3 +51,5 @@ export const isEmail = (value: string) => {
     return /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/.test(value);
 };
 export const isPhoneNumber = (value: string) => /^(?:(?:\+|00)86)?1[3-9]\d{9}$/.test(value);
+
+export const eventEmitter = new EventEmitter();

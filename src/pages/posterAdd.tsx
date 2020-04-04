@@ -4,7 +4,7 @@ import { observer, useLocalStore } from 'mobx-react';
 import { observable } from 'mobx';
 import Quill from 'quill';
 import 'quill/dist/quill.snow.css';
-import {ask} from "../util";
+import {ask, eventEmitter} from "../util";
 import {CircularProgress} from "@material-ui/core";
 import Loading from "../components/Loading";
 import {Toast} from "../components/Toast";
@@ -68,13 +68,14 @@ class Logic {
             }
         }).then(value => {
             Toast.info('发帖成功!');
+            eventEmitter.emit('forum:refreshData');
             (window as any).browserHistory.replace('/forum');
         }).finally(() => this.saveLoading = false);
     }
 }
 
 const PosterAdd: React.FC = () => {
-    const logic = useLocalStore(() => new Logic()); // 不行我必须把图片取出来
+    const logic = useLocalStore(() => new Logic());
     useEffect(logic.onUseEffect, []);
     return (
         <div>

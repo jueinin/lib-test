@@ -4,7 +4,7 @@ import { observable } from 'mobx';
 import { observer, useLocalStore } from 'mobx-react';
 import Loading from '../components/Loading';
 import { parse } from 'query-string';
-import { ask } from '../util';
+import {ask, eventEmitter} from '../util';
 import {path, pipe, prop, range} from 'ramda';
 import { Star, StarBorderOutlined } from '@material-ui/icons';
 import { TextareaAutosize } from '@material-ui/core';
@@ -41,6 +41,7 @@ class Logic {
                 }
             }).then(value => {
                 Toast.info('感谢您的评价！');
+                eventEmitter.emit('order:refresh');
                 (window as any).browserHistory.push('/order');
             })
         }

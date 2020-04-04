@@ -26,6 +26,7 @@ import PosterAdd from './pages/posterAdd';
 import PostDetail from './pages/postDetail';
 import CacheRoute, { CacheSwitch } from 'react-router-cache-route';
 import AddressList from './pages/addresssList';
+import EditProfile from "./pages/editProfile";
 if (navigator.serviceWorker) {
     navigator.serviceWorker.register('/service-worker.js');
 }
@@ -51,7 +52,9 @@ const App = () => {
     return (
         <div className="w-full">
             <CacheSwitch>
-                <CacheRoute exact path={'/'} component={IndexPage} />
+                <CacheRoute exact path={['/','/index']}>
+                    <IndexPage/>
+                </CacheRoute>
                 <CacheRoute exact path={'/me'}>
                     <Me />
                 </CacheRoute>
@@ -73,7 +76,9 @@ const App = () => {
                 <CacheRoute path={'/animate'}>
                     <Animate />
                 </CacheRoute>
-                <CacheRoute exact path={'/searchInput'} component={SearchInput} />
+                <CacheRoute exact path={'/searchInput'}>
+                    <SearchInput/>
+                </CacheRoute>
                 <CacheRoute exact path={'/searchResultList'}>
                     {/*params=keyword*/}
                     <SearchResultList />
@@ -107,6 +112,9 @@ const App = () => {
                 </CacheRoute>
                 <Route path={'/addressList'}>
                     <AddressList />
+                </Route>
+                <Route path={'/editProfile'}>
+                    <EditProfile/>
                 </Route>
             </CacheSwitch>
             {/*{transition.map((value) => {

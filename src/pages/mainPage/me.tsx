@@ -81,7 +81,7 @@ const Me: React.FC = () => {
         ifElse(
             equals(true),
             () => {
-                console.log('logined');
+                history.push('/editProfile')
             },
             () => {
                 (window as any).browserHistory.push('/login');
