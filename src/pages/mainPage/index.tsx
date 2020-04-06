@@ -120,18 +120,34 @@ const IndexPage = () => {
                     }
                     leftPart={<img src={logo} className="h-6 w-6 mr-1" />}
                 />
-                <section data-name={'轮播图'} className="w-full overflow-hidden" style={{ height: 170 }}>
+                <section data-name={'轮播图'} className="w-full overflow-hidden">
                     <Slider>
                         {[swiper1, swiper2, swiper3].map((value, index) => {
-                            return <img src={value} key={index} alt="carousel" className="ripple w-screen" />;
+                            return <img style={{height: 170}} src={value} key={index} alt="carousel" className="ripple w-screen" />;
                         })}
                     </Slider>
                 </section>
                 <nav data-name={'分类'} className="mt-4">
-                    <div className="flex content-between flex-wrap">
+                    {/*<div className="flex content-between flex-wrap">
                         {navItems.current.map((value, index) => {
                             return (
                                 <div className="flex flex-col justify-around h-20 w-1/4 items-center ripple" key={index} onClick={() => push(`/searchResultList?keyword=${value.title}`)}>
+                                    <img src={value.pic} alt="icon" className="h-12 w-12 shadow-md mb-1" />
+                                    <span className="text-sm mb-2">{value.title}</span>
+                                </div>
+                            );
+                        })}
+                    </div>*/}
+                    <div className="grid" style={{
+                        gridTemplateColumns: 'repeat(4,25%)',
+                        gridTemplateRows: 'auto auto',
+                        justifyItems: "center"
+                    }}>
+                        {navItems.current.map((value, index) => {
+                            return (
+                                <div className="grid gap-1 items-center justify-items-center ripple"
+                                     style={{gridTemplateRows: 'auto 20px'}}
+                                     key={index} onClick={() => push(`/searchResultList?keyword=${value.title}`)}>
                                     <img src={value.pic} alt="icon" className="h-12 w-12 shadow-md mb-1" />
                                     <span className="text-sm mb-2">{value.title}</span>
                                 </div>

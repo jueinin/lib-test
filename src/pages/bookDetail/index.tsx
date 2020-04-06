@@ -71,7 +71,13 @@ const BookDetail: React.FC = () => {
                             <span>{productData?.isFavorited ? '取消收藏' : '收藏'}</span>
                         </div>
                         <div className="flex flex-col items-center ripple" onClick={() => history.push('/shoppingCart')}>
-                            <ShoppingCartOutlined className="text-3xl text-red-500"/>
+                            <span className="relative">
+                                <ShoppingCartOutlined className="text-3xl text-red-500"/>
+                                <div style={{
+                                    top: '-.6rem',
+                                    right: '-.6rem'
+                                }} className="absolute text-xs w-5 h-5 flex-center border rounded-full text-red-500 border-red-500">{userStore.userData?.shoppingCart?.items?.length}</div>
+                            </span>
                             <span>购物车</span>
                         </div>
                     </div>

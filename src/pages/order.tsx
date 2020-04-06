@@ -4,7 +4,7 @@ import { observable, reaction } from 'mobx';
 import { observer, useLocalStore } from 'mobx-react';
 import { CircularProgress, Popover, Tab, Tabs } from '@material-ui/core';
 import { parse } from 'query-string';
-import {ask, eventEmitter} from '../util';
+import { ask, eventEmitter } from '../util';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 import { fromPromise } from 'rxjs/internal-compatibility';
@@ -12,7 +12,9 @@ import { always, cond, equals, identity, ifElse, length, pipe, prop, sum } from 
 import logo from '../resource/images/logo.jpeg';
 import PayDialog from '../components/PayDialog';
 import { Toast } from '../components/Toast';
-import {Link} from "react-router-dom";
+import { Link } from 'react-router-dom';
+import { createPortal } from 'react-dom';
+import PopConfirm from '../components/popConfirm';
 
 class Logic {
     @observable currentTab: string = (parse(location.search.slice(1)).type as string) || 'all';
@@ -38,7 +40,7 @@ class Logic {
         },
     ];
     @observable data = [];
-    @observable deleteOrderPopOverOpen = false;
+    @observable selectedOrderId: null | number = null;
     getData = (tab: string) => {
         this.loading = true;
         this.data = [];
@@ -52,16 +54,16 @@ class Logic {
             });
     };
     onUseEffect = () => {
-        eventEmitter.addListener('order:refresh',()=>{
-            this.getData(this.currentTab)
-        })
+        eventEmitter.addListener('order:refresh', () => {
+            this.getData(this.currentTab);
+        });
         this.getData(this.currentTab);
         const dispose = reaction(
             () => this.currentTab,
             (v) => this.getData(v)
         );
         return () => {
-            eventEmitter.removeAllListeners('order:refresh')
+            eventEmitter.removeAllListeners('order:refresh');
             dispose();
         };
     };
@@ -85,11 +87,11 @@ class Logic {
         }).then((value1) => {
             if (value1.data.status === 'ok') {
                 this.getData(this.currentTab);
-                this.deleteOrderPopOverOpen = false;
+                this.selectedOrderId = null;
             }
         });
     };
-    pay=()=>{
+    pay = () => {
         ask({
             url: `/api/pay`,
             method: 'post',
@@ -101,20 +103,46 @@ class Logic {
                 this.getData(this.currentTab);
             }
         });
-    }
+    };
 }
 const statusToName = (value: string) => {
     return cond([
         [equals('pendingPayment'), always('待付款')],
         [equals('pendingReceived'), always('待收货')],
         [equals('pendingComment'), always('待评价')],
-        [equals('finish'),always('交易成功')],
-        [equals('cancel'),always('交易取消')]
+        [equals('finish'), always('交易成功')],
+        [equals('cancel'), always('交易取消')],
     ])(value);
 };
 const Order: React.FC = () => {
     const logic = useLocalStore(() => new Logic());
     useEffect(logic.onUseEffect, []);
+    const renderPopConfirm = () => {
+        return (
+            <Popover
+                open={logic.selectedOrderId !== null}
+                anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                }}
+                transformOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'center',
+                }}
+                onClose={() => (logic.selectedOrderId = null)}
+                anchorEl={document.getElementById('deleteOrder' + logic.selectedOrderId)}
+            >
+                <div className="flex justify-between text-blue-500 p-4">
+                    <button className="p-1 px-2 bg-blue-500 border rounded-lg text-white" onClick={() => logic.deleteOrderItem(logic.selectedOrderId)}>
+                        确&nbsp;认
+                    </button>
+                    <button className="ml-4 p-1 px-2 text-black" onClick={() => (logic.selectedOrderId = null)}>
+                        取&nbsp;消
+                    </button>
+                </div>
+            </Popover>
+        );
+    };
     return (
         <div className="bg-gray-200">
             <NavBar centerPart={'订单'} />
@@ -186,37 +214,20 @@ const Order: React.FC = () => {
                                             确认收货
                                         </button>
                                     )}
-                                    {value.status === 'pendingComment' && <Link to={`/comment?bookId=${value.book.id}&orderItemId=${value.id}`} className="border p-2 ml-auto rounded-full px-4 bg-red-500 text-white">立即评价</Link>}
-                                    <button id="deleteOrder" className="border p-2 rounded-full px-4" onClick={() => (logic.deleteOrderPopOverOpen = true)}>
+                                    {value.status === 'pendingComment' && (
+                                        <Link to={`/comment?bookId=${value.book.id}&orderItemId=${value.id}`} className="border p-2 ml-auto rounded-full px-4 bg-red-500 text-white">
+                                            立即评价
+                                        </Link>
+                                    )}
+                                    <button id={'deleteOrder' + value.id} className="border p-2 rounded-full px-4" onClick={() => (logic.selectedOrderId = value.id)}>
                                         删除订单
                                     </button>
-                                    <Popover
-                                        open={logic.deleteOrderPopOverOpen}
-                                        anchorOrigin={{
-                                            vertical: 'top',
-                                            horizontal: 'center',
-                                        }}
-                                        transformOrigin={{
-                                            vertical: 'bottom',
-                                            horizontal: 'center',
-                                        }}
-                                        onClose={() => (logic.deleteOrderPopOverOpen = false)}
-                                        anchorEl={document.getElementById('deleteOrder')}
-                                    >
-                                        <div className="flex justify-between text-blue-500 p-4">
-                                            <button className="p-1 bg-blue-500 border rounded-lg text-white" onClick={() => logic.deleteOrderItem(value.id)}>
-                                                确认
-                                            </button>
-                                            <button className="ml-4 text-black" onClick={() => (logic.deleteOrderPopOverOpen = false)}>
-                                                取消
-                                            </button>
-                                        </div>
-                                    </Popover>
                                 </div>
                             </div>
                         );
                     })}
             </div>
+            {renderPopConfirm()}
             <PayDialog
                 open={logic.payDialogOpen}
                 onClose={() => {

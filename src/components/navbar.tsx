@@ -30,8 +30,8 @@ const NavBar: React.FC<NavBarProps> = (props) => {
             icon: <HomeOutlined className="text-3xl" />,
         },
         {
-            title: '分类',
-            path: '/classification',
+            title: '3D演示',
+            path: '/3d',
             icon: <FindInPageOutlined className="text-3xl" />,
         },
         {
@@ -56,11 +56,17 @@ const NavBar: React.FC<NavBarProps> = (props) => {
                 transition.map((value) => {
                     return (
                         value.item && (
-                            <animated.ul key={value.key} className="bg-gray-400 grid grid-cols-4 w-full overflow-hidden" style={value.props}>
+                            <animated.ul key={value.key} className="bg-gray-400 grid grid-cols-4 justify-items-center items-center" style={value.props}>
                                 {items.current.map((value,index) => {
                                     return (
-                                        <li key={index} className="flex flex-col justify-center items-center " onClick={() => history.push(value.path)}>
-                                            <span className="text-red-400">{value.icon}</span>
+                                        <li key={index} className="text-center" onClick={() => {
+                                            if (!(value.path === '/3d')) {
+                                                history.push(value.path);
+                                            } else {
+                                                location.pathname='/3d/3d.html'
+                                            }
+                                        }}>
+                                            <div className="text-red-400">{value.icon}</div>
                                             <span className="">{value.title}</span>
                                         </li>
                                     );

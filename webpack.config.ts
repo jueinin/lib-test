@@ -12,7 +12,7 @@ const isDev = currentEnv === 'development';
 const config: webpack.Configuration & Configuration = {
     entry: './src/index.tsx',
     output: {
-        filename: '[name]bundle.js',
+        filename: '[hash]bundle.js',
         path: path.resolve(__dirname, 'dist'),
     },
     mode: currentEnv,
@@ -191,7 +191,7 @@ const config: webpack.Configuration & Configuration = {
             template: './src/index.html',
         }),
         new MiniCssExtractPlugin({
-            filename: '[name]main.css'
+            filename: '[hash]main.css'
         }),
         new CopyWebpackPlugin([
             {

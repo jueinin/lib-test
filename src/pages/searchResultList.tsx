@@ -219,7 +219,7 @@ const SearchResultList: React.FC = () => {
             <section data-name={'结果页'}>
                 <div>
                     {(bookData?.bookData || []).length > 0 ? (
-                        (bookData?.bookData || []).map((value) => {
+                        bookData.bookData.map((value) => {
                             return (
                                 <div key={value.bookId} className="cursor-pointer">
                                     <BookItem onClick={() => history.push('/bookDetail?bookId=' + value.bookId)}
@@ -233,7 +233,6 @@ const SearchResultList: React.FC = () => {
                         </div>
                     ) }
                 </div>
-
                 {loading && (
                     <div className="flex items-center justify-center h-40">
                         <CircularProgress placeholder="loading"/>

@@ -95,7 +95,7 @@ const SearchInput: React.FC = () => {
         <div>
             <NavBar centerPart={'搜索'} />
             <div className="px-2">
-                <section className="relative">
+                {/*<section className="relative">
                     <section data-name={'搜索栏'} className="flex items-center mt-2 border-b border-solid border-gray-400 shadow-sm pb-2">
                         <div className="gray-input pl-0 ">
                             <SearchOutlined className="mr-auto ml-2 " />
@@ -115,6 +115,35 @@ const SearchInput: React.FC = () => {
                             {searchStr && <HighlightOffOutlinedIcon onClick={() => (logic.searchStr = '')} className="ml-auto mr-2 text-2xl text-gray-500 cursor-pointer" />}
                         </div>
                         <div className="px-3" onClick={() => searchStr.length !== 0 && navToSearchResultList(searchStr,localSearchHistory)}>
+                            {searchStr.length === 0 ? '取消' : '搜索'}
+                        </div>
+                    </section>*/}
+                <section className="relative">
+                    <section data-name={'搜索栏'} className="grid gap-2 items-center border-b border-gray-400 shadow-sm py-2" style={{
+                        gridTemplateColumns: '1fr auto'
+                    }}>
+                        <div className="grid items-center bg-gray-300 rounded-lg"
+                        style={{
+                            gridTemplateColumns: 'auto 1fr auto'
+                        }}
+                        >
+                            <SearchOutlined className="ml-2" />
+                            <input
+                                className="bg-gray-300 py-1 rounded-lg"
+                                value={searchStr}
+                                autoFocus
+                                onChange={(event) => {
+                                    logic.searchStr = event.target.value
+                                }}
+                                onKeyPress={(event) => {
+                                    if (event.key === 'Enter') {
+                                        navToSearchResultList(searchStr,localSearchHistory);
+                                    }
+                                }}
+                            />
+                            {searchStr && <HighlightOffOutlinedIcon onClick={() => (logic.searchStr = '')} className="mr-2 text-2xl text-gray-500 cursor-pointer" />}
+                        </div>
+                        <div className="px-2" onClick={() => searchStr.length !== 0 && navToSearchResultList(searchStr,localSearchHistory)}>
                             {searchStr.length === 0 ? '取消' : '搜索'}
                         </div>
                     </section>

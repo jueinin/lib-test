@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react';
+import PopConfirm from "../components/popConfirm";
 const pages = [
     'https://images.pexels.com/photos/62689/pexels-photo-62689.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
     'https://images.pexels.com/photos/296878/pexels-photo-296878.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
@@ -119,5 +120,11 @@ const pages = [
 //     );
 // };
 export default ()=>{
-    return <div>test</div>
+    return <div>
+        <div className="mt-40 ml-40">
+            {/*<PopConfirm overlay={<div>66666</div>}>*/}
+            {/*<div className="bg-red-500 inline-block" id="tt" onClick={console.log}>contnet</div>*/}
+            {/*</PopConfirm>*/}
+        </div>
+    </div>
 }
