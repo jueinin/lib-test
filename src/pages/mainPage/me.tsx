@@ -157,9 +157,10 @@ const Me: React.FC = () => {
                             <div key={value.title} className="text-center" onClick={value.onClick}>
                                 <div className="my-1 text-lg text-red-500 relative">
                                     {value.icon}
-                                    {value.count && <div  className="absolute text-xs w-5 h-5 flex-center border rounded-full text-red-500 border-red-500" style={{
+                                    {value.count && <div  className="absolute text-xs h-5 flex-center border rounded-full text-red-500 border-red-500" style={{
                                         top: '-.3rem',
-                                        right: '-.3rem'
+                                        right: '-.3rem',
+                                        minWidth: '1.25rem'
                                     }}>{value.count}</div>}
                                 </div>
                                 <span className="text-sm">{value.title}</span>
@@ -183,13 +184,13 @@ const Me: React.FC = () => {
                             <div key={value.title} className="flex flex-col items-center" onClick={() => history.push(value.path)}>
                                 <div className="my-1 text-red-500 text-lg relative">
                                     {value.icon}
-                                    {value.count && <div className="absolute text-xs w-5 h-5 flex-center border rounded-full text-red-500 border-red-500" style={{
+                                    {value.count && <div className="absolute text-xs h-5 flex-center border rounded-full text-red-500 border-red-500" style={{
                                         top: '-.8rem',
-                                        right: '-.8rem'
+                                        right: '-.8rem',
+                                        minWidth: '1.25rem'
                                     }}>{value.count}</div>}
                                 </div>
                                 <span className="text-sm">{value.title}</span>
-
                             </div>
                         );
                     })}

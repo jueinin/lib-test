@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect ,Suspense} from 'react';
 import { render } from 'react-dom';
 import './tailwind.css';
 import './index.css';
@@ -29,7 +29,6 @@ import AddressList from './pages/addresssList';
 import EditProfile from "./pages/editProfile";
 if (navigator.serviceWorker) {
     navigator.serviceWorker.register('/service-worker.js');
-}
 const App = () => {
     const history = useHistory();
     const { userStore } = useStore();
@@ -52,66 +51,66 @@ const App = () => {
     return (
         <div className="w-full">
             <CacheSwitch>
-                <CacheRoute exact path={['/','/index']}>
+                <CacheRoute exact path={['/', '/index']}>
                     <IndexPage/>
                 </CacheRoute>
                 <CacheRoute exact path={'/me'}>
-                    <Me />
+                    <Me/>
                 </CacheRoute>
                 <CacheRoute exact path={'/forum'}>
-                    <Forum />
+                    <Forum/>
                 </CacheRoute>
                 <CacheRoute path={'/browserHistory'}>
-                    <BrowserHistory />
+                    <BrowserHistory/>
                 </CacheRoute>
                 <CacheRoute path={'/bookDetail'}>
-                    <BookDetail />
+                    <BookDetail/>
                 </CacheRoute>
                 <CacheRoute path={'/favorites'}>
-                    <MyFavorite />
+                    <MyFavorite/>
                 </CacheRoute>
                 <CacheRoute path={'/shoppingCart'}>
                     <ShoppingCart />
                 </CacheRoute>
                 <CacheRoute path={'/animate'}>
-                    <Animate />
+                    <Animate/>
                 </CacheRoute>
                 <CacheRoute exact path={'/searchInput'}>
                     <SearchInput/>
                 </CacheRoute>
                 <CacheRoute exact path={'/searchResultList'}>
                     {/*params=keyword*/}
-                    <SearchResultList />
+                    <SearchResultList/>
                 </CacheRoute>
                 <CacheRoute path={'/login'}>
-                    <Login />
+                    <Login/>
                 </CacheRoute>
                 <CacheRoute path={'/signUp'}>
-                    <SignUp />
+                    <SignUp/>
                 </CacheRoute>
                 <CacheRoute path={'/confirmOrder'}>
                     {/*from: buy =  点击购买，*/}
                     {/*from: shoppingCart = 购物车购买*/}
                     {/*bookId: 点击购买的书籍id*/}
-                    <ConfirmOrder />
+                    <ConfirmOrder/>
                 </CacheRoute>
                 <CacheRoute path={['/addAddress', '/editAddress']}>
-                    <AddAddress />
+                    <AddAddress/>
                 </CacheRoute>
                 <CacheRoute path={'/order'}>
-                    <Order />
+                    <Order/>
                 </CacheRoute>
                 <CacheRoute path={'/comment'}>
-                    <Comment />
+                    <Comment/>
                 </CacheRoute>
                 <CacheRoute path={'/posterAdd'}>
-                    <PosterAdd />
+                    <PosterAdd/>
                 </CacheRoute>
                 <CacheRoute path={'/postDetail'}>
-                    <PostDetail />
+                    <PostDetail/>
                 </CacheRoute>
                 <Route path={'/addressList'}>
-                    <AddressList />
+                    <AddressList/>
                 </Route>
                 <Route path={'/editProfile'}>
                     <EditProfile/>
