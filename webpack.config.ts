@@ -10,7 +10,7 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 const currentEnv = process.env.NODE_ENV as 'development' | 'production';
 const isDev = currentEnv === 'development';
 const config: webpack.Configuration & Configuration = {
-    entry: './src/index.tsx',
+    entry: process.env.TYPEPROJECT === 'admin' ? './src/backend/index.tsx' : './src/index.tsx',
     output: {
         filename: '[hash]bundle.js',
         path: path.resolve(__dirname, 'dist'),
@@ -18,7 +18,7 @@ const config: webpack.Configuration & Configuration = {
     mode: currentEnv,
     devtool: isDev ? 'inline-cheap-module-source-map' : false,
     resolve: {
-        extensions: ['.tsx', '.ts', '.js', '.jsx','json'],
+        extensions: ['.tsx', '.ts', '.js', '.jsx', 'json'],
     },
     devServer: {
         hot: true,
@@ -158,12 +158,22 @@ const config: webpack.Configuration & Configuration = {
                                     'icons',
                                 ],
                                 [
+                                    'import',
+                                    {
+                                        libraryName: 'antd',
+                                        libraryDirectory: 'es',
+                                        style: 'css', // `style: true` 会加载 less 文件
+                                    },
+                                    "antd"
+                                ],
+                                [
                                     'babel-plugin-import',
                                     {
                                         libraryName: '@umijs/hooks',
                                         libraryDirectory: 'es',
                                         camel2DashComponentName: false,
                                     },
+                                    'umi'
                                 ],
                                 ['@babel/plugin-proposal-pipeline-operator', { proposal: 'fsharp' }],
                                 [
@@ -191,7 +201,7 @@ const config: webpack.Configuration & Configuration = {
             template: './src/index.html',
         }),
         new MiniCssExtractPlugin({
-            filename: '[hash]main.css'
+            filename: '[hash]main.css',
         }),
         new CopyWebpackPlugin([
             {

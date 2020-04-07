@@ -21,6 +21,16 @@ export class Logic {
         open: false,
         value: '',
     };
+    onLogout=()=>{
+        ask({
+            url: `/api/logout`,
+            method: 'post'
+        }).then(value => {
+            if (value.data.status === 'ok') {
+                location.href='/'
+            }
+        })
+    }
 }
 const EditProfile: React.FC = () => {
     const { userStore } = useStore();
@@ -143,6 +153,11 @@ const EditProfile: React.FC = () => {
                     <span className="text-gray-600 self-center">个人介绍</span>
                     <div className="ml-auto w-1/2 truncate-1-lines text-right">{userStore.userData.user.description || '快来介绍下自己吧！'}</div>
                     <div className="ml-4 self-center">></div>
+                </div>
+                <div className="absolute inset-x-0" style={{
+                    top: '61.8vh'
+                }}>
+                    <button className="w-full text-white border rounded-lg active:bg-red-700 bg-red-500 py-4 text-lg" onClick={logic.onLogout}>退出登录</button>
                 </div>
             </div>
             {logic.sexData.open && (

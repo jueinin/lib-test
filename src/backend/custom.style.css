@@ -1,0 +1,7 @@
+.ant-input-suffix {
+    display: flex;
+    align-items: center;
+}
+#body .ant-picker-cell .ant-picker-cell-inner {
+    text-align: center;
+}

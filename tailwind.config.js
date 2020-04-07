@@ -634,7 +634,7 @@ module.exports = {
     borderRadius: [],
     borderStyle: [],
     borderWidth: [],
-    boxShadow: ['hover','active'],
+    boxShadow: ['hover','active','group-hover'],
     boxSizing: [],
     cursor: [],
     display: [],
