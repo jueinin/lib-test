@@ -5,3 +5,16 @@
 #body .ant-picker-cell .ant-picker-cell-inner {
     text-align: center;
 }
+#body .ant-pagination-item-link {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#body #quill-editor .ql-container {
+    height: unset;
+    min-height: 150px;
+}
+
+#body #quill-editor .ql-editor {
+    height: unset;
+}

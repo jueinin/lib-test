@@ -15,6 +15,7 @@ import BookManage from "./pages/bookManage.page";
 import 'antd/dist/antd.css'
 import styled from "styled-components";
 import './custom.style.css'
+import EditBook from "./pages/editBook";
 const GlobalCss = styled.div`
   
 `;
@@ -31,6 +32,9 @@ const AdminEntry:React.FC = () => {
                     <Route path={'/manage'}>
                         <BookManage/>
                     </Route>
+                    <Route path={['/addBook', '/editBook']}>
+                        <EditBook/>
+                    </Route>
                 </Wrapper>
 
                 <Route path={'/login'}>
@@ -38,6 +42,6 @@ const AdminEntry:React.FC = () => {
                 </Route>
             </Switch>
         </GlobalCss>
-    </BrowserRouter>
+    </BrowserRouter>;
 };
 render(<AdminEntry/>,document.getElementById('root'))

@@ -17,43 +17,23 @@ class Logic {
     onUseEffect = () => {
 
     };
-    // onInputChange: ChangeEventHandler<HTMLInputElement> = event => {  // 移动完了会直接
-    //     if (event.target.files.length == 1) {
-    //         this.uploadImageLoading = true;
-    //         let file: File = event.target.files[0];
-    //         const formData = new FormData();
-    //         formData.append('image', file);
-    //         ask({
-    //             url: `/api/uploadImage`,
-    //             method: 'post',
-    //             headers: {
-    //                 'Content-Type': 'multipart/form-data'
-    //             },
-    //             data: formData
-    //         }).then(value => {
-    //             const url = value.data.url;
-    //             this.editor.insertEmbed(this.editor.getSelection().index, 'image', url, "api")
-    //             this.editor.setSelection(this.editor.getSelection().index + 1, 0); // right move one
-    //         }).finally(() => this.uploadImageLoading = false);
-    //     }
+    // onImageInput = (file: File) => {
+    //     this.uploadImageLoading = true;
+    //     const formData = new FormData();
+    //     formData.append('image', file);
+    //     ask({
+    //         url: `/api/uploadImage`,
+    //         method: 'post',
+    //         headers: {
+    //             'Content-Type': 'multipart/form-data'
+    //         },
+    //         data: formData
+    //     }).then(value => {
+    //         const url = value.data.url;
+    //         this.editor.insertEmbed(this.editor.getSelection().index, 'image', url, "api")
+    //         this.editor.setSelection(this.editor.getSelection().index + 1, 0); // right move one
+    //     }).finally(() => this.uploadImageLoading = false);
     // };
-    onImageInput = (file: File) => {
-        this.uploadImageLoading = true;
-        const formData = new FormData();
-        formData.append('image', file);
-        ask({
-            url: `/api/uploadImage`,
-            method: 'post',
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            },
-            data: formData
-        }).then(value => {
-            const url = value.data.url;
-            this.editor.insertEmbed(this.editor.getSelection().index, 'image', url, "api")
-            this.editor.setSelection(this.editor.getSelection().index + 1, 0); // right move one
-        }).finally(() => this.uploadImageLoading = false);
-    };
     onSave=()=>{
         this.saveLoading = true;
         const imageUrls = Array.from(document.querySelectorAll('#editor img')).map(value => value.getAttribute('src'));
@@ -88,12 +68,12 @@ const PosterAdd: React.FC = () => {
                            onChange={event => logic.title = event.target.value}/>
                 </div>
             </div>
-            <Editor getEditorInstance={(editor) => logic.editor = editor} onInputImage={logic.onImageInput}/>
-            {logic.uploadImageLoading && <div className="fixed flex flex-col items-center bg-gray-200 w-1/2 rounded-lg"
-                                              style={{top: "50%", left: '50%', transform: 'translate(-50%,-50%)'}}>
-                <Loading loading={logic.uploadImageLoading}/>
-                上传中...
-            </div>}
+            <Editor getEditorInstance={(editor) => logic.editor = editor}/>
+            {/*{logic.uploadImageLoading && <div className="fixed flex flex-col items-center bg-gray-200 w-1/2 rounded-lg"*/}
+            {/*                                  style={{top: "50%", left: '50%', transform: 'translate(-50%,-50%)'}}>*/}
+            {/*    <Loading loading={logic.uploadImageLoading}/>*/}
+            {/*    上传中...*/}
+            {/*</div>}*/}
         </div>
     );
 };
