@@ -1,7 +1,5 @@
-import {ThemedStyledFunction} from "styled-components";
-
 declare module "*.png" {
-    let s: string;
+    let s: any;
     export default s;
 }
 

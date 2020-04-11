@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import {ask, defaultAvatar, eventEmitter, useStateWithSameRef, whenReachBottom} from '../../util';
-import NavBar from '../../components/navbar';
+import {ask, defaultAvatar, eventEmitter, useStateWithSameRef, whenReachBottom} from '../util';
+import NavBar from '../components/navbar';
 import { Search, Add } from '@material-ui/icons';
 import { Fab } from '@material-ui/core';
 import { Link, useHistory } from 'react-router-dom';
@@ -10,8 +10,8 @@ import { concatMap, filter, retry, startWith, tap } from 'rxjs/operators';
 import { fromPromise } from 'rxjs/internal-compatibility';
 import { observer, useLocalStore } from 'mobx-react';
 import { MessageOutlined, ThumbUpAltOutlined } from '@material-ui/icons';
-import Loading from '../../components/Loading';
-import BottomBar from '../../components/bottomBar';
+import Loading from '../components/Loading';
+import BottomBar from '../components/bottomBar';
 class Request<Data> {
     constructor(private func:(...args)=>Promise<Data>) {
     }

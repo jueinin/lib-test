@@ -15,12 +15,15 @@ const NavBar: React.FC<NavBarProps> = (props) => {
     const transition = useTransition(open, null, {
         from: {
             height: 0,
+            opacity: 0
         },
         enter: {
             height: 65,
+            opacity: 1
         },
         leave: {
             height: 0,
+            opacity: 0
         },
     });
     const items = useRef([

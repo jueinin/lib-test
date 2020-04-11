@@ -2,13 +2,13 @@ import React, { useEffect, Suspense } from 'react';
 import { render } from 'react-dom';
 import './tailwind.css';
 import './index.css';
-import IndexPage from './pages/mainPage';
+import IndexPage from './pages';
 import { BrowserRouter, Route, Switch, useLocation, useHistory } from 'react-router-dom';
 import SearchInput from './pages/searchInput';
 import SearchResultList from './pages/searchResultList';
-import Forum from './pages/mainPage/forum';
-import Me from './pages/mainPage/me';
-import BookDetail from './pages/bookDetail';
+import Forum from './pages/forum';
+import Me from './pages/me';
+import BookDetail from './pages/BookDetail';
 import { rootStore, StoreProvider, useStore } from './model';
 import { ask } from './util';
 import { animated, useTransition } from 'react-spring';
@@ -27,7 +27,7 @@ import PostDetail from './pages/postDetail';
 import CacheRoute, { CacheSwitch } from 'react-router-cache-route';
 import AddressList from './pages/addresssList';
 import EditProfile from './pages/editProfile';
-import Loading from "./components/Loading";
+import {ReactQueryConfigProvider} from "react-query";
 if (navigator.serviceWorker) {
     navigator.serviceWorker.register('/service-worker.js');
 }
@@ -118,81 +118,15 @@ const App = () => {
                     <EditProfile />
                 </Route>
             </CacheSwitch>
-            {/*{transition.map((value) => {
-                    return (
-                        <animated.div
-                            key={value.key}
-                            style={{
-                                minHeight: '100vh',
-                                ...value.props,
-                            }}
-                        >
-                            <Switch location={value.item}>
-                                <Route exact path={'/'} component={IndexPage}/>
-                                <Route exact path={'/me'}>
-                                    <Me />
-                                </Route>
-                                <Route exact path={'/forum'}>
-                                    <Forum />
-                                </Route>
-                                <Route path={'/browserHistory'}>
-                                    <BrowserHistory />
-                                </Route>
-                                <Route path={'/bookDetail'}>
-                                    <BookDetail />
-                                </Route>
-                                <Route path={'/favorites'}>
-                                    <MyFavorite />
-                                </Route>
-                                <Route path={'/shoppingCart'}>
-                                    <ShoppingCart />
-                                </Route>
-                                <Route path={'/animate'}>
-                                    <Animate />
-                                </Route>
-                                <Route exact path={'/searchInput'} component={SearchInput}/>
-                                <Route exact path={'/searchResultList'}>
-                                    params=keyword
-                                    <SearchResultList />
-                                </Route>
-                                <Route path={'/login'}>
-                                    <Login />
-                                </Route>
-                                <Route path={'/signUp'}>
-                                    <SignUp />
-                                </Route>
-                                <Route path={'/confirmOrder'}>
-                                    from: buy =  点击购买，
-                                    from: shoppingCart = 购物车购买
-                                    bookId: 点击购买的书籍id
-                                    <ConfirmOrder/>
-                                </Route>
-                                <Route path={'/addAddress'}>
-                                    <AddAddress/>
-                                </Route>
-                                <Route path={'/order'}>
-                                    <Order/>
-                                </Route>
-                                <Route path={'/comment'}>
-                                    <Comment/>
-                                </Route>
-                                <Route path={'/posterAdd'}>
-                                    <PosterAdd/>
-                                </Route>
-                                <Route path={'/postDetail'}>
-                                    <PostDetail/>
-                                </Route>
-                            </Switch>
-                        </animated.div>
-                    );
-                })}*/}
         </div>
     );
 };
 render(
     <BrowserRouter>
         <StoreProvider.Provider value={rootStore}>
-            <App />
+            <ReactQueryConfigProvider config={{refetchOnWindowFocus: false}}>
+                <App/>
+            </ReactQueryConfigProvider>
         </StoreProvider.Provider>
     </BrowserRouter>,
     document.getElementById('root')

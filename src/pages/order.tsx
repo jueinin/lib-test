@@ -9,6 +9,7 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 import { fromPromise } from 'rxjs/internal-compatibility';
 import { always, cond, equals, identity, ifElse, length, pipe, prop, sum } from 'ramda';
+// @ts-ignore
 import logo from '../resource/images/logo.jpeg';
 import PayDialog from '../components/PayDialog';
 import { Toast } from '../components/Toast';

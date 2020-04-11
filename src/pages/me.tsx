@@ -1,8 +1,8 @@
 import React, {useEffect, useRef, useState} from 'react';
-import BottomBar from '../../components/bottomBar';
+import BottomBar from '../components/bottomBar';
 import { observer } from 'mobx-react';
 import { useHistory, Redirect } from 'react-router-dom';
-import NavBar from '../../components/navbar';
+import NavBar from '../components/navbar';
 import {
     NearMeOutlined,
     CardMembership,
@@ -15,9 +15,9 @@ import {
     StarOutlined,
     MessageOutlined
 } from '@material-ui/icons';
-import { useStore } from '../../model';
+import { useStore } from '../model';
 import { equals, ifElse } from 'ramda';
-import {ask, defaultAvatar} from '../../util';
+import {ask, defaultAvatar} from '../util';
 
 const Me: React.FC = () => {
     const { userStore } = useStore();

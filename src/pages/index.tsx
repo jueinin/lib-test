@@ -1,30 +1,26 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { SearchOutlined, DehazeOutlined } from '@material-ui/icons';
 import { InputBase, CircularProgress } from '@material-ui/core';
-import logo from '../../resource/images/logo.jpeg';
-import Slider from '../../components/slider';
-import swiper1 from '../../resource/images/swiper-image1.jpg';
-import swiper2 from '../../resource/images/swiper-image2.jpg';
-import swiper3 from '../../resource/images/swiper-image3.jpg';
-import icon from '../../resource/images/icon.png';
+import logo from '../resource/images/logo.jpeg';
+import Slider from '../components/slider';
+import swiper1 from '../resource/images/swiper-image1.jpg';
+import swiper2 from '../resource/images/swiper-image2.jpg';
+import swiper3 from '../resource/images/swiper-image3.jpg';
 import { useHistory } from 'react-router-dom';
-import { ask, whenReachBottom } from '../../util';
-import { fromEvent, Subscription } from 'rxjs';
-import { concatMap, retry, startWith, tap } from 'rxjs/operators';
-import { fromPromise } from 'rxjs/internal-compatibility';
-import BottomBar from '../../components/bottomBar';
-import BookItem from '../../components/bookItem';
-import { action, observable } from 'mobx';
-import { observer, useLocalStore } from 'mobx-react';
-import NavBar from '../../components/navbar';
-import art from '../../resource/images/art.png';
-import economy from '../../resource/images/economy.png';
-import book from '../../resource/images/书.png';
-import personal from '../../resource/images/人物.png';
-import historyIcon from '../../resource/images/历史.png';
-import heart from '../../resource/images/heart.png';
-import thinking from '../../resource/images/思维.png';
-import computer from '../../resource/images/电脑.png';
+import {ask, useReachBottom} from '../util';
+import BottomBar from '../components/bottomBar';
+import BookItem from '../components/bookItem';
+import NavBar from '../components/navbar';
+import art from "../resource/images/art.png";
+import economy from '../resource/images/economy.png';
+import book from '../resource/images/书.png';
+import personal from '../resource/images/人物.png';
+import historyIcon from '../resource/images/历史.png';
+import heart from '../resource/images/heart.png';
+import thinking from '../resource/images/思维.png';
+import computer from '../resource/images/电脑.png';
+import {useInfiniteQuery} from "react-query";
+import {prop} from "ramda";
 export interface BookBaseProperty {
     author: string;
     bookId: number;
@@ -34,38 +30,6 @@ export interface BookBaseProperty {
     price: number;
     title: string;
 }
-class Logic {
-    subscription: Subscription;
-    recommendUrl = (page: number) => '/api/recommends?page=' + page;
-    @observable page: number = 1;
-    @observable data: BookBaseProperty[] = [];
-    @observable loading: boolean = false;
-    @action.bound onMount() {
-        this.subscription = fromEvent(document.getElementById('indexpage'), 'scroll')
-            .pipe(
-                startWith(null),
-                whenReachBottom('indexpage'),
-                tap(() => (this.loading = true)),
-                concatMap(() =>
-                    fromPromise(
-                        ask({
-                            url: this.recommendUrl(this.page),
-                        })
-                    )
-                ),
-                retry(1)
-            )
-            .subscribe((value) => {
-                this.data.push(...value.data);
-                this.page += 1;
-                this.loading = false;
-            });
-    }
-    @action.bound unmount() {
-        this.subscription.unsubscribe();
-    }
-}
-
 const IndexPage = () => {
     const navItems = useRef([
         {
@@ -101,15 +65,21 @@ const IndexPage = () => {
             pic: historyIcon,
         },
     ]);
-    const logic = useLocalStore((source) => new Logic());
-    const { data, loading, page } = logic;
     const { push } = useHistory();
-    useEffect(() => {
-        logic.onMount();
-        return logic.unmount;
-    }, []);
+    const {isFetching, data,fetchMore} = useInfiniteQuery(`/api/recommends`, (url, page = 1) => {
+        return ask({
+            url: url,
+            params: {
+                page: page
+            }
+        }).then(prop('data'));
+    },{
+        getFetchMore: (lastPage, allPages) => allPages.length + 1,
+    });
+    const container = useRef(null);
+    useReachBottom(container.current, fetchMore);
     return (
-        <div className="h-screen overflow-y-auto" id="indexpage">
+        <div className="h-screen overflow-y-auto" ref={container} id="indexpage">
             <div className="mb-16">
                 <NavBar
                     centerPart={
@@ -128,16 +98,6 @@ const IndexPage = () => {
                     </Slider>
                 </section>
                 <nav data-name={'分类'} className="mt-4">
-                    {/*<div className="flex content-between flex-wrap">
-                        {navItems.current.map((value, index) => {
-                            return (
-                                <div className="flex flex-col justify-around h-20 w-1/4 items-center ripple" key={index} onClick={() => push(`/searchResultList?keyword=${value.title}`)}>
-                                    <img src={value.pic} alt="icon" className="h-12 w-12 shadow-md mb-1" />
-                                    <span className="text-sm mb-2">{value.title}</span>
-                                </div>
-                            );
-                        })}
-                    </div>*/}
                     <div className="grid" style={{
                         gridTemplateColumns: 'repeat(4,25%)',
                         gridTemplateRows: 'auto auto',
@@ -158,12 +118,14 @@ const IndexPage = () => {
                 <main data-name={'列表'} className="mt-4 p-2">
                     <div className="font-bold text-base">为您推荐</div>
                     <div className="mt-4">
-                        {data.map((value: BookBaseProperty, index) => {
-                            return <BookItem onClick={() => push('/bookDetail?bookId=' + value.bookId)} key={index} {...value} />;
+                        {data.map((list: BookBaseProperty[], index) => {
+                            return list.map(value => {
+                                return <BookItem onClick={() => push('/bookDetail?bookId=' + value.bookId)} key={index} {...value} />
+                            });
                         })}
                     </div>
                 </main>
-                {loading && (
+                {isFetching && (
                     <div className="text-center">
                         <CircularProgress placeholder="loading..." />
                     </div>
@@ -173,4 +135,4 @@ const IndexPage = () => {
         </div>
     );
 };
-export default observer(IndexPage);
+export default IndexPage

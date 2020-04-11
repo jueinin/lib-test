@@ -1,11 +1,12 @@
 import { createBrowserHistory } from 'history';
 import Axios from 'axios';
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import ReactDom from 'react-dom';
 import * as R from 'ramda';
 import { Observable } from 'rxjs';
 import { distinctUntilChanged, filter, map, tap, throttleTime } from 'rxjs/operators';
 import { Toast } from './components/Toast';
-import {EventEmitter} from "events";
+import { EventEmitter } from 'events';
 export const browserHistory = createBrowserHistory();
 export const ask = Axios.create({});
 export const defaultAvatar = 'https://jueinin.oss-cn-hongkong.aliyuncs.com/%E5%B0%8F%E7%A8%8B%E5%BA%8F/%E9%BB%98%E8%AE%A4%E5%A4%B4%E5%83%8F.jpg';
@@ -53,3 +54,68 @@ export const isEmail = (value: string) => {
 export const isPhoneNumber = (value: string) => /^(?:(?:\+|00)86)?1[3-9]\d{9}$/.test(value);
 
 export const eventEmitter = new EventEmitter();
+
+/**
+ * @description 监听一个事件并且自动销毁
+ * @param eventName
+ * @param callback
+ */
+export const useEventEmitter = (eventName: string, callback: any) => {
+    useEffect(() => {
+        eventEmitter.on(eventName, callback);
+        return () => {
+            eventEmitter.removeListener(eventName, callback);
+        };
+    }, []);
+};
+
+export const debounceAsync = (fn:(...args: any[])=>Promise<any>, defaultValue, wait) => {
+    let timer;
+    return (...args) => {
+        return new Promise((resolve, reject) => {  //
+            if (timer) {
+                resolve(defaultValue);
+                clearTimeout(timer);
+                timer = null;
+                return;
+            }
+            clearTimeout(timer);
+            timer = null;
+            timer = setTimeout(() => {
+                fn(...args).then(value => {
+                    timer = null;
+                    resolve(value)
+                });
+            }, wait);
+        })
+
+    };
+};
+export const useReachBottom = (element: HTMLElement, callback) => { // 监听元素滚动到底部
+    useEffect(() => {
+        if (!element) {
+            return
+        }
+        const listener = (ev) => {
+            const isBottom = element.scrollHeight - element.scrollTop - element.clientHeight < 130;
+            if (isBottom) {
+                callback();
+            }
+        };
+        element.addEventListener('scroll', listener);
+        return () => element.removeEventListener("scroll", listener);
+    }, [element]);
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
