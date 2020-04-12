@@ -14,6 +14,7 @@ const config: webpack.Configuration & Configuration = {
     output: {
         filename: '[hash]bundle.js',
         path: path.resolve(__dirname, 'dist'),
+        chunkFilename: isDev ? '[name].bundle.js' : '[name][chunkhash].bundle.js'
     },
     mode: currentEnv,
     devtool: isDev ? 'inline-cheap-module-source-map' : false,
@@ -27,23 +28,23 @@ const config: webpack.Configuration & Configuration = {
         port: 3001,
         host: '0.0.0.0',
         disableHostCheck: true,
+        watchOptions: {
+            ignored: /node_modules/,
+        },
         proxy: {
             '/api': {
                 target: process.env.STATUS === 'deploy' ? 'http://nest:3000' : 'http://localhost:3000',
                 secure: false,
                 changeOrigin: true,
-                // onProxyReq(proxyReq: http.ClientRequest, req: http.IncomingMessage, res: http.ServerResponse): void {
-                //     console.log('req',req.url)
-                // },
-                // onProxyRes(proxyRes: http.IncomingMessage, req: http.IncomingMessage, res: http.ServerResponse): void {
-                //     console.log('res',req.url,res.statusCode)
-                // },
-                // onError(err: Error, req: http.IncomingMessage, res: http.ServerResponse): void {
-                //     console.log('error', err);
-                // }
             },
         },
         historyApiFallback: true,
+    },
+    optimization: {
+        splitChunks: {
+            chunks: 'all',
+            name: 'vendor'
+        },
     },
     module: {
         rules: [

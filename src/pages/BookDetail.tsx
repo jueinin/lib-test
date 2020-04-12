@@ -1,4 +1,4 @@
-import React, {useMemo, useRef, useState} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import NavBar from '../components/navbar';
 import { HomeOutlined, ShoppingCartOutlined, StarBorderOutlined, StarOutlined } from '@material-ui/icons';
 import {
@@ -390,7 +390,14 @@ const BookDetail = () => {
 
     const Detail = ({className}) => {
         const [detailTab, setDetailTab] = useState<'detail' | 'publishInfo'>('detail');
-        const {data: detailData} = useQuery<BookDetailDetailDataType, string>(currentTab === 'detail' && `/api/bookDetail/details?bookId=${bookId}`, url => ask({url}).then(prop('data')));
+        const {data: detailData,refetch} = useQuery<BookDetailDetailDataType, string>(`/api/bookDetail/details?bookId=${bookId}`, url => ask({url}).then(prop('data')),{
+            manual: true
+        });
+        useEffect(() => {
+            if (currentTab === "detail" && !detailData) {
+                refetch();
+            }
+        }, []);
         if (!detailData) {
             return null
         }
@@ -433,7 +440,14 @@ const BookDetail = () => {
         </div>;
     };
     const Comment = ({className}) => {
-        const {data: commentData} = useQuery<{ data: CommentItemType[] },string>(currentTab === "comment" && `/api/bookDetail/comment?bookId=${bookId}`, url => ask({url}).then(prop('data')));
+        const {data: commentData,refetch} = useQuery<{ data: CommentItemType[]; }, string>(`/api/bookDetail/comment?bookId=${bookId}`, url => ask({url}).then(prop('data')), {
+            manual: true
+        });
+        useEffect(() => {
+            if (currentTab === "comment" && !commentData) {
+                refetch();
+            }
+        }, []);
         return <div>
             <div className={className}>
                 {commentData && commentData.data.map((value, index) => {

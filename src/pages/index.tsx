@@ -79,7 +79,7 @@ const IndexPage = () => {
     const container = useRef(null);
     useReachBottom(container.current, fetchMore);
     return (
-        <div className="h-screen overflow-y-auto" ref={container} id="indexpage">
+        <div className="h-screen overflow-y-auto yy" ref={container} id="indexpage">
             <div className="mb-16">
                 <NavBar
                     centerPart={

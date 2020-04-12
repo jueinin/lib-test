@@ -121,14 +121,6 @@ const Me: React.FC = () => {
     return (
         <div className="bg-gray-200">
             <NavBar centerPart={'我的'} />
-            {/*<div className="bg-red-500 p-3" data-name={'top-nav'}>
-                <div className="flex">
-                    <img alt="" src={defaultAvatar} onClick={onAvatarClick} className="w-16 h-16 bg-green-300 rounded-full" />
-                    <div className="text-lg ml-6 text-white" onClick={onAvatarClick}>
-                        {isLogin ? userData.user.userName : `登录 >`}
-                    </div>
-                </div>
-            </div>*/}
             <div className="bg-red-500 p-3" data-name={'顶部头像区域'}>
                 <div className="grid gap-6" style={{
                     gridTemplateColumns: '4rem auto',
@@ -141,16 +133,6 @@ const Me: React.FC = () => {
                 </div>
             </div>
             <div data-name={'工具栏'} className="w-full">
-                {/*<div data-name={'上半部分'} className="flex justify-around">
-                    {topItems.current.map((value) => {
-                        return (
-                            <div key={value.title} className="flex shadow-sm flex-col items-center" onClick={value.onClick}>
-                                <span className="my-1 text-lg text-red-500">{value.icon}</span>
-                                <span className="text-sm">{value.title}</span>
-                            </div>
-                        );
-                    })}
-                </div>*/}
                 <div data-name={'上半部分'} className="grid grid-cols-4 justify-items-center items-center">
                     {topItems.map((value) => {
                         return (
@@ -168,16 +150,6 @@ const Me: React.FC = () => {
                         );
                     })}
                 </div>
-                {/*<div data-name={'下半部分'} className="flex py-3 justify-around mx-8 rounded-lg shadow-lg mt-2 bg-white">
-                    {bottomItems.current.map((value) => {
-                        return (
-                            <div key={value.title} className="flex flex-col items-center" onClick={() => history.push(value.path)}>
-                                <span className="my-1 text-red-500 text-lg">{value.icon}</span>
-                                <span className="text-sm">{value.title}</span>
-                            </div>
-                        );
-                    })}
-                </div>*/}
                 <div data-name={'下半部分'} className="grid-cols-5 grid justify-items-center items-center py-3 mx-8 rounded-lg shadow-lg mt-2 bg-white">
                     {bottomItems.map((value) => {
                         return (
