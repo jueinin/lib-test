@@ -9,6 +9,7 @@ const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin'
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const currentEnv = process.env.NODE_ENV as 'development' | 'production';
 const isDev = currentEnv === 'development';
+const isGitpod = !!process.env.GITPOD;
 const config: webpack.Configuration & Configuration = {
     entry: process.env.TYPEPROJECT === 'admin' ? './src/backend/index.tsx' : './src/index.tsx',
     output: {
@@ -27,13 +28,14 @@ const config: webpack.Configuration & Configuration = {
         compress: true,
         port: 3001,
         host: '0.0.0.0',
+        sockPort: isGitpod?3001:443,
         disableHostCheck: true,
         watchOptions: {
             ignored: /node_modules/,
         },
         proxy: {
             '/api': {
-                target: process.env.STATUS === 'deploy' ? 'http://nest:3000' : 'http://localhost:3000',
+                target: 'http://localhost:3000',
                 secure: false,
                 changeOrigin: true,
             },
