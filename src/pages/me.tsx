@@ -1,7 +1,6 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import BottomBar from '../components/bottomBar';
-import { observer } from 'mobx-react';
-import { useHistory, Redirect } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import NavBar from '../components/navbar';
 import {
     NearMeOutlined,
@@ -18,6 +17,7 @@ import {
 import { useStore } from '../model';
 import { equals, ifElse } from 'ramda';
 import {ask, defaultAvatar} from '../util';
+import {observer} from "mobx-react";
 
 const Me: React.FC = () => {
     const { userStore } = useStore();
@@ -30,14 +30,14 @@ const Me: React.FC = () => {
         ask({
             url: `/api/orderItems?type=all`
         }).then(value => {
-            setBottomItems(bottomItems=>{
+            setBottomItems(bottomItems => {
                 bottomItems[0].count = value.data.filter(value => value.status === 'pendingPayment').length;
                 bottomItems[1].count = value.data.filter(value => value.status === 'pendingReceived').length;
                 bottomItems[2].count = value.data.filter(value => value.status === 'pendingComment').length;
                 bottomItems[4].count = value.data.length;
                 return [...bottomItems];
             })
-        })
+        });
         const cartItems = userStore.userData.shoppingCart?.items?.length;
         setTopItems(topItems=>{
             topItems[3].count = cartItems;
@@ -156,7 +156,7 @@ const Me: React.FC = () => {
                             <div key={value.title} className="flex flex-col items-center" onClick={() => history.push(value.path)}>
                                 <div className="my-1 text-red-500 text-lg relative">
                                     {value.icon}
-                                    {value.count && <div className="absolute text-xs h-5 flex-center border rounded-full text-red-500 border-red-500" style={{
+                                    {value.count!==0 && value.count!==null && <div className="absolute text-xs h-5 flex-center border rounded-full text-red-500 border-red-500" style={{
                                         top: '-.8rem',
                                         right: '-.8rem',
                                         minWidth: '1.25rem'

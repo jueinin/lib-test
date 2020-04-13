@@ -69,10 +69,11 @@ export const useEventEmitter = (eventName: string, callback: any) => {
     }, []);
 };
 
-export const debounceAsync = (fn:(...args: any[])=>Promise<any>, defaultValue, wait) => {
+export const debounceAsync = (fn: (...args: any[]) => Promise<any>, defaultValue, wait) => {
     let timer;
     return (...args) => {
-        return new Promise((resolve, reject) => {  //
+        return new Promise((resolve, reject) => {
+            //
             if (timer) {
                 resolve(defaultValue);
                 clearTimeout(timer);
@@ -82,19 +83,19 @@ export const debounceAsync = (fn:(...args: any[])=>Promise<any>, defaultValue, w
             clearTimeout(timer);
             timer = null;
             timer = setTimeout(() => {
-                fn(...args).then(value => {
+                fn(...args).then((value) => {
                     timer = null;
-                    resolve(value)
+                    resolve(value);
                 });
             }, wait);
-        })
-
+        });
     };
 };
-export const useReachBottom = (element: HTMLElement, callback) => { // 监听元素滚动到底部
+export const useReachBottom = (element: HTMLElement, callback) => {
+    // 监听元素滚动到底部
     useEffect(() => {
         if (!element) {
-            return
+            return;
         }
         const listener = (ev) => {
             const isBottom = element.scrollHeight - element.scrollTop - element.clientHeight < 130;
@@ -103,19 +104,24 @@ export const useReachBottom = (element: HTMLElement, callback) => { // 监听元
             }
         };
         element.addEventListener('scroll', listener);
-        return () => element.removeEventListener("scroll", listener);
+        return () => element.removeEventListener('scroll', listener);
     }, [element]);
 };
 
-
-
-
-
-
-
-
-
-
-
-
-
+export function useInterval(callback: () => void, delay: number | null | false, immediate?: boolean) {
+    const savedCallback = useRef(() => {});
+    useEffect(() => {
+        savedCallback.current = callback;
+    });
+    useEffect(() => {
+        if (!immediate) return;
+        if (delay === null || delay === false) return;
+        savedCallback.current();
+    }, [immediate]);
+    useEffect(() => {
+        if (delay === null || delay === false) return undefined;
+        const tick = () => savedCallback.current();
+        const id = setInterval(tick, delay);
+        return () => clearInterval(id);
+    }, [delay]);
+}

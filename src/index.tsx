@@ -59,9 +59,9 @@ const App = () => {
                 <CacheRoute exact path={'/me'}>
                     <Me />
                 </CacheRoute>
-                <CacheRoute exact path={'/forum'}>
+                <Route exact path={'/forum'}>
                     <Forum />
-                </CacheRoute>
+                </Route>
                 <CacheRoute path={'/browserHistory'}>
                     <BrowserHistory />
                 </CacheRoute>
@@ -99,9 +99,9 @@ const App = () => {
                 <CacheRoute path={['/addAddress', '/editAddress']}>
                     <AddAddress />
                 </CacheRoute>
-                <CacheRoute path={'/order'}>
+                <Route path={'/order'}>
                     <Order />
-                </CacheRoute>
+                </Route>
                 <CacheRoute path={'/comment'}>
                     <Comment />
                 </CacheRoute>

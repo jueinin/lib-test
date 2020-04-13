@@ -29,6 +29,8 @@ import { useDrag } from "react-use-gesture";
 import { useModal } from "../useModal";
 import classNames from "classnames";
 import comment from './comment';
+import {Drawer} from "@material-ui/core";
+
 export type BookDetailProductDataType = {
     author: string;
     AdGoods: {
@@ -180,7 +182,7 @@ const BookDetail = () => {
         }
         return (
             <div className="fixed bottom-0 w-full bg-white">
-                <div className="flex px-2 py-1 w-full">
+                <div className="flex px-2 py-2 w-full">
                     <div className="flex items-center justify-around w-1/2">
                         <div
                             className="flex flex-col items-center ripple"
@@ -269,6 +271,33 @@ const BookDetail = () => {
                 </div>
             </animated.div>
         });
+        const {openModal: openDraw, closeModal: closeDrawer} = useModal(() => {
+            return <Drawer open anchor="bottom" className="p-2" onClose={closeDrawer}>
+                <div className="p-2">
+                    <div className="grid grid-cols-12">
+                        <div className="col-span-3">作者</div>
+                        <div className="col-span-9">{productData.author}</div>
+                    </div>
+                    <div className="grid grid-cols-12">
+                        <div className="col-span-3">出版日期</div>
+                        <div className="col-span-9">{productData.publishDate}</div>
+                    </div>
+                    <div className="grid grid-cols-12">
+                        <div className="col-span-3">出版商</div>
+                        <div className="col-span-9">{productData.publisher}</div>
+                    </div>
+                    <div className="grid grid-cols-12">
+                        <div className="col-span-3">分类</div>
+                        <div className="col-span-9">{productData.category}</div>
+                    </div>
+                    <div className="grid grid-cols-12">
+                        <div className="col-span-3">书籍描述</div>
+                        <div className="col-span-9">{productData.description}</div>
+                    </div>
+
+                </div>
+            </Drawer>;
+        });
         const bind = useDrag(({ event, movement: [mx, my], down }) => {
             if (my < 0) {
                 return;
@@ -312,11 +341,11 @@ const BookDetail = () => {
                 <div className="text-sm mt-2 text-gray-700 truncate-3-lines" title={productData.description}>
                     {productData.description}
                 </div>
-                <div className="grid grid-cols-12 text-gray-600 text-sm mt-2">
+                <div className="grid grid-cols-12 text-gray-600 text-sm mt-2" onClick={openDraw}>
                     <div className="col-span-6">{productData.author}</div>
-                    <div className="col-span-6 border-l border-gray-400 pl-4 border-solid">
+                    <div className="col-span-6 border-l border-gray-400 pl-4 border-solid flex">
                         {productData.publisher}
-                        <span className="float-right">></span>
+                        <span className="float-right self-center self-center ml-auto">></span>
                     </div>
                 </div>
             </section>
@@ -375,7 +404,7 @@ const BookDetail = () => {
                 <div data-name={'ad goods'} className="horizontal-scroll gap-4 p-2" style={{ gridAutoColumns: '33.33%' }}>
                     {productData.AdGoods.map((value) => {
                         return (
-                            <div key={value.bookId} className="flex flex-col">
+                            <div onClick={()=>history.push(`${location.pathname}?bookId=${value.bookId}`)} key={value.bookId} className="flex flex-col">
                                 <img alt="cover" src={value.imgUrl} className="w-full h-auto" />
                                 <div className="text-sm truncate-2-lines whitespace-normal mt-1" style={{ minHeight: '2rem' }}>
                                     {value.title}

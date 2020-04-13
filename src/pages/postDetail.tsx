@@ -61,13 +61,13 @@ export default ()=>{
             <div className={'p-1 ' + style['readonly-quill']}>
                 {article && (
                     <section data-name={'顶部帖子信息栏'} className="mt-2 mb-2 border-b">
-                        <div className="my-2">{article.title}</div>
+                        <div className="my-2 text-lg">{article.title}</div>
                         <SimpleUserInfoTab avatar={defaultAvatar} userName={article.user.userName}
                                            time={new Date(article.createDate).toLocaleString('cn')}
                                            rightPart={<span>{article.views}浏览</span>}/>
                     </section>
                 )}
-                <div id="quill" className="select-auto"/>
+                <div id="quill" className="select-auto border-b border-black" style={{borderBottomWidth: 2}}/>
                 <div className="" style={{marginBottom: 72}} id="comment" data-name={'评论区'}>
                     {commentData &&
                     commentData.map((value) => {
