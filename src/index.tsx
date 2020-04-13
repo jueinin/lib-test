@@ -28,9 +28,9 @@ import CacheRoute, { CacheSwitch } from 'react-router-cache-route';
 import AddressList from './pages/addresssList';
 import EditProfile from './pages/editProfile';
 import {ReactQueryConfigProvider} from "react-query";
-if (navigator.serviceWorker) {
-    navigator.serviceWorker.register('/service-worker.js');
-}
+// if (navigator.serviceWorker) {
+//     navigator.serviceWorker.register('/service-worker.js');
+// }
 const App = () => {
     const history = useHistory();
     const { userStore } = useStore();

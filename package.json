@@ -1,11 +1,11 @@
 {
   "name": "lib-test",
   "scripts": {
-    "start": "set NODE_ENV=development&& webpack-dev-server --config webpack.config.ts",
+    "start": "cross-env NODE_ENV=development webpack-dev-server --config webpack.config.ts",
     "tailwind": "tailwind build src/style.css -o src/tailwind.css",
-    "build": "set NODE_ENV=production&& webpack --config webpack.config.ts",
-    "start:admin": "set NODE_ENV=development&&set TYPEPROJECT=admin&& webpack-dev-server --config webpack.config.ts",
-    "build:admin": "set NODE_ENV=production&&set TYPEPROJECT=admin&& webpack --config webpack.config.ts"
+    "build": "cross-env NODE_ENV=production webpack --config webpack.config.ts",
+    "start:admin": "cross-env NODE_ENV=development TYPEPROJECT=admin&& webpack-dev-server --config webpack.config.ts",
+    "build:admin": "cross-env NODE_ENV=production  TYPEPROJECT=admin webpack --config webpack.config.ts"
   },
   "dependencies": {
     "@ant-design/icons": "^4.0.5",
@@ -44,6 +44,7 @@
     "babel-preset-react": "^6.24.1",
     "classnames": "^2.2.6",
     "copy-webpack-plugin": "^5.1.1",
+    "cross-env": "^7.0.2",
     "css-loader": "^3.4.2",
     "events": "^3.1.0",
     "file-loader": "^5.0.2",

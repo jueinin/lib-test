@@ -10,6 +10,7 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 const currentEnv = process.env.NODE_ENV as 'development' | 'production';
 const isDev = currentEnv === 'development';
 const isGitpod = !!process.env.GITPOD;
+console.log(isGitpod);
 const config: webpack.Configuration & Configuration = {
     entry: process.env.TYPEPROJECT === 'admin' ? './src/backend/index.tsx' : './src/index.tsx',
     output: {
@@ -28,7 +29,7 @@ const config: webpack.Configuration & Configuration = {
         compress: true,
         port: 3001,
         host: '0.0.0.0',
-        sockPort: isGitpod?3001:443,
+        sockPort: isGitpod?443:3001,
         disableHostCheck: true,
         watchOptions: {
             ignored: /node_modules/,

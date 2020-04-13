@@ -107,7 +107,7 @@ const IndexPage = () => {
                             return (
                                 <div className="grid gap-1 items-center justify-items-center ripple"
                                      style={{gridTemplateRows: 'auto 20px'}}
-                                     key={index} onClick={() => push(`/searchResultList?keyword=${value.title}`)}>
+                                     key={value.title} onClick={() => push(`/searchResultList?keyword=${value.title}`)}>
                                     <img src={value.pic} alt="icon" className="h-12 w-12 shadow-md mb-1" />
                                     <span className="text-sm mb-2">{value.title}</span>
                                 </div>
@@ -118,8 +118,8 @@ const IndexPage = () => {
                 <main data-name={'列表'} className="mt-4 p-2">
                     <div className="font-bold text-base">为您推荐</div>
                     <div className="mt-4">
-                        {data.map((list: BookBaseProperty[], index) => {
-                            return list.map(value => {
+                        {data.map((list: BookBaseProperty[]) => {
+                            return list.map((value,index) => {
                                 return <BookItem onClick={() => push('/bookDetail?bookId=' + value.bookId)} key={index} {...value} />
                             });
                         })}

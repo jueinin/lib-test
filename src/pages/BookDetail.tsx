@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useRef, useState} from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import NavBar from '../components/navbar';
 import { HomeOutlined, ShoppingCartOutlined, StarBorderOutlined, StarOutlined } from '@material-ui/icons';
 import {
@@ -24,10 +24,11 @@ import { Toast } from '../components/Toast';
 import { useStore } from '../model';
 import style from "../cover.module.css";
 import Slider from "../components/slider";
-import {animated, useSpring} from "react-spring";
-import {useDrag} from "react-use-gesture";
-import {useModal} from "../useModal";
+import { animated, useSpring } from "react-spring";
+import { useDrag } from "react-use-gesture";
+import { useModal } from "../useModal";
 import classNames from "classnames";
+import comment from './comment';
 export type BookDetailProductDataType = {
     author: string;
     AdGoods: {
@@ -94,7 +95,7 @@ const BookDetail = () => {
     const bookId = useMemo(() => pipe(slice(1, 999), parse, (v) => v.bookId, Number)(location.search), [location.search]);
     const { data: productData } = useQuery<BookDetailProductDataType, string>(`/api/bookDetail/product?bookId=${bookId}`, (url) => ask({ url }).then(prop('data')));
     const [currentTab, setCurrentTab] = useState<TabName>("product");
-    const Nav=()=>{
+    const Nav = () => {
         const navBar = useRef<{ title: string; value: TabName }[]>([
             {
                 title: '商品',
@@ -245,16 +246,16 @@ const BookDetail = () => {
         );
     };
 
-    const Product = ({className}) => {
+    const Product = ({ className }) => {
         const [coverIndex, setCoverIndex] = useState(0);
         const [propsAnimate, setAnimate] = useSpring(() => ({
             transform: `scale(1)`
         }));
         // simple preview image modal
-        const {openModal, closeModal} = useModal((props) => { // props.data 即productData ,测试一下传props好使不
+        const { openModal, closeModal } = useModal((props) => { // props.data 即productData ,测试一下传props好使不
             const [index, setIndex] = useState(0);
             return <animated.div {...bind()} className="w-screen z-10 bg-white fixed top-0 left-0 "
-                                 style={propsAnimate}>
+                style={propsAnimate}>
                 <div className="flex flex-col h-screen">
                     <div className="text-center mt-10">
                         <span className="font-bold">{index + 1}</span>
@@ -262,13 +263,13 @@ const BookDetail = () => {
                     </div>
                     <Slider autoPlay={false} afterChange={setIndex}>
                         {props.data.images.map((value) => {
-                            return <img key={value} className="w-screen" src={value} alt=""/>;
+                            return <img key={value} className="w-screen" src={value} alt="" />;
                         })}
                     </Slider>
                 </div>
             </animated.div>
         });
-        const bind = useDrag(({event,movement: [mx,my],down}) => {
+        const bind = useDrag(({ event, movement: [mx, my], down }) => {
             if (my < 0) {
                 return;
             }
@@ -319,7 +320,7 @@ const BookDetail = () => {
                     </div>
                 </div>
             </section>
-            <section data-name={'comment'} className="mt-2 p-2 bg-white">
+            <section data-name={'comment'} className="mt-2 p-2 bg-white" onClick={() => { setCurrentTab("comment") }}>
                 <h3 className="flex items-end">
                     <span className="font-bold text-xl">评论</span>
                     <span className="ml-2">
@@ -357,10 +358,10 @@ const BookDetail = () => {
                                 );
                             })
                         ) : (
-                            <div className="h-40 w-full flex-center">
-                                <span>冷冷清清的，还没有人评价呢</span>
-                            </div>
-                        )}
+                                <div className="h-40 w-full flex-center">
+                                    <span>冷冷清清的，还没有人评价呢</span>
+                                </div>
+                            )}
                     </div>
                 </div>
             </section>
@@ -388,9 +389,9 @@ const BookDetail = () => {
         </div>;
     };
 
-    const Detail = ({className}) => {
+    const Detail = ({ className }) => {
         const [detailTab, setDetailTab] = useState<'detail' | 'publishInfo'>('detail');
-        const {data: detailData,refetch} = useQuery<BookDetailDetailDataType, string>(`/api/bookDetail/details?bookId=${bookId}`, url => ask({url}).then(prop('data')),{
+        const { data: detailData, refetch } = useQuery<BookDetailDetailDataType, string>(`/api/bookDetail/details?bookId=${bookId}`, url => ask({ url }).then(prop('data')), {
             manual: true
         });
         useEffect(() => {
@@ -403,7 +404,7 @@ const BookDetail = () => {
         }
         return <div className={className}>
             <nav data-name={'select bar'}
-                 className="relative grid grid-cols-2 grid-rows-1 justify-items-center shadow-sm border-b border-solid  border-gray-300">
+                className="relative grid grid-cols-2 grid-rows-1 justify-items-center shadow-sm border-b border-solid  border-gray-300">
                 <div className={classNames({
                     'text-red-600 border-solid border-red-600 border-b-2': detailTab === "detail"
                 }, 'p-3 px-6 ripple')} onClick={() => setDetailTab("detail")}>图书详情
@@ -412,14 +413,14 @@ const BookDetail = () => {
                     'text-red-600 border-solid border-red-600 border-b-2': detailTab === "publishInfo"
                 }, 'p-3 px-6 ripple')} onClick={() => setDetailTab("publishInfo")}>出版信息
                 </div>
-                <div className="bg-gray-400 top-0 h-6 mt-3 absolute" style={{left: "50%", width: 1}}/>
+                <div className="bg-gray-400 top-0 h-6 mt-3 absolute" style={{ left: "50%", width: 1 }} />
             </nav>
-            <section data-name={'detail'} className={detailTab==="detail"?'':'hidden '}>
-                <div className="p-2" dangerouslySetInnerHTML={{__html: detailData.details}}/>
+            <section data-name={'detail'} className={detailTab === "detail" ? '' : 'hidden '}>
+                <div className="p-2" dangerouslySetInnerHTML={{ __html: detailData.details }} />
             </section>
-            <section data-name={'publish-info'} className={detailTab==="publishInfo"?"":"hidden"}>
+            <section data-name={'publish-info'} className={detailTab === "publishInfo" ? "" : "hidden"}>
                 <div className="grid grid-cols-12 gap-4 mt-3 px-2">
-                    {Object.keys(detailData.publishInfo).map((key)=>{
+                    {Object.keys(detailData.publishInfo).map((key) => {
                         let tempKey = cond([
                             [equals('title'), always('书名')],
                             [equals('author'), always('作者')],
@@ -439,8 +440,8 @@ const BookDetail = () => {
             </section>
         </div>;
     };
-    const Comment = ({className}) => {
-        const {data: commentData,refetch} = useQuery<{ data: CommentItemType[]; }, string>(`/api/bookDetail/comment?bookId=${bookId}`, url => ask({url}).then(prop('data')), {
+    const Comment = ({ className }) => {
+        const { data: commentData, refetch } = useQuery<{ data: CommentItemType[]; }, string>(`/api/bookDetail/comment?bookId=${bookId}`, url => ask({ url }).then(prop('data')), {
             manual: true
         });
         useEffect(() => {
@@ -453,7 +454,7 @@ const BookDetail = () => {
                 {commentData && commentData.data.map((value, index) => {
                     return (
                         <div key={index}
-                             className="p-2 border-b border-solid border-gray-500 shadow-sm hover:bg-gray-200">
+                            className="p-2 border-b border-solid border-gray-500 shadow-sm hover:bg-gray-200">
                             <div data-name={'title'} className="flex">
                                 <div className="mr-auto">{value.name}</div>
                                 <div className="ml-auto">
@@ -469,8 +470,8 @@ const BookDetail = () => {
                                     concat(__, repeat('N', 5 - value.star)),
                                     addIndex(map)((value, index) => {
                                         const val = pipe(ifElse(equals('Y'), always(<StarOutlined
-                                            className="text-red-500 text-lg"/>), always(<StarOutlined
-                                            className="text-pink-200 text-lg"/>)))(value);
+                                            className="text-red-500 text-lg" />), always(<StarOutlined
+                                                className="text-pink-200 text-lg" />)))(value);
                                         return <div key={index}>{val}</div>;
                                     })
                                 )(value.star)}
@@ -480,7 +481,7 @@ const BookDetail = () => {
                             </div>
                             {value.commentImg.length && <div className="flex">
                                 {pipe(addIndex(map)((value: string, index) => {
-                                    return <img key={index} src={value} alt="comment img" className="w-1/5 mr-2"/>
+                                    return <img key={index} src={value} alt="comment img" className="w-1/5 mr-2" />
                                 }))(value.commentImg)}
                             </div>}
                         </div>
@@ -491,15 +492,15 @@ const BookDetail = () => {
     };
     return (
         <div>
-            <NavBar centerPart={<div className="truncate-1-lines">{productData?.name || '加载中...'}</div>}/>
-            <Nav/>
+            <NavBar centerPart={<div className="truncate-1-lines">{productData ? productData.name : '加载中...'}</div>} />
+            <Nav />
             <div>
-                <Product className={currentTab === "product" || "hidden"}/>
-                <Detail className={currentTab === "detail" || 'hidden'}/>
-                <Comment className={currentTab === 'comment' || 'hidden'}/>
-                <div className="w-full" style={{height: '55px'}}/>
+                <Product className={currentTab === "product" || "hidden"} />
+                <Detail className={currentTab === "detail" || 'hidden'} />
+                <Comment className={currentTab === 'comment' || 'hidden'} />
+                <div className="w-full" style={{ height: '55px' }} />
             </div>
-            <BottomBuy/>
+            <BottomBuy />
         </div>
     );
 };
