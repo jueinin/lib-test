@@ -1,6 +1,5 @@
 import React, { ChangeEventHandler, useEffect, useRef, useState } from 'react';
 import NavBar from '../components/navbar';
-import { observer, useLocalStore } from 'mobx-react';
 import Quill from 'quill';
 import 'quill/dist/quill.snow.css';
 import { ask, eventEmitter } from '../util';

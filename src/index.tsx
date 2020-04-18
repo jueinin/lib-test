@@ -59,9 +59,9 @@ const App = () => {
                 <CacheRoute exact path={'/me'}>
                     <Me />
                 </CacheRoute>
-                <Route exact path={'/forum'}>
+                <CacheRoute exact path={'/forum'}>
                     <Forum />
-                </Route>
+                </CacheRoute>
                 <CacheRoute path={'/browserHistory'}>
                     <BrowserHistory />
                 </CacheRoute>
@@ -124,7 +124,7 @@ const App = () => {
 render(
     <BrowserRouter>
         <StoreProvider.Provider value={rootStore}>
-            <ReactQueryConfigProvider config={{refetchOnWindowFocus: false}}>
+            <ReactQueryConfigProvider config={{refetchOnWindowFocus: true}}>
                 <App/>
             </ReactQueryConfigProvider>
         </StoreProvider.Provider>

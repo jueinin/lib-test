@@ -27,9 +27,9 @@ export default ()=>{
     const [postSearch, {data: searchData = [],reset:resetSearch}] = useMutation(() => ask({
         url: `/api/postSearch?keyword=${searchStr}`
     }).then(prop('data')),);
-    useReachBottom(document.body, fetchMore);
+    useReachBottom(document.getElementById('forum'), fetchMore);
     const renderedItems = inSearchMode ? searchData : flatten(data.map(value => value.data));
-    return <div className="h-screen bg-gray-200" id="forum">
+    return <div className="h-screen overflow-auto bg-gray-200" id="forum">
         <NavBar
             centerPart={inSearchMode ? <input value={searchStr} onKeyPress={event => {
                 if (event.key === 'Enter' && searchStr) {

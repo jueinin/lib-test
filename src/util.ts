@@ -109,7 +109,8 @@ export const useReachBottom = (element: HTMLElement, callback) => {
 };
 
 export function useInterval(callback: () => void, delay: number | null | false, immediate?: boolean) {
-    const savedCallback = useRef(() => {});
+    const savedCallback = useRef(() => {
+    });
     useEffect(() => {
         savedCallback.current = callback;
     });
@@ -125,3 +126,10 @@ export function useInterval(callback: () => void, delay: number | null | false, 
         return () => clearInterval(id);
     }, [delay]);
 }
+
+export const useSessionState = (value:Object,key) => {
+    const [state, setState] = useState(JSON.parse(sessionStorage.getItem(key) || "{}") || value);
+    useEffect(() => {
+        sessionStorage.setItem(key, JSON.stringify(state));
+    }, state);
+};

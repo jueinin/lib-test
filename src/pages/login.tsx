@@ -44,7 +44,11 @@ export default () => {
                 <div className="w-full mt-4">
                     <Transition items={null} from={{ opacity: 0 }} enter={{ opacity: 1 }}>
                         {(item) => (props) => (
-                            <button className="text-center py-2 text-lg text-white bg-red-400 w-full" style={{ ...props }} onClick={() => onLogin()}>
+                            <button className="text-center py-2 text-lg text-white bg-red-400 w-full" style={{ ...props }} onClick={() => {
+                                if (email && password) {
+                                    onLogin();
+                                }else Toast.info('用户名密码必填');
+                            }}>
                                 登录
                             </button>
                         )}
