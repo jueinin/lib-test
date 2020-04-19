@@ -274,7 +274,7 @@ const BookDetail = () => {
         const {openModal: openDraw, closeModal: closeDrawer} = useModal(() => {
             return <Drawer open anchor="bottom" className="p-2" onClose={closeDrawer}>
                 <div className="p-2 px-4">
-                    <div className="text-lg text-center my-2 ">图书信息</div>
+                    <div className="text-lg text-center my-2 font-bold">图书信息</div>
                     <div className="grid grid-cols-12 border-b py-1 ">
                         <div className="col-span-3 text-gray-600">作者</div>
                         <div className="col-span-9">{productData.author}</div>
