@@ -273,25 +273,26 @@ const BookDetail = () => {
         });
         const {openModal: openDraw, closeModal: closeDrawer} = useModal(() => {
             return <Drawer open anchor="bottom" className="p-2" onClose={closeDrawer}>
-                <div className="p-2">
-                    <div className="grid grid-cols-12">
-                        <div className="col-span-3">作者</div>
+                <div className="p-2 px-4">
+                    <div className="text-lg text-center my-2 ">图书信息</div>
+                    <div className="grid grid-cols-12 border-b py-1 ">
+                        <div className="col-span-3 text-gray-600">作者</div>
                         <div className="col-span-9">{productData.author}</div>
                     </div>
-                    <div className="grid grid-cols-12">
-                        <div className="col-span-3">出版日期</div>
+                    <div className="grid grid-cols-12 py-1 border-b">
+                        <div className="col-span-3 text-gray-600">出版日期</div>
                         <div className="col-span-9">{productData.publishDate}</div>
                     </div>
-                    <div className="grid grid-cols-12">
-                        <div className="col-span-3">出版商</div>
+                    <div className="grid grid-cols-12 py-1 border-b">
+                        <div className="col-span-3 text-gray-600">出版商</div>
                         <div className="col-span-9">{productData.publisher}</div>
                     </div>
-                    <div className="grid grid-cols-12">
-                        <div className="col-span-3">分类</div>
+                    <div className="grid grid-cols-12 py-1 border-b">
+                        <div className="col-span-3 text-gray-600">分类</div>
                         <div className="col-span-9">{productData.category}</div>
                     </div>
-                    <div className="grid grid-cols-12">
-                        <div className="col-span-3">书籍描述</div>
+                    <div className="grid grid-cols-12 py-1">
+                        <div className="col-span-3 text-gray-600">书籍描述</div>
                         <div className="col-span-9">{productData.description}</div>
                     </div>
 

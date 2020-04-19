@@ -24,6 +24,7 @@ html {
     font-size: 14px;
 }
 body {
+    font-family: Roboto sans-serif;
     user-select: none;
     overscroll-behavior-y: contain;
 }
