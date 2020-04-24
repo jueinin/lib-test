@@ -111,10 +111,10 @@ const BookDetail = () => {
                 title: '评论',
                 value: 'comment',
             },
-            {
-                title: '相关',
-                value: 'relation',
-            },
+            // {
+            //     title: '相关',
+            //     value: 'relation',
+            // },
         ]);
         return <nav className="bg-gray-200 flex justify-around">
             {navBar.current.map((item: any) => {
@@ -350,6 +350,9 @@ const BookDetail = () => {
                     </div>
                 </div>
             </section>
+            <div className="dsad">
+                jalsda
+            </div>
             <section data-name={'comment'} className="mt-2 p-2 bg-white" onClick={() => { setCurrentTab("comment") }}>
                 <h3 className="flex items-end">
                     <span className="font-bold text-xl">评论</span>
@@ -360,15 +363,15 @@ const BookDetail = () => {
                     <span className="ml-auto">查看更多&nbsp;></span>
                 </h3>
                 <div data-name={'tag'} className="p-3 pl-0">
-                    <div data-name={'scroll tags'} className="horizontal-scroll">
-                        {productData.comment.tags.map((value) => {
-                            return (
-                                <div key={value.title + value.amount} className="bg-pink-300 rounded-full text-sm inline-block p-2">
-                                    {value.title}({value.amount})
-                                </div>
-                            );
-                        })}
-                    </div>
+                    {/*<div data-name={'scroll tags'} className="horizontal-scroll">*/}
+                    {/*    {productData.comment.tags.map((value) => {*/}
+                    {/*        return (*/}
+                    {/*            <div key={value.title + value.amount} className="bg-pink-300 rounded-full text-sm inline-block p-2">*/}
+                    {/*                {value.title}({value.amount})*/}
+                    {/*            </div>*/}
+                    {/*        );*/}
+                    {/*    })}*/}
+                    {/*</div>*/}
                     <div data-name={'scroll comments'} className="horizontal-scroll">
                         {productData.comment.commentList.length > 0 ? (
                             productData.comment.commentList.map((value) => {
@@ -395,27 +398,27 @@ const BookDetail = () => {
                     </div>
                 </div>
             </section>
-            <section data-name={'promotion'} className="mt-2 bg-white">
-                <div data-name={'title'} className="p-2">
-                    <h2 className="items-center flex">
-                        <span className="text-xl font-bold">推广商品</span>
-                        <span className="ml-auto bg-gray-400 text-white text-xs">广告</span>
-                    </h2>
-                </div>
-                <div data-name={'ad goods'} className="horizontal-scroll gap-4 p-2" style={{ gridAutoColumns: '33.33%' }}>
-                    {productData.AdGoods.map((value) => {
-                        return (
-                            <div onClick={()=>history.push(`${location.pathname}?bookId=${value.bookId}`)} key={value.bookId} className="flex flex-col">
-                                <img alt="cover" src={value.imgUrl} className="w-full h-auto" />
-                                <div className="text-sm truncate-2-lines whitespace-normal mt-1" style={{ minHeight: '2rem' }}>
-                                    {value.title}
-                                </div>
-                                <div className="font-bold mt-1">￥{value.price}</div>
-                            </div>
-                        );
-                    })}
-                </div>
-            </section>
+            {/*<section data-name={'promotion'} className="mt-2 bg-white">*/}
+            {/*    <div data-name={'title'} className="p-2">*/}
+            {/*        <h2 className="items-center flex">*/}
+            {/*            <span className="text-xl font-bold">推广商品</span>*/}
+            {/*            <span className="ml-auto bg-gray-400 text-white text-xs">广告</span>*/}
+            {/*        </h2>*/}
+            {/*    </div>*/}
+            {/*    <div data-name={'ad goods'} className="horizontal-scroll gap-4 p-2" style={{ gridAutoColumns: '33.33%' }}>*/}
+            {/*        {productData.AdGoods.map((value) => {*/}
+            {/*            return (*/}
+            {/*                <div onClick={()=>history.push(`${location.pathname}?bookId=${value.bookId}`)} key={value.bookId} className="flex flex-col">*/}
+            {/*                    <img alt="cover" src={value.imgUrl} className="w-full h-auto" />*/}
+            {/*                    <div className="text-sm truncate-2-lines whitespace-normal mt-1" style={{ minHeight: '2rem' }}>*/}
+            {/*                        {value.title}*/}
+            {/*                    </div>*/}
+            {/*                    <div className="font-bold mt-1">￥{value.price}</div>*/}
+            {/*                </div>*/}
+            {/*            );*/}
+            {/*        })}*/}
+            {/*    </div>*/}
+            {/*</section>*/}
         </div>;
     };
 

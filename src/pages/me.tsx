@@ -20,7 +20,7 @@ import {ask, defaultAvatar} from '../util';
 import {observer} from "mobx-react";
 
 const Me: React.FC = () => {
-    const { userStore } = useStore();
+    const { userStore } = useStore();  // todo 登录未刷新状态
     const { isLogin, userData } = userStore;
     const history = useHistory();
     useEffect(() => {
@@ -34,7 +34,7 @@ const Me: React.FC = () => {
                 bottomItems[0].count = value.data.filter(value => value.status === 'pendingPayment').length;
                 bottomItems[1].count = value.data.filter(value => value.status === 'pendingReceived').length;
                 bottomItems[2].count = value.data.filter(value => value.status === 'pendingComment').length;
-                bottomItems[4].count = value.data.length;
+                // bottomItems[4].count = value.data.length;
                 return [...bottomItems];
             })
         });
@@ -62,7 +62,7 @@ const Me: React.FC = () => {
             count: null
         },
         {
-            title: '论坛消息',
+            title: '意见反馈', // todo 意见反馈栏目
             icon: <MessageOutlined />,
             count: null
         },
@@ -94,12 +94,12 @@ const Me: React.FC = () => {
             path: '/order?type=pendingComment',
             count: null
         },
-        {
-            title: '退款/售后',
-            icon: <SettingsBackupRestoreOutlined />,
-            path: '/order?type=all',
-            count: null
-        },
+        // {
+        //     title: '退款/售后',
+        //     icon: <SettingsBackupRestoreOutlined />,
+        //     path: '/order?type=all',
+        //     count: null
+        // },
         {
             title: '全部订单',
             icon: <ReorderOutlined />,
@@ -122,9 +122,7 @@ const Me: React.FC = () => {
         <div className="bg-gray-200">
             <NavBar centerPart={'我的'} />
             <div className="bg-red-500 p-3" data-name={'顶部头像区域'}>
-                <div className="grid gap-6" style={{
-                    gridTemplateColumns: '4rem auto',
-                    justifyItems:'start'
+                <div className="flex flex-col items-center" style={{
                 }}>
                     <img alt="" src={defaultAvatar} onClick={onAvatarClick} className="w-16 h-16 bg-green-300 rounded-full" />
                     <div className="text-lg text-white" onClick={onAvatarClick}>
@@ -137,7 +135,7 @@ const Me: React.FC = () => {
                     {topItems.map((value) => {
                         return (
                             <div key={value.title} className="text-center" onClick={value.onClick}>
-                                <div className="my-1 text-lg text-red-500 relative">
+                                <div className="my-1 text-lg text-blue-500 relative">
                                     {value.icon}
                                     {value.count && <div  className="absolute text-xs h-5 flex-center border rounded-full text-red-500 border-red-500" style={{
                                         top: '-.3rem',
@@ -150,11 +148,11 @@ const Me: React.FC = () => {
                         );
                     })}
                 </div>
-                <div data-name={'下半部分'} className="grid-cols-5 grid justify-items-center items-center py-3 mx-8 rounded-lg shadow-lg mt-2 bg-white">
+                <div data-name={'下半部分'} className="grid-cols-4 grid justify-items-center items-center py-3 mx-8 rounded-lg shadow-lg mt-2 bg-white">
                     {bottomItems.map((value) => {
                         return (
                             <div key={value.title} className="flex flex-col items-center" onClick={() => history.push(value.path)}>
-                                <div className="my-1 text-red-500 text-lg relative">
+                                <div className="my-1 text-blue-500 text-lg relative">
                                     {value.icon}
                                     {value.count!==0 && value.count!==null && <div className="absolute text-xs h-5 flex-center border rounded-full text-red-500 border-red-500" style={{
                                         top: '-.8rem',
