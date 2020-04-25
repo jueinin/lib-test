@@ -18,7 +18,7 @@ export interface ShoppingCartItem {
     id: number;
     count: number;
 }
-type UserData = {
+export type UserData = {
     shoppingCart: {
         items: ShoppingCartItem[];
     };
