@@ -350,9 +350,6 @@ const BookDetail = () => {
                     </div>
                 </div>
             </section>
-            <div className="dsad">
-                jalsda
-            </div>
             <section data-name={'comment'} className="mt-2 p-2 bg-white" onClick={() => { setCurrentTab("comment") }}>
                 <h3 className="flex items-end">
                     <span className="font-bold text-xl">评论</span>

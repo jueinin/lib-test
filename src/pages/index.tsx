@@ -127,7 +127,7 @@ const IndexPage = () => {
                                 }}>
                                     <img src={value.imgUrl} className="w-full"/>
                                     <h2 className="mt-2 text-lg mx-2 truncate-2-lines " style={{
-                                        height: '3rem',
+                                        height: '3.2rem',
                                         fontWeight: 520
                                     }}>{value.title}</h2>
                                     <h3 className="flex mt-1 mx-2 mb-1">
