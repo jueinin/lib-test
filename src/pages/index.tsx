@@ -148,9 +148,15 @@ const IndexPage = () => {
                         })}
                     </div>
                 </main>
-                {isFetching && (
+                {isFetching && data.length!==1 && (
                     <div className="text-center">
                         <CircularProgress placeholder="loading..." />
+                    </div>
+                )}
+                {isFetching && data.length===1 && (
+                    <div className="text-center">
+                        <CircularProgress placeholder="loading..." />
+                        <div className="text-teal-500">正在拉取推荐中，请耐心等待(约20秒)</div>
                     </div>
                 )}
             </div>
