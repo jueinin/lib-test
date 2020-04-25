@@ -20,7 +20,7 @@ export default () => {
             method: 'post',
         })
             .then(() => {
-                userStore.getUserData;
+                userStore.getUserData();
                 history.push('/');
                 Toast.info('登录成功，跳转中...');
             })

@@ -133,15 +133,15 @@ const Me: React.FC = () => {
                 </div>
             </div>
             <div data-name={'工具栏'} className="w-full">
-                <div data-name={'上半部分'} className="grid grid-cols-4 justify-items-center items-center">
+                <div data-name={'上半部分'} className="grid grid-cols-4 mt-2 justify-items-center items-center">
                     {topItems.map((value) => {
                         return (
                             <div key={value.title} className="text-center" onClick={value.onClick}>
                                 <div className="my-1 text-lg text-red-500 relative">
                                     {value.icon}
                                     {value.count && <div  className="absolute text-xs h-5 flex-center border rounded-full text-red-500 border-red-500" style={{
-                                        top: '-.3rem',
-                                        right: '-.3rem',
+                                        top: '-.6rem',
+                                        right: '-.6rem',
                                         minWidth: '1.25rem'
                                     }}>{value.count}</div>}
                                 </div>
