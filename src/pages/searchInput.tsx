@@ -7,7 +7,6 @@ import * as R from 'ramda';
 import { useHistory } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import { adjust, always, append, assoc, equals, findIndex, ifElse, lift, pipe, prop, tap } from 'ramda';
-import { read } from 'fs';
 interface SearchTipItem {
     name: string;
 }

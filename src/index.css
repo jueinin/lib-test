@@ -46,6 +46,8 @@ input:focus {
     background-size: 100%;
     transition: background 0s;
 }
+@import "~slick-carousel/slick/slick.css"; 
+@import "~slick-carousel/slick/slick-theme.css";
 /** {*/
 /*    background: #000 !important;*/
 /*    color: #0f0 !important;*/
