@@ -13,7 +13,12 @@ const path = [
         icon: <Home />
     },
     {
-        name: "论坛",
+        name: "分类",
+        path: "/category",
+        icon: <Home/>
+    },
+    {
+        name: "社区",
         path: "/forum",
         icon: <Comment />
     },
@@ -39,7 +44,7 @@ const BottomBar:React.FC<BottomBarProps>=(props)=>{
                 <BottomNavigationAction
                     label={value.name}
                     key={value.name}
-                    icon={value.icon}
+                    // icon={value.icon}
                     value={value.path}
                     onClick={() => {
                         history.push(value.path);

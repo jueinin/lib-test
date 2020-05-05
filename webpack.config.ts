@@ -9,12 +9,13 @@ const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin'
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const currentEnv = process.env.NODE_ENV as 'development' | 'production';
 const isDev = currentEnv === 'development';
+console.log(isDev)
 const config: webpack.Configuration & Configuration = {
     entry: process.env.TYPEPROJECT === 'admin' ? './src/backend/index.tsx' : './src/index.tsx',
     output: {
         filename: '[hash]bundle.js',
         path: path.resolve(__dirname, 'dist'),
-        chunkFilename: isDev ? '[name].bundle.js' : '[name][chunkhash].bundle.js'
+        // chunkFilename: isDev ? '[name].bundle.js' : '[name][chunkhash].bundle.js'
     },
     mode: currentEnv,
     devtool: isDev ? 'inline-cheap-module-source-map' : false,
@@ -40,12 +41,12 @@ const config: webpack.Configuration & Configuration = {
         },
         historyApiFallback: true,
     },
-    optimization: {
-        splitChunks: {
-            chunks: 'all',
-            name: 'vendor'
-        },
-    },
+    // optimization: {
+    //     splitChunks: {
+    //         chunks: 'all',
+    //         name: 'vendor'
+    //     },
+    // },
     module: {
         rules: [
             {

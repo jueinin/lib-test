@@ -103,10 +103,10 @@ const BookDetail = () => {
                 title: '商品',
                 value: 'product',
             },
-            {
-                title: '详情',
-                value: 'detail',
-            },
+            // {
+            //     title: '详情',
+            //     value: 'detail',
+            // },
             {
                 title: '评论',
                 value: 'comment',
@@ -183,36 +183,36 @@ const BookDetail = () => {
         return (
             <div className="fixed bottom-0 w-full bg-white">
                 <div className="flex px-2 py-2 w-full">
-                    <div className="flex items-center justify-around w-1/2">
-                        <div
-                            className="flex flex-col items-center ripple"
-                            onClick={() => {
-                                history.push('/');
-                            }}
-                        >
-                            <HomeOutlined className="text-3xl text-red-500" />
-                            <span>首页</span>
-                        </div>
+                    <div className="flex items-center  w-1/2">
+                        {/*<div*/}
+                        {/*    className="flex flex-col items-center ripple"*/}
+                        {/*    onClick={() => {*/}
+                        {/*        history.push('/');*/}
+                        {/*    }}*/}
+                        {/*>*/}
+                        {/*    <HomeOutlined className="text-3xl text-red-500" />*/}
+                        {/*    <span>首页</span>*/}
+                        {/*</div>*/}
                         <div className="flex flex-col items-center">
                             {productData.isFavorited ? <StarOutlined className="text-3xl text-red-500" onClick={() => removeFavorite(productData.id)} /> : <StarBorderOutlined className="text-3xl text-red-500" onClick={() => addFavorite(productData.id)} />}
                             <span>{productData.isFavorited ? '取消收藏' : '收藏'}</span>
                         </div>
-                        <div className="flex flex-col items-center ripple" onClick={() => history.push('/shoppingCart')}>
-                            <span className="relative">
-                                <ShoppingCartOutlined className="text-3xl text-red-500" />
-                                {userStore.isLogin && <div
-                                    style={{
-                                        top: '-.6rem',
-                                        right: '-.6rem',
-                                        minWidth: '1.25rem',
-                                    }}
-                                    className="absolute text-xs h-5 flex-center border rounded-full text-red-500 border-red-500"
-                                >
-                                    {userStore.userData.shoppingCart.items.length}
-                                </div>}
-                            </span>
-                            <span>购物车</span>
-                        </div>
+                        {/*<div className="flex flex-col items-center ripple" onClick={() => history.push('/shoppingCart')}>*/}
+                        {/*    <span className="relative">*/}
+                        {/*        <ShoppingCartOutlined className="text-3xl text-red-500" />*/}
+                        {/*        {userStore.isLogin && <div*/}
+                        {/*            style={{*/}
+                        {/*                top: '-.6rem',*/}
+                        {/*                right: '-.6rem',*/}
+                        {/*                minWidth: '1.25rem',*/}
+                        {/*            }}*/}
+                        {/*            className="absolute text-xs h-5 flex-center border rounded-full text-red-500 border-red-500"*/}
+                        {/*        >*/}
+                        {/*            {userStore.userData.shoppingCart.items.length}*/}
+                        {/*        </div>}*/}
+                        {/*    </span>*/}
+                        {/*    <span>购物车</span>*/}
+                        {/*</div>*/}
                     </div>
                     <div className="flex flex-grow justify-end">
                         <button
@@ -323,20 +323,16 @@ const BookDetail = () => {
         return <div className={'bg-gray-300 ' + className || ''}>
             <section data-name={'顶栏'} className={'p-2 bg-white ' + style['product-slick']}>
                 <div style={{ margin: '-0.5rem' }}>
-                    <Slider afterChange={setCoverIndex} autoPlay>
-                        {(productData.images || []).map((value) => {
-                            return <img alt="slider pic" src={value} className="w-screen" key={value} onClick={() => {
-                                openModal({
-                                    data: productData
-                                });
-                            }} />;
-                        })}
-                    </Slider>
+                    {productData.images.length>0 && <img alt="slider pic" src={productData.images[0]} className="w-screen" key={productData.images[0]} onClick={() => {
+                        openModal({
+                            data: productData
+                        });
+                    }}/>}
                 </div>
-                <div className="mt-2 float-right px-2 bg-gray-600 opacity-50 text-white flex-center rounded-full" style={{ marginRight: '-0.5rem' }}>
-                    <span>{coverIndex + 1}</span>
-                    <span className="text-sm">/{productData.images.length}</span>
-                </div>
+                {/*<div className="mt-2 float-right px-2 bg-gray-600 opacity-50 text-white flex-center rounded-full" style={{ marginRight: '-0.5rem' }}>*/}
+                {/*    <span>{coverIndex + 1}</span>*/}
+                {/*    <span className="text-sm">/{productData.images.length}</span>*/}
+                {/*</div>*/}
                 <div className="mt-4 font-bold text-red-500 text-3xl">￥{productData.price}</div>
                 <div className="font-bold text-xl">{productData.name}</div>
                 <div className="text-sm mt-2 text-gray-700 truncate-3-lines" title={productData.description}>
@@ -371,21 +367,32 @@ const BookDetail = () => {
                     {/*</div>*/}
                     <div data-name={'scroll comments'} className="horizontal-scroll">
                         {productData.comment.commentList.length > 0 ? (
-                            productData.comment.commentList.map((value) => {
-                                return (
-                                    <div key={JSON.stringify(value)} className="shadow-lg p-2 mt-4  pb-4">
-                                        <div className="flex items-center">
-                                            <div className="flex w-48 flex-col">
-                                                <div className="flex items-center">
-                                                    <img alt="avatar" src={value.avatar} className="w-5 h-5" />
-                                                    <span className="text-gray-600 ml-2 text-sm">{value.name}</span>
-                                                </div>
-                                                <div className="truncate-4-lines text-sm mt-2 whitespace-normal">{value.commentText}</div>
-                                            </div>
-                                            {value.commentImg.length && <img alt="comment img" className="max-h-full w-12 ml-8" src={value.commentImg[0]} />}
-                                        </div>
+                            // productData.comment.commentList.map((value) => {
+                            //     return (
+                            //         <div key={JSON.stringify(value)} className="shadow-lg p-2 mt-4  pb-4">
+                            //             <div className="flex items-center">
+                            //                 <div className="flex w-48 flex-col">
+                            //                     <div className="flex items-center">
+                            //                         <img alt="avatar" src={value.avatar} className="w-5 h-5" />
+                            //                         <span className="text-gray-600 ml-2 text-sm">{value.name}</span>
+                            //                     </div>
+                            //                     <div className="truncate-4-lines text-sm mt-2 whitespace-normal">{value.commentText}</div>
+                            //                 </div>
+                            //                 {/*{value.commentImg.length && <img alt="comment img" className="max-h-full w-12 ml-8" src={value.commentImg[0]} />}*/}
+                            //             </div>
+                            //         </div>
+                            //     );
+                            // })
+                            productData.comment.commentList.slice(0,1).map(value => {
+                                return <div className="my-3 mx-2">
+                                    <div className="flex">
+                                        <img className="w-5 h-5 rounded-full" src={value.avatar}/>
+                                        <span className="text-sm text-gray-600 ml-2">{value.name}</span>
                                     </div>
-                                );
+                                    <div className="mt-1 truncate-3-lines whitespace-normal">
+                                        {value.commentText}
+                                    </div>
+                                </div>
                             })
                         ) : (
                                 <div className="h-40 w-full flex-center">

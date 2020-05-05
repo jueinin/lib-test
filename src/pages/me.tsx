@@ -20,7 +20,7 @@ import {ask, defaultAvatar} from '../util';
 import {observer} from "mobx-react";
 
 const Me: React.FC = () => {
-    const { userStore } = useStore();  // todo 登录未刷新状态
+    const { userStore } = useStore();
     const { isLogin, userData } = userStore;
     const history = useHistory();
     useEffect(() => {
@@ -62,8 +62,13 @@ const Me: React.FC = () => {
             count: null
         },
         {
-            title: '意见反馈', // todo 意见反馈栏目
+            title: '意见反馈',
             icon: <MessageOutlined />,
+            onClick: () => {
+                if (isLogin) {
+                    history.push('/feedback')
+                }
+            },
             count: null
         },
         {

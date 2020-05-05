@@ -69,8 +69,8 @@ const NavBar: React.FC<NavBarProps> = (props) => {
                                                 location.pathname='/3d/3d.html'
                                             }
                                         }}>
-                                            <div className="text-red-400">{value.icon}</div>
-                                            <span className="">{value.title}</span>
+                                            {/*<div className="text-red-400">{value.icon}</div>*/}
+                                            <span className="text-lg">{value.title}</span>
                                         </li>
                                     );
                                 })}

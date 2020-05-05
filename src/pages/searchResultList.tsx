@@ -1,6 +1,6 @@
 import React, { KeyboardEventHandler, useEffect, useMemo, useRef, useState } from 'react';
 import NavBar from '../components/navbar';
-import { SearchOutlined, ArrowDropUpOutlined, ArrowDropDownOutlined } from '@material-ui/icons';
+import {SearchOutlined, ArrowDropUpOutlined, ArrowDropDownOutlined, ShoppingCartOutlined} from '@material-ui/icons';
 import { InputBase, CircularProgress } from '@material-ui/core';
 import { parse } from 'query-string';
 import classNames from 'classnames';
@@ -15,7 +15,7 @@ type Item = {
     title: string;
     value: FilterItemName;
 };
-type BookData = {
+export type BookData = {
     bookData: { bookId: number; title: string; author: string; price: number; comments: number; goodComments: number; imgUrl: string }[];
     maxPage: number;
 };
@@ -90,7 +90,7 @@ export default () => {
                                         {
                                             'text-red-500': currentFilterItem === value.value,
                                         },
-                                        'py-2'
+                                        'py-2 hidden'
                                     )}
                                 >
                                     {value.title}
@@ -103,7 +103,7 @@ export default () => {
                             return (
                                 <div
                                     key={'price'}
-                                    className="flex py-2"
+                                    className="flex py-2 hidden"
                                     onClick={() => {
                                         if (isNormal || isDesc) {
                                             setCurrentFilterItem('ascPrice');
@@ -165,12 +165,32 @@ export default () => {
         useReachBottom(document.getElementById('contt'), fetchMore);
         return (
             <section id="contt" className="flex-grow overflow-auto" data-name={'结果页'}>
-                <div>
+                <div className="grid grid-cols-2 gap-2 bg-gray-300 mt-2">
                     {data.map((item) =>
                         item.bookData.map((value) => {
                             return (
-                                <div key={value.bookId} className="cursor-pointer">
-                                    <BookItem onClick={() => history.push('/bookDetail?bookId=' + value.bookId)} {...value} />
+                                <div key={value.bookId} className="bg-white rounded-lg grid grid-cols-1 gap-2"
+                                     onClick={()=>{
+                                         history.push('/bookDetail?bookId=' + value.bookId);
+                                     }}>
+                                    <img src={value.imgUrl} className="w-full"/>
+                                    <h2 className="mt-2 text-lg mx-2 truncate-2-lines " style={{
+                                        height: '3.2rem',
+                                        fontWeight: 520
+                                    }}>{value.title}</h2>
+                                    <h3 className="flex mt-1 mx-2 mb-1">
+                                        <span className="mr-auto text-lg font-bold">
+                                            <span className="" style={{marginRight: 2}}>￥</span>
+                                            {value.price.toString().split('.').map((value1,index) => {
+                                                if (index === 0) {
+                                                    return <span key={index} className="text-lg">{value1}</span>
+                                                }
+                                                if (index === 1 && value1!=="0") {
+                                                    return  <span key={index} className="text-sm">.{value1}</span>
+                                                }
+                                            })}</span>
+                                        <ShoppingCartOutlined className="ml-auto text-red-500"/>
+                                    </h3>
                                 </div>
                             );
                         })

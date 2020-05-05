@@ -28,6 +28,9 @@ import CacheRoute, { CacheSwitch } from 'react-router-cache-route';
 import AddressList from './pages/addresssList';
 import EditProfile from './pages/editProfile';
 import {ReactQueryConfigProvider} from "react-query";
+import FeedBack from "./pages/feedBack";
+import Scan from "./pages/scan";
+import Category from "./pages/category";
 // if (navigator.serviceWorker) {
 //     navigator.serviceWorker.register('/service-worker.js');
 // }
@@ -116,6 +119,15 @@ const App = () => {
                 </Route>
                 <Route path={'/editProfile'}>
                     <EditProfile />
+                </Route>
+                <Route path={'/feedback'}>
+                    <FeedBack/>
+                </Route>
+                <Route path={'/scan'}>
+                    <Scan/>
+                </Route>
+                <Route path={'/category'}>
+                    <Category/>
                 </Route>
             </CacheSwitch>
         </div>

@@ -31,41 +31,7 @@ export interface BookBaseProperty {
     title: string;
 }
 const IndexPage = () => {
-    const navItems = useRef([
-        {
-            title: '小说',
-            pic: book,
-        },
-        {
-            title: '传记',
-            pic: personal,
-        },
-        {
-            title: '艺术',
-            pic: art,
-        },
-        {
-            title: '励志',
-            pic: heart,
-        },
-        {
-            title: '哲学',
-            pic: thinking,
-        },
-        {
-            title: '计算机',
-            pic: computer,
-        },
-        {
-            title: '经济',
-            pic: economy,
-        },
-        {
-            title: '历史',
-            pic: historyIcon,
-        },
-    ]);
-    const { push } = useHistory();
+    const { push } = useHistory(); // todo remove search input page
     const {isFetching, data,fetchMore} = useInfiniteQuery(`/api/recommends`, (url, page = 1) => {
         return ask({
             url: url,
@@ -79,6 +45,7 @@ const IndexPage = () => {
     });
     const container = useRef(null);
     useReachBottom(container.current, fetchMore);
+    const [searchStr, setSearchStr] = useState('');
     return (
         <div className="h-screen overflow-y-auto" ref={container}>
             <div className="mb-16">
@@ -86,11 +53,33 @@ const IndexPage = () => {
                     centerPart={
                         <div className="gray-input mr-1 ml-1">
                             <SearchOutlined className="" />
-                            <input className="border-none bg-transparent py-1 flex-grow" placeholder="搜索钟意的书籍吧!" onFocus={() => push('/searchInput')}  />
+                            <input className="border-none bg-transparent py-1 flex-grow" value={searchStr} onChange={event => setSearchStr(event.target.value)} placeholder="搜索钟意的书籍吧!" onKeyPress={event => {
+                                if (event.key === "Enter") {
+                                    push('/searchResultList?keyword='+searchStr)
+                                }
+                            }}  />
                         </div>
                     }
                     leftPart={<img src={logo} className="h-6 w-6 mr-1" />}
                 />
+                {/*<nav data-name={'分类'} className="mt-4">*/}
+                {/*    <div className="grid" style={{*/}
+                {/*        gridTemplateColumns: 'repeat(4,25%)',*/}
+                {/*        gridTemplateRows: 'auto auto',*/}
+                {/*        justifyItems: "center"*/}
+                {/*    }}>*/}
+                {/*        {navItems.current.map((value, index) => {*/}
+                {/*            return (*/}
+                {/*                <div className="grid gap-1 items-center justify-items-center ripple"*/}
+                {/*                     style={{gridTemplateRows: 'auto 20px'}}*/}
+                {/*                     key={value.title} onClick={() => push(`/searchResultList?keyword=${value.title}`)}>*/}
+                {/*                    <img src={value.pic} alt="icon" className="h-12 w-12 shadow-md mb-1" />*/}
+                {/*                    <span className="text-sm mb-2">{value.title}</span>*/}
+                {/*                </div>*/}
+                {/*            );*/}
+                {/*        })}*/}
+                {/*    </div>*/}
+                {/*</nav>*/}
                 <section data-name={'轮播图'} className="w-full overflow-hidden">
                     <Slider>
                         {[swiper1, swiper2, swiper3].map((value, index) => {
@@ -98,24 +87,6 @@ const IndexPage = () => {
                         })}
                     </Slider>
                 </section>
-                <nav data-name={'分类'} className="mt-4">
-                    <div className="grid" style={{
-                        gridTemplateColumns: 'repeat(4,25%)',
-                        gridTemplateRows: 'auto auto',
-                        justifyItems: "center"
-                    }}>
-                        {navItems.current.map((value, index) => {
-                            return (
-                                <div className="grid gap-1 items-center justify-items-center ripple"
-                                     style={{gridTemplateRows: 'auto 20px'}}
-                                     key={value.title} onClick={() => push(`/searchResultList?keyword=${value.title}`)}>
-                                    <img src={value.pic} alt="icon" className="h-12 w-12 shadow-md mb-1" />
-                                    <span className="text-sm mb-2">{value.title}</span>
-                                </div>
-                            );
-                        })}
-                    </div>
-                </nav>
                 <main data-name={'列表'} className="mt-4 p-2">
                     <div className="font-bold text-base">为您推荐</div>
                     <div className="mt-4 grid grid-cols-2 gap-3 bg-gray-300">
