@@ -214,9 +214,9 @@ const BookDetail = () => {
                         {/*    <span>购物车</span>*/}
                         {/*</div>*/}
                     </div>
-                    <div className="flex flex-grow justify-end">
+                    <div className="flex text-white flex-grow justify-end">
                         <button
-                            className="px-2 rounded-bl-lg rounded-tl-lg"
+                            className="px-2 rounded-bl-full rounded-tl-full"
                             onClick={() => {
                                 userStore.currentBuyItemInfo = {
                                     bookId: productData.id,
@@ -234,10 +234,10 @@ const BookDetail = () => {
                             立即购买
                         </button>
                         <button
-                            className="px-2 rounded-br-lg rounded-tr-lg"
+                            className="px-2 rounded-br-full rounded-tr-full"
                             onClick={() => addToCart(bookId)}
                             style={{
-                                backgroundImage: 'linear-gradient(62deg, #FBAB7E 0%, #F7CE68 100%)',
+                                backgroundImage: 'linear-gradient(to right, #f12711, #f5af19)',
                             }}
                         >
                             加入购物车

@@ -121,6 +121,7 @@ export default () => {
             getFetchMore: (lastPage, allPages) => (allPages.length < lastPage.maxPage ? allPages.length + 1 : false),
         }
     );
+    const { data:recommendData } = useQuery<DataItem[], string>('/api/postRecommend', (url) => ask({ url }).then((v) => v.data));
     return (
         <div className="h-screen overflow-auto bg-gray-200" id="forum">
             <NavBar
@@ -134,14 +135,34 @@ export default () => {
                     />
                 }
             />
-            <Fab onClick={() => history.push('/posterAdd')} className="fixed bg-green-500 text-white transform " style={{ bottom: 70, right: 20 }}>
-                <Add />
-            </Fab>
-            <div className="bg-white py-2 mb-16">
+            {/*<Fab onClick={() => history.push('/posterAdd')} className="fixed bg-green-500 text-white transform " style={{ bottom: 70, right: 20 }}>*/}
+            {/*    <Add />*/}
+            {/*</Fab>*/}
+
+            <div className="my-2 px-2">
+                <div className="my-2 text-lg ">搜索发现</div>
+                <div className="flex flex-wrap">
+                    {recommendData &&
+                    recommendData.map((item) => {
+                        return (
+                            <div
+                                onClick={() => {
+                                    closeModal();
+                                    history.push(`/postDetail?postId=${item.id}`);
+                                }}
+                                className=" mr-4 px-6 py-3 bg-gray-400 rounded-lg"
+                            >
+                                {item.title}
+                            </div>
+                        );
+                    })}
+                </div>
+            </div>
+            <div className="bg-white mt-8 py-2 mb-16">
                 <div className="flex items-center">
                     <div className="ml-auto mr-2 px-2 py-1 mb-2 rounded-lg bg-gray-600 inline-block text-white">{(currentIndex+1) } / {flatten(data.map(value => value.data)).length}</div>
                 </div>
-                <Slider centerMode centerPadding="60px" slidesToShow={1} arrows={false} infinite afterChange={(index)=>{
+                <Slider className="slider" centerMode centerPadding="60px" slidesToShow={1} arrows={false} infinite afterChange={(index)=>{
                     setCurrentIndex(index);
                     if (index + 1 === flatten(data.map(value => value.data)).length) {
                         debugger;
@@ -154,7 +175,7 @@ export default () => {
                             return (
                                 <div>
                                     <div
-                                        className="w-ful border-l px-2 border-r"
+                                        className="w-ful border-l px-2 border-r border-t"
                                     >
                                         <div className="items-center grid gap-4 w-full" style={{
                                             gridTemplateColumns: 'min-content 1fr'
@@ -171,6 +192,9 @@ export default () => {
                     )}
                 </Slider>
             </div>
+            <div style={{
+                bottom: '68px'
+            }} className="fixed rounded-lg text-lg py-4 w-full bg-gray-300 text-center">发帖</div>
             <BottomBar currentValue="/forum" />
         </div>
     );

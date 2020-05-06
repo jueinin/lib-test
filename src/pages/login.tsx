@@ -3,7 +3,7 @@ import NavBar from '../components/navbar';
 import { PersonOutlined, LockOutlined } from '@material-ui/icons';
 import style from '../cover.module.css';
 import { useHistory } from 'react-router-dom';
-import { ask } from '../util';
+import {ask, eventEmitter} from '../util';
 import { useStore } from '../model';
 import { Toast } from '../components/Toast';
 import { Transition } from 'react-spring/renderprops-universal';
@@ -23,6 +23,7 @@ export default () => {
                 userStore.getUserData();
                 history.push('/');
                 Toast.info('登录成功，跳转中...');
+                eventEmitter.emit('refreshData');
             })
             .catch((err) => {
                 const errMsg = err.response.data.message;

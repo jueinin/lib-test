@@ -142,7 +142,7 @@ const OrderTest = () => {
                         <div>
                             <div data-name={'nav bar'} className="py-2 border-b flex w-full items-center">
                                 <img src={logo} className="h-4 w-4 "/>
-                                <span className="mr-auto ml-2">啄木鸟书城</span>
+                                {/*<span className="mr-auto ml-2">啄木鸟书城</span>*/}
                                 <span className="text-red-500 ml-auto">{statusToName(value.status)}</span>
                             </div>
                             <div className="flex mt-2">

@@ -9,6 +9,7 @@ import { flatten, ifElse } from 'ramda';
 import BookItem  from '../components/bookItem';
 import { useHistory } from 'react-router-dom';
 import { useInfiniteQuery } from 'react-query';
+import BookItemGrid from "../components/BookItemGrid";
 
 type FilterItemName = 'default' | 'sales' | 'ascPrice' | 'descPrice' | 'praise' | 'publishTime';
 type Item = {
@@ -169,29 +170,7 @@ export default () => {
                     {data.map((item) =>
                         item.bookData.map((value) => {
                             return (
-                                <div key={value.bookId} className="bg-white rounded-lg grid grid-cols-1 gap-2"
-                                     onClick={()=>{
-                                         history.push('/bookDetail?bookId=' + value.bookId);
-                                     }}>
-                                    <img src={value.imgUrl} className="w-full"/>
-                                    <h2 className="mt-2 text-lg mx-2 truncate-2-lines " style={{
-                                        height: '3.2rem',
-                                        fontWeight: 520
-                                    }}>{value.title}</h2>
-                                    <h3 className="flex mt-1 mx-2 mb-1">
-                                        <span className="mr-auto text-lg font-bold">
-                                            <span className="" style={{marginRight: 2}}>￥</span>
-                                            {value.price.toString().split('.').map((value1,index) => {
-                                                if (index === 0) {
-                                                    return <span key={index} className="text-lg">{value1}</span>
-                                                }
-                                                if (index === 1 && value1!=="0") {
-                                                    return  <span key={index} className="text-sm">.{value1}</span>
-                                                }
-                                            })}</span>
-                                        <ShoppingCartOutlined className="ml-auto text-red-500"/>
-                                    </h3>
-                                </div>
+                                <BookItemGrid {...value} onClick={()=>history.push('/bookDetail?bookId=' + value.bookId)} />
                             );
                         })
                     )}

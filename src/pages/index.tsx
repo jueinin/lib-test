@@ -7,20 +7,12 @@ import swiper1 from '../resource/images/swiper-image1.jpg';
 import swiper2 from '../resource/images/swiper-image2.jpg';
 import swiper3 from '../resource/images/swiper-image3.jpg';
 import { useHistory } from 'react-router-dom';
-import {ask, useReachBottom} from '../util';
+import {ask, useEventEmitter, useReachBottom} from '../util';
 import BottomBar from '../components/bottomBar';
-import BookItem from '../components/bookItem';
 import NavBar from '../components/navbar';
-import art from "../resource/images/art.png";
-import economy from '../resource/images/economy.png';
-import book from '../resource/images/书.png';
-import personal from '../resource/images/人物.png';
-import historyIcon from '../resource/images/历史.png';
-import heart from '../resource/images/heart.png';
-import thinking from '../resource/images/思维.png';
-import computer from '../resource/images/电脑.png';
 import {useInfiniteQuery} from "react-query";
 import {prop} from "ramda";
+import BookItemGrid from "../components/BookItemGrid";
 export interface BookBaseProperty {
     author: string;
     bookId: number;
@@ -31,8 +23,9 @@ export interface BookBaseProperty {
     title: string;
 }
 const IndexPage = () => {
+    const [resetInfinite, setResetInfinite] = useState(false);
     const { push } = useHistory(); // todo remove search input page
-    const {isFetching, data,fetchMore} = useInfiniteQuery(`/api/recommends`, (url, page = 1) => {
+    const {isFetching, data,fetchMore} = useInfiniteQuery([`/api/recommends`,resetInfinite], (url,reset, page = 1) => {
         return ask({
             url: url,
             params: {
@@ -44,6 +37,9 @@ const IndexPage = () => {
         staleTime: 1000*60*3
     });
     const container = useRef(null);
+    useEventEmitter("refreshData",()=>{
+        setResetInfinite(!resetInfinite);
+    })
     useReachBottom(container.current, fetchMore);
     const [searchStr, setSearchStr] = useState('');
     return (
@@ -92,29 +88,7 @@ const IndexPage = () => {
                     <div className="mt-4 grid grid-cols-2 gap-3 bg-gray-300">
                         {data.map((list: BookBaseProperty[]) => {
                             return list.map((value,index) => {
-                                return <div key={value.bookId} className="bg-white rounded-lg grid grid-cols-1 gap-2"
-                                onClick={()=>{
-                                    push('/bookDetail?bookId=' + value.bookId);
-                                }}>
-                                    <img src={value.imgUrl} className="w-full"/>
-                                    <h2 className="mt-2 text-lg mx-2 truncate-2-lines " style={{
-                                        height: '3.2rem',
-                                        fontWeight: 520
-                                    }}>{value.title}</h2>
-                                    <h3 className="flex mt-1 mx-2 mb-1">
-                                        <span className="mr-auto text-lg font-bold">
-                                            <span className="" style={{marginRight: 2}}>￥</span>
-                                            {value.price.toString().split('.').map((value1,index) => {
-                                            if (index === 0) {
-                                                return <span key={index} className="text-lg">{value1}</span>
-                                            }
-                                            if (index === 1 && value1!=="0") {
-                                                return  <span key={index} className="text-sm">.{value1}</span>
-                                            }
-                                        })}</span>
-                                        <ShoppingCartOutlined className="ml-auto text-red-500"/>
-                                    </h3>
-                                </div>;
+                                return <BookItemGrid {...value} onClick={()=>push('/bookDetail?bookId=' + value.bookId)} />;
                             });
                         })}
                     </div>
