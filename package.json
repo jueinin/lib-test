@@ -4,8 +4,8 @@
     "start": "cross-env NODE_ENV=development webpack-dev-server --config webpack.config.ts",
     "tailwind": "tailwind build src/style.css -o src/tailwind.css",
     "build": "cross-env NODE_ENV=production webpack --config webpack.config.ts",
-    "start:admin": "cross-env NODE_ENV=development TYPEPROJECT=admin&& webpack-dev-server --config webpack.config.ts",
-    "build:admin": "cross-env NODE_ENV=production  TYPEPROJECT=admin webpack --config webpack.config.ts"
+    "start:admin": "cross-env NODE_ENV=development cross-env TYPEPROJECT=admin webpack-dev-server --config webpack.config.ts",
+    "build:admin": "cross-env NODE_ENV=production cross-env TYPEPROJECT=admin webpack --config webpack.config.ts"
   },
   "dependencies": {
     "@ant-design/icons": "^4.0.5",
