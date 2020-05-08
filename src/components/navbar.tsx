@@ -38,6 +38,11 @@ const NavBar: React.FC<NavBarProps> = (props) => {
             icon: <FindInPageOutlined className="text-3xl" />,
         },
         {
+            title: '扫码识别',
+            path: '/scan',
+            icon: <FindInPageOutlined className="text-3xl" />
+        },
+        {
             title: '购物车',
             path: '/shoppingCart',
             icon: <ShoppingCartOutlined className="text-3xl" />,
@@ -46,7 +51,7 @@ const NavBar: React.FC<NavBarProps> = (props) => {
             title: '我的',
             path: '/me',
             icon: <PersonOutlined className="text-3xl" />,
-        },
+        }
     ]);
     return (
         <div>
@@ -59,7 +64,7 @@ const NavBar: React.FC<NavBarProps> = (props) => {
                 transition.map((value) => {
                     return (
                         value.item && (
-                            <animated.ul key={value.key} className="bg-gray-400 grid grid-cols-4 justify-items-center items-center" style={value.props}>
+                            <animated.ul key={value.key} className="bg-gray-400 grid grid-cols-5 justify-items-center items-center" style={value.props}>
                                 {items.current.map((value,index) => {
                                     return (
                                         <li key={index} className="text-center" onClick={() => {

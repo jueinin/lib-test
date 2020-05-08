@@ -182,7 +182,9 @@ export default () => {
                         value.data.map((value) => {
                             return (
                                 <div>
-                                    <div className="w-ful border-l px-2 border-r border-t">
+                                    <div className="w-ful border-l px-2 border-r border-t" onClick={()=>{
+                                        history.push(`/postDetail?postId=${value.id}`)
+                                    }}>
                                         <div
                                             className="items-center grid gap-4 w-full"
                                             style={{
