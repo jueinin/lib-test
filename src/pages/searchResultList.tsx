@@ -4,7 +4,7 @@ import { SearchOutlined, ArrowDropUpOutlined, ArrowDropDownOutlined } from '@mat
 import { InputBase, CircularProgress } from '@material-ui/core';
 import { parse } from 'query-string';
 import classNames from 'classnames';
-import {ask, browserHistory, useReachBottom} from '../util';
+import {ask, useReachBottom} from '../util';
 import { flatten, ifElse } from 'ramda';
 import BookItem  from '../components/bookItem';
 import { useHistory } from 'react-router-dom';

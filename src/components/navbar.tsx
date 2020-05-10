@@ -1,7 +1,6 @@
 import React, { ReactNode, useRef, useState } from 'react';
 import { NavigateBefore, MoreHoriz, Close, HomeOutlined, FindInPageOutlined, ShoppingCartOutlined, PersonOutlined } from '@material-ui/icons';
 import { useSpring, animated, useTransition } from 'react-spring';
-import { browserHistory } from '../util';
 import { useHistory } from 'react-router-dom';
 interface NavBarProps {
     centerPart: ReactNode;
@@ -51,7 +50,7 @@ const NavBar: React.FC<NavBarProps> = (props) => {
     return (
         <div>
             <div className="h-12 px-2 bg-white shadow-sm border border-solid border-gray-200 flex items-center">
-                {props.leftPart || <NavigateBefore onClick={() => browserHistory.goBack()} className="text-3xl" />}
+                {props.leftPart || <NavigateBefore onClick={() => history.goBack()} className="text-3xl" />}
                 <div className="text-center flex-grow">{props.centerPart}</div>
                 {props.rightPart || <div onClick={() => setOpen(!open)}>{open ? <Close className="text-3xl " /> : <MoreHoriz className="text-3xl" />}</div>}
             </div>
