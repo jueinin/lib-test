@@ -99,27 +99,6 @@ const config: webpack.Configuration & Configuration = {
                 ],
             },
             {
-                test: /\.scss$/,
-                use: [
-                    {
-                        loader: MiniCssExtractPlugin.loader,
-                        options: {
-                            hmr: currentEnv === 'development',
-                        },
-                    },
-                    {
-                        loader: 'css-loader',
-                        options: {
-                            importLoaders: 1,
-                            sourceMap: false,
-                        },
-                    },
-                    {
-                        loader: 'sass-loader',
-                    },
-                ],
-            },
-            {
                 test: /\.(ts|tsx|js|jsx)$/,
                 exclude: /node_modules/,
                 use: [
