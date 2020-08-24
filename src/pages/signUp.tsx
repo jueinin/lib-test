@@ -19,7 +19,7 @@ const SignUp: React.FC = () => {
     const [rePassword, setrePassword] = useState('');
     const [verificationCode, setverificationCode] = useState('');
     const [mailLoading, setmailLoading] = useState(false);
-    const [mailCountDown, setmailCountDown] = useState();
+    const [mailCountDown, setmailCountDown] = useState<number>(0);
     const [onSendMailCode] = useMutation(() => {
         return ask({
             url: `/api/sendMailCode?email=${email}`,
