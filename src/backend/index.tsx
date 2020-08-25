@@ -1,9 +1,6 @@
-import swr from 'swr'
-import {Spin, Tooltip} from "antd";
 import React ,{Suspense}from "react";
 import {render} from "react-dom";
 import {BrowserRouter,Route,Switch} from "react-router-dom";
-import CacheRoute, {CacheSwitch} from "react-router-cache-route";
 import IndexPage from "./pages/index.page";
 import './pure.css'
 import '../tailwind.css'
